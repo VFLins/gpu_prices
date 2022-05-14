@@ -1,53 +1,65 @@
 ---
 title: "Relatório dos produtos encontrados"
-author: "Mim"
-date: '2022-05-13'
 output: 
     html_document:
-        theme: readable
+        theme: paper
         toc: true
-        toc_float: true
+        toc_float: 
+            collapsed: false
+        number_sections: true
 params:
     database:
         label: "Insira seu banco de dados SQLite gerado pelo Price_indexr"
-        value: "*.sqlite"
+        value: "C:/Users/vflins/Price_indexr/gpus.sqlite"
         input: file
+    months:
+        label: "Quantos meses de dados?"
+        value: 7
+        input: slider
+        min: 1
+        max: 61
+        step: 1
+        sep: " "
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(include = FALSE)
 
 library(dplyr)
+library(tidyr)
 library(ggplot2)
-library(stringr)
 library(plotly)
+library(stringr)
+library(kableExtra)
+library(zoo)
 library(DBI)
 library(RSQLite)
+
+source("functions.R")
 
 conn <- dbConnect(SQLite(), params$database)
 tables <- dbListTables(conn)
 products <- tables %>%
     str_remove("price_indexr-") %>% str_replace("_", " ") %>% str_to_upper()
 
+dates <- allowedDates(params$months)
+
 datasets <- list()
 for (tab in seq_along(tables)) {
-    datasets[[products[tab]]] <- dbReadTable(conn, tables[tab])
+    datasets[[products[tab]]] <- dbReadTable(conn, tables[tab]) %>%
+        .[.$Date %in% dates,]
 }
+names(datasets) <- products
 ```
 
-``r length(datasets)``
+# Melhor preço em cada loja
+
+```{r priceByStore}
+kable(datasets[[1]])
+```
+
 
 # Histórico de preços individual
-
-```{r, functions}
-catHeader <- function(text = "", level = 3) {
-    cat(paste0("\n\n", 
-               paste(rep("#", level), collapse = ""), 
-               " ", text, "\n"))
-}
-```
-
-### header 1
 
 ```{r}
 df <- mtcars
