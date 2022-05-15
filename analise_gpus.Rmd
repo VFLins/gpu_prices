@@ -58,6 +58,12 @@ names(datasets) <- products
 kable(datasets[[1]])
 ```
 
+### Isto roda algum código?
+
+```{r}
+print("hello world")
+```
+
 
 # Histórico de preços individual
 
@@ -83,7 +89,7 @@ for(i in seq_along(pl_list)){
     tmp <- pl_list[[i]]
     # As you want to use tabset level here has to be lower than 
     # parent level (ie, parent is 2, so here you have to use 3)
-    catHeader(tmp[[3]], 3)
+    catHeader(tmp[[3]], 2)
     lapply(tmp[1:2], print)
 }
 ```
