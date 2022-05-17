@@ -34,7 +34,7 @@ allowedDates <- function(months = 12){
     dates
 }
 
-# Plot average of the medians of the pproducts over time
+# Plot average of the medians of the products over time
 plotIndexrOverTime <- function(prind_list){
     require(shiny)
     require(dplyr)
@@ -136,7 +136,7 @@ plotPriceOverTime <- function(prind_table){
     plot <-  plot +
         geom_point(aes(y = PriceMedian), color = color_palette[1], size = 4)
     
-    print(plot)
+    ggplotly(plot)
 }
 
 priceByStore <- function(data){

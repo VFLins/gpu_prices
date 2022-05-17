@@ -26,9 +26,10 @@ params:
 library(shiny)
 library(dplyr)
 library(tidyr)
-require(scales)
+library(scales)
 library(ggplot2)
 library(plotly)
+library(htmlwidgets)
 library(stringr)
 library(kableExtra)
 library(zoo)
@@ -60,7 +61,7 @@ DATASETS[[1]][1:6, c("Date", "Store", "Price")] %>% kable()
 
 # Índice de preços
 
-```{r}
+```{r echo=FALSE, fig.height=3}
 plotIndexrOverTime(DATASETS)
 ```
 
@@ -70,6 +71,8 @@ plotIndexrOverTime(DATASETS)
 ```{r echo=FALSE, fig.height=3, results='asis'}
 for(i in seq_along(DATASETS)){
     catHeader(PRODUCTS[i], 4)
-    plotPriceOverTime(DATASETS[[i]])
+    saveWidget(
+        widget =  plotPriceOverTime(DATASETS[[i]]),
+        file = "file.html")
 }
 ```
