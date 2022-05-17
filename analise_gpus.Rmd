@@ -22,7 +22,6 @@ params:
 ---
 
 ```{r setup, include=FALSE}
- 
 library(shiny)
 library(dplyr)
 library(tidyr)
@@ -46,33 +45,38 @@ PRODUCTS <- tableNames %>%
 DATES <- allowedDates(params$months)
 
 DATASETS <- list()
-for (tab in seq_along(tableNames)) {
-    DATASETS[[PRODUCTS[tab]]] <- dbReadTable(conn, tableNames[tab]) %>%
+for (tab in tableNames) {
+    DATASETS[[tab]] <- dbReadTable(conn, tab) %>%
         mutate(Date = as.Date(Date)) %>% .[.$Date %in% DATES,]
 }
 names(DATASETS) <- PRODUCTS
 ```
 
-# Melhor oferta por loja*
+### Melhor oferta por loja*
 
 ```{r priceByStore}
 DATASETS[[1]][1:6, c("Date", "Store", "Price")] %>% kable()
 ```
 
-# Índice de preços
+### Índice de preços
 
-```{r echo=FALSE, fig.height=3}
+Como vão os preços dos produtos, de maneira geral?
+
+```{r echo=FALSE}
 plotIndexrOverTime(DATASETS)
 ```
 
 
-### Histórico de preços individual {.tabset}
+### Histórico de preços individual {.tabset .tabset-pills}
 
-```{r echo=FALSE, fig.height=3, results='asis'}
+É assim que o preço deste produto tem se comportado:
+
+```{r echo=FALSE, results='asis'}
 for(i in seq_along(DATASETS)){
-    catHeader(PRODUCTS[i], 4)
-    saveWidget(
-        widget =  plotPriceOverTime(DATASETS[[i]]),
-        file = "file.html")
+    fig <- plotPriceOverTime(DATASETS[[i]])
+    
+    catHeader(PRODUCTS[i], level = 4)
+    print(htmltools::tagList(fig))
 }
+unlink("file.html")
 ```

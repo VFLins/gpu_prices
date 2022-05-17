@@ -12,9 +12,18 @@ catHeader <- function(text = "", level = 3) {
 catCodeBlock <- function(code){
     cat(paste0(
         "\n\n`r ",
-        code,
+        eval(cat(code)),
         "`\n")
     )
+}
+
+get_h <- function() {
+    with(knitr::opts_current$get(c("fig.height", "dpi", "fig.retina")),
+         fig.height*dpi/fig.retina)
+}
+get_w <- function() {
+    with(knitr::opts_current$get(c("fig.width", "dpi", "fig.retina")),
+        fig.width*dpi/fig.retina)
 }
 
 # Return a vector with all the accepeted dates
@@ -85,7 +94,7 @@ plotIndexrOverTime <- function(prind_list){
     }
     plot <-  plot +
         geom_point(aes(y = PriceMedian), color = color_palette[1], size = 4)
-    ggplotly(plot)
+    ggplotly(plot, height = get_h(), width = get_w())
 }
 
 # Plot progression of the price with time
