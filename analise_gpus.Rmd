@@ -30,7 +30,7 @@ library(ggplot2)
 library(plotly)
 library(htmlwidgets)
 library(stringr)
-library(kableExtra)
+library(DT)
 library(zoo)
 library(DBI)
 library(RSQLite)
@@ -52,18 +52,20 @@ for (tab in tableNames) {
 names(DATASETS) <- PRODUCTS
 ```
 
-### Melhor oferta por loja*
+### Melhor oferta por loja
 
-```{r priceByStore}
-DATASETS[[1]][1:6, c("Date", "Store", "Price")] %>% kable()
+```{r echo=FALSE}
+output <- priceByStore(DATASETS)
+datatable(output[[12]])
+
 ```
 
 ### Índice de preços
 
 Como vão os preços dos produtos, de maneira geral?
 
-```{r echo=FALSE}
-plotIndexrOverTime(DATASETS)
+```{r priceIndex echo=FALSE}
+plotIndexr(DATASETS)
 ```
 
 
@@ -71,12 +73,11 @@ plotIndexrOverTime(DATASETS)
 
 É assim que o preço deste produto tem se comportado:
 
-```{r echo=FALSE, results='asis'}
+```{r priceHistory echo=FALSE, results='asis'}
 for(i in seq_along(DATASETS)){
-    fig <- plotPriceOverTime(DATASETS[[i]])
+    fig <- plotPrice(DATASETS[[i]])
     
     catHeader(PRODUCTS[i], level = 4)
     print(htmltools::tagList(fig))
 }
-unlink("file.html")
 ```
