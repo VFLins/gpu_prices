@@ -22,18 +22,18 @@ params:
 ---
 
 ```{r setup, include=FALSE}
+library(zoo)
+library(DBI)
 library(shiny)
 library(dplyr)
 library(tidyr)
 library(scales)
-library(ggplot2)
 library(plotly)
-library(htmlwidgets)
+library(ggplot2)
 library(stringr)
-library(DT)
-library(zoo)
-library(DBI)
 library(RSQLite)
+library(kableExtra)
+library(htmltools)
 
 source("functions.R")
 
@@ -52,19 +52,29 @@ for (tab in tableNames) {
 names(DATASETS) <- PRODUCTS
 ```
 
-### Melhor oferta por loja
+### Melhores ofertas por loja* {.tabset .tabset-pills}
 
-```{r echo=FALSE}
+```{r echo=FALSE, results='asis'}
 output <- priceByStore(DATASETS)
-datatable(output[[12]])
-
+for (i in seq_along(output)) {
+    table <- kable(output[[i]][, c("Name", "Price")]) %>%
+        kable_styling(bootstrap_options = c("striped", "hover", "responsive"))
+    
+    catHeader(names(output)[i], level = 4)
+    print(table)
+    cat('\n')
+}
 ```
+
+## 
+
+*Melhores ofertas na última verificação no dia `r format(output[[1]]$Date[1], "%d de %B de %Y")`
 
 ### Índice de preços
 
 Como vão os preços dos produtos, de maneira geral?
 
-```{r priceIndex echo=FALSE}
+```{r echo=FALSE}
 plotIndexr(DATASETS)
 ```
 
@@ -73,7 +83,7 @@ plotIndexr(DATASETS)
 
 É assim que o preço deste produto tem se comportado:
 
-```{r priceHistory echo=FALSE, results='asis'}
+```{r echo=FALSE, results='asis'}
 for(i in seq_along(DATASETS)){
     fig <- plotPrice(DATASETS[[i]])
     

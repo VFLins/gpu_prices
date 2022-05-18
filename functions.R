@@ -11,6 +11,7 @@ catHeader <- function(text = "", level = 3) {
 # Return a vector with all the accepeted dates
 allowedDates <- function(months = 12){
     require(zoo)
+    require(scales)
     
     months <- as.integer(months)
     if (months < 1) {months <- as.integer(1)}
@@ -36,7 +37,7 @@ timePlot <- function(data, currency) {
     plot <- ggplot(data, aes(x = Date)) +
         theme_minimal(base_size = 14) +
         scale_y_continuous(
-            labels = scales::dollar_format(
+            labels = dollar_format(
                 prefix = currency, big.mark = ".", decimal.mark = ",")) +
         labs(x = "", y = "")
     
@@ -117,13 +118,18 @@ priceByStore <- function(prind_list){
     require(dplyr)
     require(tidyr)
     
+    currency <- prind_list[[1]]$Currency[1]
+    
     agg_table <- data.frame()
     for (table in PRODUCTS) {
         agg_table <- rbind(
             agg_table, 
-            select(prind_list[[table]], Date, Price, Store))}
+            select(prind_list[[table]], Date, Price, Store, Name))}
     agg_table <- agg_table %>% .[.$Date == max(.$Date), ] %>%
-        mutate(Store = str_to_upper(Store))
+        mutate(
+            Store = str_to_upper(Store),
+            Price = {dollar(Price,
+                prefix = currency, big.mark = ".", decimal.mark = ",")})
 
     stores <- unique(agg_table$Store)
     output <- list()
@@ -131,6 +137,7 @@ priceByStore <- function(prind_list){
         output[[store]] <- agg_table %>% 
             .[.$Store == store, ] %>%
             .[order(.$Price, decreasing = FALSE), ] %>%
+            select(-Store) %>%
             head(., n = 5)}
     output
 }
