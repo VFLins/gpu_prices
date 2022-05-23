@@ -24,7 +24,7 @@ params:
 ```{r setup, include=FALSE}
 library(zoo)
 library(DBI)
-library(shiny)
+library(knitr)
 library(dplyr)
 library(tidyr)
 library(scales)
