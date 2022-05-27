@@ -67,7 +67,6 @@ timePlot <- function(data, currency) {
 
 # Plot average of the medians of the products over time
 plotIndexr <- function(prind_list){
-    require(shiny)
     require(dplyr)
     require(tidyr)
     require(scales)
@@ -92,7 +91,6 @@ plotIndexr <- function(prind_list){
 
 # Plot progression of the price with time
 plotPrice <- function(prind_table){
-    require(shiny)
     require(dplyr)
     require(tidyr)
     require(scales)
