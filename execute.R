@@ -7,18 +7,19 @@ for (pkg in packages) {
         install.packages(pkg, repos = "https://cloud.r-project.org/")}
     library(pkg, character.only = TRUE)}
 
+# Check pandoc installation places dynamically
 message("Using pandoc version:")
 pandoc_places <- c(
     paste0(Sys.getenv("USERPROFILE"),"\\AppData\\Local\\Pandoc"),
     paste0(Sys.getenv("PROGRAMFILES"),"\\Pandoc"))
 for (place in pandoc_places) {
     if (!rmarkdown::pandoc_available()) {
-        rmarkdown::find_pandoc(dir = place)   
-    }
-}
+        rmarkdown::find_pandoc(dir = place) }}
+if (!rmarkdown::pandoc_available()) {
+    message("Pandoc not found, please install it on an usual location.")}
 
-args = commandArgs(trailingOnly=TRUE)
-
+# Manage inputs and send for knitting
+args = commandArgs(trailingOnly = TRUE)
 if (length(args) <= 2 & length(args) >= 1) {
     params <- list(database = args[[1]])
     if (length(args < 2)) { params$months <- as.integer(7) }
