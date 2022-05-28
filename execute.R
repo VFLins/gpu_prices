@@ -8,8 +8,14 @@ for (pkg in packages) {
     library(pkg, character.only = TRUE)}
 
 message("Using pandoc version:")
-rmarkdown::find_pandoc(
-    dir = paste0(Sys.getenv("USERPROFILE"),"\\AppData\\Local\\Pandoc"))
+pandoc_places <- c(
+    paste0(Sys.getenv("USERPROFILE"),"\\AppData\\Local\\Pandoc"),
+    paste0(Sys.getenv("PROGRAMFILES"),"\\Pandoc"))
+for (place in pandoc_places) {
+    if (!rmarkdown::pandoc_available()) {
+        rmarkdown::find_pandoc(dir = place)   
+    }
+}
 
 args = commandArgs(trailingOnly=TRUE)
 
