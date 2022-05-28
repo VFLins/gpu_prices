@@ -6,19 +6,6 @@ output:
         toc: true
         toc_float: 
             collapsed: false
-params:
-    database:
-        label: "Insira seu banco de dados SQLite gerado pelo Price_indexr"
-        value: "C:/Users/vflin/Price_indexr/gpus.sqlite"
-        input: file
-    months:
-        label: "Quantos meses de dados?"
-        value: 7
-        input: slider
-        min: 1
-        max: 61
-        step: 1
-        sep: " "
 ---
 
 ```{r setup, include=FALSE}
