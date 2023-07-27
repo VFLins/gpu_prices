@@ -1,5 +1,7 @@
 library(DBI)
 
+### Update price data ###
+
 # connecting to database
 db_path <- 'C:/Users/vflin/Projetos/Price_indexr/data/database.db'
 con <- dbConnect(RSQLite::SQLite(), db_path)
@@ -21,5 +23,13 @@ data$LastUpdate <- as.POSIXct(data$LastUpdate)
 duplicate_mask <- duplicated(data[c('Name', 'Date', 'Price', 'Store')])
 data <- data[!duplicate_mask,]
 
+# keep only last 3 months
+floor_date <- Sys.Date() - 92
+data <- data[data$Date >= floor_date, ]
+
 # save file
-saveRDS(data, file = "data.rds")
+saveRDS(data, file = "data/prices.rds")
+
+# cleanup
+rm(duplicate_mask, db_path, floor_date, 
+   products, prices, data, con)
