@@ -24,12 +24,13 @@ duplicate_mask <- duplicated(data[c('Name', 'Date', 'Price', 'Store')])
 data <- data[!duplicate_mask,]
 
 # keep only last 3 months
-floor_date <- Sys.Date() - 92
+floor_date <- as.POSIXct((Sys.Date() - 184))
 data <- data[data$Date >= floor_date, ]
 
 # save file
 saveRDS(data, file = "data/prices.rds")
 
 # cleanup
+dbDisconnect(con)
 rm(duplicate_mask, db_path, floor_date, 
    products, prices, data, con)
