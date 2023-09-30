@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import pandas as pd
 import requests
+import re
 
 response = requests.get(
     "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html",
@@ -23,6 +24,9 @@ def build_table(body_obj):
         rows.append(row_data)
     return rows
 
+def get_fps_val(string):
+    re_match = re.search("\d+\.\d(?=[fps])", string)
+    return float(re_match.group(0)) if re_match else None
 
 tbl_titles = ["raster", "rt"]
 tbl_header = [
@@ -32,5 +36,10 @@ for table, title in zip(webpage_tables, tbl_titles):
     #tbl_header = build_header(tbl_header)
     tbl_body = table.find("tbody")
     body = build_table(tbl_body)
-    pd.DataFrame(body, columns=tbl_header).to_csv(f"data/{title}_avg_fps.csv")
+    
+    df = pd.DataFrame(body, columns=tbl_header)
+    for colname in tbl_header[1:5]:
+        df[colname] = df[colname].apply(get_fps_val)
+    
+    df.to_csv(f"data/{title}_avg_fps.csv", index=False)
 
