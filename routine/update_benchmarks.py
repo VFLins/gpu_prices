@@ -41,5 +41,5 @@ for table, title in zip(webpage_tables, tbl_titles):
     for colname in tbl_header[1:5]:
         df[colname] = df[colname].apply(get_fps_val)
     
-    df.to_csv(f"data/{title}_avg_fps.csv", index=False)
+    df.to_csv(f"data/tomshardware_{title}_avg_fps.csv", index=False)
 
