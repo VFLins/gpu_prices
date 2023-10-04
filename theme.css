@@ -1,0 +1,26 @@
+.navbar-inverse {
+    background-color: #69B57E;
+    border-color: #69B57E;
+}
+
+span.navbar-brand{
+    font-weight: 900
+}
+
+body {
+    color: #69B57E;
+    background-color: #222222;
+}
+
+.chart-title {
+    border-bottom: none;
+    background-color: #222222
+}
+
+.chart-wrapper .chart-stage {
+    background-color: #222222
+}
+
+div#section.level3.chart-wrapper.chart-wrapper-flex{
+    background: #222222;
+}
