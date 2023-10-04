@@ -1,24 +1,38 @@
 .navbar-inverse {
     background-color: #69B57E;
-    border-color: #69B57E;
+    border-color: #427f53;
+    
+}
+
+.navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus {
+    color: #ffffff;
+    background-color: #427f53;
+}
+
+.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:hover, .navbar-inverse .navbar-nav>.active>a:focus {
+    color: #ffffff;
+    background-color: #427f53;
+    font-weight: 900;
 }
 
 span.navbar-brand{
+    font-size: 24px;
     font-weight: 900
 }
 
 body {
-    color: #69B57E;
-    background-color: #222222;
+    color: #ffffff;
 }
 
 .chart-title {
     border-bottom: none;
-    background-color: #222222
+    background-color: #222222;
+    font-size: 18px;
+    font-weight: 700;
 }
 
 .chart-wrapper .chart-stage {
-    background-color: #222222
+    background-color: #fff
 }
 
 div#section.level3.chart-wrapper.chart-wrapper-flex{

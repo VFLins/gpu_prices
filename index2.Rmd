@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Indicador de Preços das GPUs"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -8,19 +8,42 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+cores <- c(
+    bg="#222222", fg="#E0E0E0", main="#69B57E", second="#FD5D63", third="#63A2BB")
 library(flexdashboard)
+prices <- readRDS("data/prices.rds")
 ```
 
-Column {data-width=650}
+INÍCIO
+=======================================================================
+
+Column {data-width=550}
 -----------------------------------------------------------------------
 
-### Chart A
+### Indicador dos preços
+
+```{r}
+prices["semana"] <- as.POSIXct(prices$Date, tz=Sys.timezone()) |> 
+    cut.POSIXt(breaks="1 week", labels=F)
+temp <- aggregate(prices$Price, list(prices$semana, prices$ProductName), FUN=min)
+names(temp) <- c("Semana", "Chip", "Melhor preço")
+out <- aggregate(temp$`Melhor preço`, list(temp$Semana), FUN=mean)
+plot(out, xlab="Semana", ylab="Índice de preços", type="l")
+```
+
+PREÇO E PERFORMACE
+=======================================================================
+
+Row {data-height=550}
+-----------------------------------------------------------------------
+
+### Melhores preços
 
 ```{r}
 
 ```
 
-Column {data-width=350}
+Row {data-height=450}
 -----------------------------------------------------------------------
 
 ### Chart B

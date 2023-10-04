@@ -31,6 +31,9 @@ Texto simples
 ### Chart A
 
 ```{r}
+prices["semana"] <- as.POSIXct(prices$Date, tz=Sys.timezone()) |> 
+    cut.POSIXt(breaks="1 week", labels=F)
+temp <- aggregate(prices$Price, list(prices$semana, prices$ProductName), FUN=min)
 
 ```
 
