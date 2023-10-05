@@ -1,41 +1,70 @@
 ---
-title: "Indicador de Preços GPU"
+title: "Indicador de Preços das GPUs"
 output: 
   flexdashboard::flex_dashboard:
-    theme:
-      font_scale: 1.1
-      bg: "#222222"
-      fg: "#E0E0E0" 
-      primary: "#69B57E"
-      heading_font:
-        google: "Poppins"
-      base_font: 
-        google: "Roboto"
-      code_font: 
-        google: "Fira Code"
     orientation: columns
     vertical_layout: fill
+    css: "theme.css"
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, message=FALSE}
+source("functions.R")
+
+library(plotly)
 library(flexdashboard)
-# Install thematic and un-comment for themed static plots (i.e., ggplot2)
-# thematic::thematic_rmd()
+prices <- readRDS("data/prices.rds")
 ```
 
-Column {data-width=650 .tabset}
+INÍCIO
+=======================================================================
+
+Column {data-width=550}
 -----------------------------------------------------------------------
 
-Texto simples
-
-### Chart A
+### Indicador dos preços
 
 ```{r}
+# Add week data
 prices["semana"] <- as.POSIXct(prices$Date, tz=Sys.timezone()) |> 
     cut.POSIXt(breaks="1 week", labels=F)
-temp <- aggregate(prices$Price, list(prices$semana, prices$ProductName), FUN=min)
+
+# Best price for every GPU per week
+temp <- aggregate(
+    prices$Price, list(prices$semana, prices$Date), FUN=min) |>
+    setNames(c("Semana", "Chip", "Melhor preço"))
+
+# Mean of best prices for each week
+temp <- aggregate(temp$`Melhor preço`, list(temp$Semana), FUN=mean) |>
+    setNames(c("Semana", "Índice"))
+
+datas <- aggregate(prices$Date, list(prices$semana), FUN=max) |>
+    setNames(c("Semana", "Dia"))
+
+temp <- merge(temp, datas, by="Semana")
+
+# Plot index
+p <- ggplot(temp, aes(x=Dia, y=Índice)) + 
+    geom_line(linewidth=1.2, color=cores["main"]) + 
+    geom_point(size=4, color=cores["main"]) +
+    labs(x=NULL, y=NULL) +
+    plot_theme()
+ggplotly(p, width=600, height=400)
+```
+
+PREÇO E PERFORMACE
+=======================================================================
+
+Row {data-height=550}
+-----------------------------------------------------------------------
+
+### Melhores preços
+
+```{r}
 
 ```
+
+Row {data-height=450}
+-----------------------------------------------------------------------
 
 ### Chart B
 
@@ -43,16 +72,7 @@ temp <- aggregate(prices$Price, list(prices$semana, prices$ProductName), FUN=min
 
 ```
 
-Column {data-width=350}
------------------------------------------------------------------------
-
 ### Chart C
-
-```{r}
-
-```
-
-### Chart D
 
 ```{r}
 
