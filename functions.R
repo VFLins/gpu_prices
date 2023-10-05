@@ -1,4 +1,6 @@
-color_palette <- c("#2196f3", "#234d66")
+cores <- c(
+    bg="#222222", fg="#E0E0E0", main="#69B57E", 
+    second="#FD5D63", third="#63A2BB")
 
 # Dinamically generate headers for tabsets
 catHeader <- function(text = "", level = 3) {
@@ -6,6 +8,21 @@ catHeader <- function(text = "", level = 3) {
         "\n\n", 
         paste(rep("#", level), collapse = ""), 
         " ", text, "\n\n"))
+}
+
+# ggplot template
+plot_theme <- function() {
+    theme(
+        plot.title=element_text(color=cores["bg"]),
+        plot.background=element_rect(fill=cores["bg"], color=cores["bg"]),
+        panel.background=element_rect(fill=cores["bg"], color=cores["bg"]),
+        panel.grid=element_line(color=cores["bg"]),
+        axis.text=element_text(color=cores["fg"], size=9),
+        axis.title=element_text(color=cores["fg"]),
+        strip.text=element_text(color=cores["fg"], face="bold", size=16),
+        panel.grid.minor = element_line(color=cores["bg"]),
+        panel.grid.major = element_line(color=cores["bg"])
+    )
 }
 
 # Return a vector with all the accepeted dates
