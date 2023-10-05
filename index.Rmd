@@ -2,6 +2,10 @@
 title: "Indicador de Preços das GPUs"
 output: 
   flexdashboard::flex_dashboard:
+    navbar:
+      - {icon: "ion-social-github", href: "https://github.com/VFLins/Prind_Monitor"}
+      - {title: "Sobre mim", href: "https://sites.google.com/view/vflins/"}
+      - {title: "Me apoie", href: "https://www.paypal.com/donate/?hosted_button_id=LCT6TBWH4LN8S"}
     orientation: columns
     vertical_layout: fill
     css: "theme.css"
@@ -48,7 +52,7 @@ p <- ggplot(temp, aes(x=Dia, y=Índice)) +
     geom_point(size=4, color=cores["main"]) +
     labs(x=NULL, y=NULL) +
     plot_theme()
-ggplotly(p, width=600, height=400)
+bslib::layout_columns(ggplotly(p))
 ```
 
 PREÇO E PERFORMACE
