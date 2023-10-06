@@ -2,6 +2,8 @@
 title: "Indicador de Preços das GPUs"
 output: 
   flexdashboard::flex_dashboard:
+    logo: graphics-card-wh48p.png
+    favicon: graphics-card-color24p.png
     navbar:
       - {icon: "ion-social-github", href: "https://github.com/VFLins/Prind_Monitor"}
       - {title: "Sobre mim", href: "https://sites.google.com/view/vflins/"}
@@ -25,7 +27,6 @@ INÍCIO
 Column {data-width=550}
 -----------------------------------------------------------------------
 
-### Indicador dos preços
 
 ```{r}
 # Add week data
@@ -52,7 +53,7 @@ p <- ggplot(temp, aes(x=Dia, y=Índice)) +
     geom_point(size=4, color=cores["main"]) +
     labs(x=NULL, y=NULL) +
     plot_theme()
-bslib::layout_columns(ggplotly(p))
+bslib::layout_columns(ggplotly(p), "texto")
 ```
 
 PREÇO E PERFORMACE
@@ -82,3 +83,7 @@ Row {data-height=450}
 
 ```
 
+SOBRE
+======================================================================
+
+Ícones da logo e favicon: <a href="https://www.flaticon.com/free-icons/graphic-card" title="graphic-card icons">Graphic-card icons created by prettycons - Flaticon</a>
