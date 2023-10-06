@@ -31,7 +31,11 @@ Column {data-width=550}
 
 
 ```{r}
-card(card_header(h1("texto")), plot_indexr(prices))
+card(
+    height="70%",
+    card_header(h1("texto")), 
+    plot_indexr(prices)
+)
 ```
 
 PREÇO E PERFORMACE
