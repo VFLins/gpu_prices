@@ -1,0 +1,92 @@
+---
+title: "Indicador de Preços das GPUs"
+output: 
+  flexdashboard::flex_dashboard:
+    logo: graphics-card-wh48p.png
+    favicon: graphics-card-color24p.png
+    navbar:
+      - {icon: "ion-social-github", title: "Código",href: "https://github.com/VFLins/Prind_Monitor"}
+      - {icon: "ion-android-person", title: "Sobre mim", href: "https://sites.google.com/view/vflins/"}
+      - {icon: "ion-cash", title: "Me apoie", href: "https://www.paypal.com/donate/?hosted_button_id=LCT6TBWH4LN8S"}
+    orientation: columns
+    vertical_layout: fill
+    css: "theme.css"
+---
+
+```{r setup, include=FALSE, message=FALSE}
+source("functions.R")
+
+library(bslib)
+library(htmltools)
+library(plotly)
+library(flexdashboard)
+prices <- readRDS("data/prices.rds")
+```
+
+INÍCIO
+=======================================================================
+
+```{r pg1-setup-content}
+plot_and_title <- card(
+    height="100%",
+    card_title(h1("Índice dos preços de placas de vídeo")), 
+    plot_indexr(prices)
+)
+
+plot_info <- card(
+    class = "lead container", height="100%",
+    card_title(h1("Informações")),
+    card_body("Em verde nós vemos a média simples do melhor preço encontrado para todos os chips gráficos acompanhados aqui. Já em branco temos uma previsão do que esperamos para o valor do índice na próxima semana.")
+)
+```
+
+Columns {data-width=700}
+-----------------------------------------------------------------------
+
+### 
+
+```{r pg1-content1}
+plot_and_title
+```
+
+Columns {data-width=300}
+-----------------------------------------------------------------------
+
+### 
+
+```{r pg1-content2}
+plot_info
+```
+
+
+PREÇO E PERFORMACE
+=======================================================================
+
+Row {data-height=550}
+-----------------------------------------------------------------------
+
+### Melhores preços
+
+```{r}
+
+```
+
+Row {data-height=450}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
+SOBRE
+======================================================================
+
+Ícones da logo e favicon: <a href="https://www.flaticon.com/free-icons/graphic-card" title="graphic-card icons">Graphic-card icons created by prettycons - Flaticon</a>
