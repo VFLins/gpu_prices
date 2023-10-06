@@ -26,17 +26,38 @@ prices <- readRDS("data/prices.rds")
 INÍCIO
 =======================================================================
 
-Column {data-width=550}
------------------------------------------------------------------------
-
-
-```{r}
-card(
-    height="70%",
-    card_header(h1("texto")), 
+```{r pg1-setup-content}
+plot_and_title <- card(
+    height="100%",
+    card_title(h1("Índice dos preços de placas de vídeo")), 
     plot_indexr(prices)
 )
+
+plot_info <- card(
+    class = "lead container", height="100%",
+    card_title(h3("Informações")),
+    card_body("Em verde nós vemos a média simples do melhor preço encontrado para todos os chips gráficos acompanhados aqui. Já em branco temos uma previsão do que esperamos para o valor do índice na próxima semana.")
+)
 ```
+
+Columns {data-width=700}
+-----------------------------------------------------------------------
+
+### 
+
+```{r pg1-content1}
+plot_and_title
+```
+
+Columns {data-width=300}
+-----------------------------------------------------------------------
+
+### 
+
+```{r pg1-content2}
+plot_info
+```
+
 
 PREÇO E PERFORMACE
 =======================================================================
