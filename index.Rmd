@@ -16,6 +16,7 @@ output:
 ```{r setup, include=FALSE, message=FALSE}
 source("functions.R")
 
+library(bslib)
 library(plotly)
 library(flexdashboard)
 prices <- readRDS("data/prices.rds")
@@ -29,31 +30,7 @@ Column {data-width=550}
 
 
 ```{r}
-# Add week data
-prices["semana"] <- as.POSIXct(prices$Date, tz=Sys.timezone()) |> 
-    cut.POSIXt(breaks="1 week", labels=F)
-
-# Best price for every GPU per week
-temp <- aggregate(
-    prices$Price, list(prices$semana, prices$Date), FUN=min) |>
-    setNames(c("Semana", "Chip", "Melhor preço"))
-
-# Mean of best prices for each week
-temp <- aggregate(temp$`Melhor preço`, list(temp$Semana), FUN=mean) |>
-    setNames(c("Semana", "Índice"))
-
-datas <- aggregate(prices$Date, list(prices$semana), FUN=max) |>
-    setNames(c("Semana", "Dia"))
-
-temp <- merge(temp, datas, by="Semana")
-
-# Plot index
-p <- ggplot(temp, aes(x=Dia, y=Índice)) + 
-    geom_line(linewidth=1.2, color=cores["main"]) + 
-    geom_point(size=4, color=cores["main"]) +
-    labs(x=NULL, y=NULL) +
-    plot_theme()
-bslib::layout_columns(ggplotly(p), "texto")
+layout_columns(plot_indexr(prices), "texto")
 ```
 
 PREÇO E PERFORMACE
