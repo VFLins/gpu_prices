@@ -29,22 +29,45 @@ plot_indexr <- function(price_table) {
     # Mean of best prices for each week
     index_table <- aggregate(index_table$`Melhor preço`, list(index_table$Semana), FUN=mean) |>
         setNames(c("Semana", "Índice"))
-    dates_table <- aggregate(date, list(price_table$semana), FUN=max) |>
+    # Adding week last dates
+    dates_table <- aggregate(date, list(week), FUN=max) |>
         setNames(c("Semana", "Dia"))
-    index_table <- merge(index_table, datas, by="Semana")
+    index_table <- merge(index_table, dates_table, by="Semana")
     
     ### Estimate next week prediction
-    prediction_date <- max(dates_table$Dia) + 7 
-    ets_mdl <- ets(index_table$Índice)
-    ets_pred <- forecast.ets(ets_mdl, h=1, level=c(95))
+    prediction_date <- max(dates_table$Dia) + 604800
+    prediction_week <- max(dates_table$Semana) + 1
     
-    # Plot index
+    ets_mdl <- ets(index_table$Índice)
+    ets_pred <- forecast.ets(ets_mdl, h=1, level=c(60))
+    
+    # Add new point of data
+    new_line <- c(prediction_week, ets_pred$mean[[1]], prediction_date)
+    index_table <- rbind(index_table, new_line)
+    
+    ### Plot index
     p <- ggplot(index_table, aes(x=Dia, y=Índice)) + 
-        geom_line(linewidth=1.2, color=cores["main"]) + 
-        geom_point(size=4, color=cores["main"]) +
+        geom_line(
+            data=~subset(index_table, Semana>=prediction_week-1),
+            linewidth=1.2, color=cores["fg"], linetype="dotted") +
+        geom_line(
+            data=~subset(index_table, Semana<prediction_week), 
+            linewidth=1.2, color=cores["main"]) + 
+        geom_point(
+            data=~subset(index_table, Semana<prediction_week),
+            size=4, color=cores["main"]) +
+        geom_point(
+            data=~subset(index_table, Semana==prediction_week),
+            size=4, color=cores["fg"]) +
+        geom_errorbar(
+            data=~subset(index_table, Semana==prediction_week),
+            aes(ymin=ets_pred$upper[[1]], ymax=ets_pred$lower[[1]]),
+            color=cores["fg"]) +
         labs(x=NULL, y=NULL) +
         plot_theme()
-    ggplotly(p)
+    ggplotly(p) %>%
+        config(displayModeBar = FALSE) %>%
+        layout(margin = list(t = 0, b = 0, l = 0, r = 0))
 }
 
 # ggplot template

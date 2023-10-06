@@ -5,9 +5,9 @@ output:
     logo: graphics-card-wh48p.png
     favicon: graphics-card-color24p.png
     navbar:
-      - {icon: "ion-social-github", href: "https://github.com/VFLins/Prind_Monitor"}
-      - {title: "Sobre mim", href: "https://sites.google.com/view/vflins/"}
-      - {title: "Me apoie", href: "https://www.paypal.com/donate/?hosted_button_id=LCT6TBWH4LN8S"}
+      - {icon: "ion-social-github", title: "Código",href: "https://github.com/VFLins/Prind_Monitor"}
+      - {icon: "ion-android-person", title: "Sobre mim", href: "https://sites.google.com/view/vflins/"}
+      - {icon: "ion-cash", title: "Me apoie", href: "https://www.paypal.com/donate/?hosted_button_id=LCT6TBWH4LN8S"}
     orientation: columns
     vertical_layout: fill
     css: "theme.css"
@@ -17,6 +17,7 @@ output:
 source("functions.R")
 
 library(bslib)
+library(htmltools)
 library(plotly)
 library(flexdashboard)
 prices <- readRDS("data/prices.rds")
@@ -30,7 +31,7 @@ Column {data-width=550}
 
 
 ```{r}
-layout_columns(plot_indexr(prices), "texto")
+card(card_header(h1("texto")), plot_indexr(prices))
 ```
 
 PREÇO E PERFORMACE
