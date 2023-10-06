@@ -19,6 +19,14 @@
     font-weight: 900;
 }
 
+.navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
+    background-color: #427f53;
+}
+
+.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
+    border-color: #427f53;
+}
+
 span.navbar-brand{
     font-size: 24px;
     font-weight: 900
