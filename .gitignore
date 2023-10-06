@@ -17,9 +17,6 @@
 # Output files from R CMD check
 /*.Rcheck/
 
-# Output Knitted files
-.html
-
 # RStudio files
 .Rproj.user/
 
