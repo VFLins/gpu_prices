@@ -13,8 +13,8 @@ catHeader <- function(text = "", level = 3) {
         " ", text, "\n\n"))
 }
 
-# Plot indexer
-plot_indexr <- function(price_table) {
+# Format indexr data
+indexr_data <- function(price_table) {
     ### create index data
     date <- price_table$Date
     price <- price_table$Price
@@ -34,9 +34,16 @@ plot_indexr <- function(price_table) {
         setNames(c("Semana", "Dia"))
     index_table <- merge(index_table, dates_table, by="Semana")
     
+    return(index_table)
+}
+
+# Plot indexer
+plot_indexr <- function(price_table) {
+    index_table <- indexr_data(price_table=price_table)
+    
     ### Estimate next week prediction
-    prediction_date <- max(dates_table$Dia) + 604800
-    prediction_week <- max(dates_table$Semana) + 1
+    prediction_date <- max(index_table$Dia) + 604800
+    prediction_week <- max(index_table$Semana) + 1
     
     ets_mdl <- ets(index_table$Índice)
     ets_pred <- forecast.ets(ets_mdl, h=1, level=c(60))
