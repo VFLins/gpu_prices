@@ -1,3 +1,6 @@
+library(forecast)
+library(zoo)
+
 cores <- c(
     bg="#222222", fg="#E0E0E0", main="#69B57E", 
     second="#FD5D63", third="#63A2BB")
@@ -8,6 +11,40 @@ catHeader <- function(text = "", level = 3) {
         "\n\n", 
         paste(rep("#", level), collapse = ""), 
         " ", text, "\n\n"))
+}
+
+# Plot indexer
+plot_indexr <- function(price_table) {
+    ### create index data
+    date <- price_table$Date
+    price <- price_table$Price
+    chip <- price_table$ProductName
+    # Add week data
+    week <- as.POSIXct(date, tz=Sys.timezone()) |> 
+        cut.POSIXt(breaks="1 week", labels=F)
+    # Best price for every GPU per week
+    index_table <- aggregate(
+        price, list(week, chip), FUN=min) |>
+        setNames(c("Semana", "Chip", "Melhor preço"))
+    # Mean of best prices for each week
+    index_table <- aggregate(index_table$`Melhor preço`, list(index_table$Semana), FUN=mean) |>
+        setNames(c("Semana", "Índice"))
+    dates_table <- aggregate(date, list(price_table$semana), FUN=max) |>
+        setNames(c("Semana", "Dia"))
+    index_table <- merge(index_table, datas, by="Semana")
+    
+    ### Estimate next week prediction
+    prediction_date <- max(dates_table$Dia) + 7 
+    ets_mdl <- ets(index_table$Índice)
+    ets_pred <- forecast.ets(ets_mdl, h=1, level=c(95))
+    
+    # Plot index
+    p <- ggplot(index_table, aes(x=Dia, y=Índice)) + 
+        geom_line(linewidth=1.2, color=cores["main"]) + 
+        geom_point(size=4, color=cores["main"]) +
+        labs(x=NULL, y=NULL) +
+        plot_theme()
+    ggplotly(p)
 }
 
 # ggplot template
@@ -44,9 +81,9 @@ allowedDates <- function(months = 12){
 
 # Utility function to print prices over time
 timePlot <- function(data, currency) {
-    shureThing <- c("PriceMedian", "PriceLow", "PriceHigh", "Date")
+    sureThing <- c("PriceMedian", "PriceLow", "PriceHigh", "Date")
     # must contain these 4 variables
-    for (var in shureThing) {
+    for (var in sureThing) {
         if (!{var %in% names(data)}) {
             stop("Necessary variables not present...")
     }}
@@ -64,10 +101,10 @@ timePlot <- function(data, currency) {
                 ymin = PriceLow, 
                 ymax = PriceHigh), 
                 alpha = 0.33,
-                fill = color_palette[2]) +
+                fill = cores["main"]) +
             geom_line(
                 aes(y = PriceMedian), 
-                color = color_palette[1],
+                color = cores["main"],
                 size = 1.6)
     } else {
         plot <- plot +
@@ -75,10 +112,10 @@ timePlot <- function(data, currency) {
                 ymin = PriceLow, 
                 ymax = PriceHigh), 
                 alpha = 0.33,
-                color = color_palette[2])
+                color = cores["second"])
     }
     plot <-  plot +
-        geom_point(aes(y = PriceMedian), color = color_palette[1], size = 4)
+        geom_point(aes(y=PriceMedian), color=cores["main"], size=4)
     ggplotly(plot)
 }
 
