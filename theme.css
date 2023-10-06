@@ -51,3 +51,7 @@ body {
 div#section.level3.chart-wrapper.chart-wrapper-flex{
     background: #222222;
 }
+
+.chart-wrapper, .nav-tabs-custom, .sbframe-commentary {
+    border: 1px solid #222222;
+}
