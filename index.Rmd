@@ -21,7 +21,7 @@ library(flexdashboard)
 prices <- readRDS("data/prices.rds")
 ```
 
-INÍCIO {data-orientation=rows}
+INICIO {data-orientation=rows}
 =======================================================================
 
 ```{r pg1-setup-elements}
@@ -31,7 +31,8 @@ plot_and_title <- card(
     plot_indexr(prices)
 )
 
-plot_info <- card(card_title(h1("Informações")),
+plot_info <- card(
+    card_title(h1("Informações")),
     p("Em verde vemos a média simples do melhor preço encontrado para todos os chips gráficos acompanhados aqui, este é nosso índice de preços."),
     p("Já em branco temos uma previsão do que esperamos para o valor do índice até o fim da próxima semana.")
 )
@@ -43,13 +44,13 @@ Row
 
 ###
 
-```{r}
+```{r pg1-content1-indexplot}
 plot_and_title
 ```
 
 ### {data-width=200}
 
-```{r}
+```{r pg1-content2-indexinfo}
 plot_info
 ```
 
@@ -58,7 +59,7 @@ Row {data-height=80}
 
 ### Tendência do índice nos últimos meses
 
-```{r}
+```{r pg1-content3-valuetrend}
 trend_str <- lm(Indice~Semana, data=indexr_data(prices))
 trend <- trend_str$coefficients[[2]]
 
@@ -83,27 +84,67 @@ valueBox(display_message, icon=display_icon, color=display_color)
 
 ### Quantidade de dados usados na construção do índice
 
-```{r}
+```{r pg1-content4-datacount}
 valueBox(
     paste(nrow(prices), "preços coletados"),
-    icon="ion-stats-bars", color=cores["third"]
+    icon="ion-stats-bars", color=cores["fg"]
 )
 ```
 
 ### Última atualização
 
-```{r}
+```{r pg1-content5-lastupdate}
 update_date <- format(Sys.Date(), "%d de %B de %Y")
 valueBox(update_date, icon="ion-android-calendar", color=cores["main"])
 ```
 
-PREÇO E PERFORMACE
+JOGOS {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
 Row {data-height=550}
 -----------------------------------------------------------------------
 
-### Melhores preços
+### Posicionamento das placas {data-height=550}
+
+```{r}
+
+```
+
+### Melhores preços {data-height=550}
+
+```{r}
+
+```
+
+
+Row {data-height=450}
+-----------------------------------------------------------------------
+
+### Posicionamento das placas {data-height=550 data-navmenu="Jogos com Ray Tracing"}
+
+```{r}
+
+```
+
+### Melhores preços {data-height=550 data-navmenu="Jogos com Ray Tracing"}
+
+```{r}
+
+```
+
+JOGOS COM RAY TRACING {data-navmenu="PREÇO E PERFORMANCE"}
+=======================================================================
+
+Row {data-height=550}
+-----------------------------------------------------------------------
+
+### Posicionamento das placas {data-height=550}
+
+```{r}
+
+```
+
+### Melhores preços {data-height=550}
 
 ```{r}
 
@@ -112,13 +153,112 @@ Row {data-height=550}
 Row {data-height=450}
 -----------------------------------------------------------------------
 
-### Chart B
+### Posicionamento das placas {data-height=550 data-navmenu="Jogos com Ray Tracing"}
 
 ```{r}
 
 ```
 
-### Chart C
+### Melhores preços {data-height=550 data-navmenu="Jogos com Ray Tracing"}
+
+```{r}
+
+```
+
+RENDERIZAÇÃO 3D {data-navmenu="PREÇO E PERFORMANCE"}
+=======================================================================
+
+Row {data-height=550}
+-----------------------------------------------------------------------
+
+### Posicionamento das placas {data-height=550}
+
+```{r}
+
+```
+
+### Melhores preços {data-height=550}
+
+```{r}
+
+```
+
+Row {data-height=450}
+-----------------------------------------------------------------------
+
+### Posicionamento das placas {data-height=550 data-navmenu="Jogos com Ray Tracing"}
+
+```{r}
+
+```
+
+### Melhores preços {data-height=550 data-navmenu="Jogos com Ray Tracing"}
+
+```{r}
+
+```
+
+RENDERIZAÇÃO VIDEO {data-navmenu="PREÇO E PERFORMANCE"}
+=======================================================================
+
+Row {data-height=550}
+-----------------------------------------------------------------------
+
+### Posicionamento das placas {data-height=550}
+
+```{r}
+
+```
+
+### Melhores preços {data-height=550}
+
+```{r}
+
+```
+
+Row {data-height=450}
+-----------------------------------------------------------------------
+
+### Posicionamento das placas {data-height=550 data-navmenu="Jogos com Ray Tracing"}
+
+```{r}
+
+```
+
+### Melhores preços {data-height=550 data-navmenu="Jogos com Ray Tracing"}
+
+```{r}
+
+```
+
+INTELIGÊNCIA ARTIFICIAL {data-navmenu="PREÇO E PERFORMANCE"}
+=======================================================================
+
+Row {data-height=550}
+-----------------------------------------------------------------------
+
+### Posicionamento das placas {data-height=550}
+
+```{r}
+
+```
+
+### Melhores preços {data-height=550}
+
+```{r}
+
+```
+
+Row {data-height=450}
+-----------------------------------------------------------------------
+
+### Posicionamento das placas {data-height=550 data-navmenu="Jogos com Ray Tracing"}
+
+```{r}
+
+```
+
+### Melhores preços {data-height=550 data-navmenu="Jogos com Ray Tracing"}
 
 ```{r}
 
