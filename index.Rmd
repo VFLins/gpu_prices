@@ -8,8 +8,6 @@ output:
       - {icon: "ion-social-github", title: "Código",href: "https://github.com/VFLins/Prind_Monitor"}
       - {icon: "ion-android-person", title: "Sobre mim", href: "https://sites.google.com/view/vflins/"}
       - {icon: "ion-cash", title: "Me apoie", href: "https://www.paypal.com/donate/?hosted_button_id=LCT6TBWH4LN8S"}
-    orientation: columns
-    vertical_layout: fill
     css: "theme.css"
 ---
 
@@ -23,41 +21,81 @@ library(flexdashboard)
 prices <- readRDS("data/prices.rds")
 ```
 
-INÍCIO
+INÍCIO {data-orientation=rows}
 =======================================================================
 
-```{r pg1-setup-content}
+```{r pg1-setup-elements}
 plot_and_title <- card(
-    height="100%",
+    height="92%",
     card_title(h1("Índice dos preços de placas de vídeo")), 
     plot_indexr(prices)
 )
 
-plot_info <- card(
-    class = "lead container", height="100%",
-    card_title(h1("Informações")),
-    card_body("Em verde nós vemos a média simples do melhor preço encontrado para todos os chips gráficos acompanhados aqui. Já em branco temos uma previsão do que esperamos para o valor do índice na próxima semana.")
+plot_info <- card(card_title(h1("Informações")),
+    p("Em verde vemos a média simples do melhor preço encontrado para todos os chips gráficos acompanhados aqui, este é nosso índice de preços."),
+    p("Já em branco temos uma previsão do que esperamos para o valor do índice até o fim da próxima semana.")
 )
 ```
 
-Columns {data-width=700}
+
+Row 
 -----------------------------------------------------------------------
 
-### 
+###
 
-```{r pg1-content1}
+```{r}
 plot_and_title
 ```
 
-Columns {data-width=300}
------------------------------------------------------------------------
+### {data-width=200}
 
-### 
-
-```{r pg1-content2}
+```{r}
 plot_info
 ```
 
+Row {data-height=80}
+-----------------------------------------------------------------------
+
+### Tendência do índice nos últimos meses
+
+```{r}
+trend_str <- lm(Indice~Semana, data=indexr_data(prices))
+trend <- trend_str$coefficients[[2]]
+
+if (trend > 0) {
+    display_icon <- "ion-arrow-graph-up-right"
+} else {
+    display_icon <- "ion-arrow-graph-down-right"
+}
+
+if (trend >25) {
+    display_message <- "Preços subindo"
+    display_color <- cores["second"]
+} else if (trend < -25) {
+    display_message <- "Preços caindo"
+    display_color <- cores["third"]
+} else {
+    display_message <- "Preços estáveis"
+    display_color <- cores["fg"]
+}
+valueBox(display_message, icon=display_icon, color=display_color)
+```
+
+### Quantidade de dados usados na construção do índice
+
+```{r}
+valueBox(
+    paste(nrow(prices), "preços coletados"),
+    icon="ion-stats-bars", color=cores["third"]
+)
+```
+
+### Última atualização
+
+```{r}
+update_date <- format(Sys.Date(), "%d de %B de %Y")
+valueBox(update_date, icon="ion-android-calendar", color=cores["main"])
+```
 
 PREÇO E PERFORMACE
 =======================================================================
