@@ -33,7 +33,8 @@ plot_and_title <- card(
 
 plot_info <- card(
     card_title(h1("Informações")),
-    p("Em verde vemos a média simples do melhor preço encontrado para todos os chips gráficos acompanhados aqui, este é nosso índice de preços."),
+    p("Atualizamos o banco de dados todos os dias, com cada modelo específico de placa de vídeo sendo atualizado a cada 3 dias. Aqui no índice, os preços são agregados em conjuntos de 7 dias para uma maior consistência."),
+    p("Em verde vemos a média simples do melhor preço encontrado para cada chip gráfico acompanhado aqui, independentemente do modelo ou fabricante, este é nosso índice de preços."),
     p("Já em branco temos uma previsão do que esperamos para o valor do índice até o fim da próxima semana.")
 )
 ```
@@ -95,7 +96,7 @@ valueBox(
 
 ```{r pg1-content5-lastupdate}
 update_date <- format(Sys.Date(), "%d de %B de %Y")
-valueBox(update_date, icon="ion-android-calendar", color=cores["main"])
+valueBox(update_date, icon="ion-android-calendar", color=cores["fg"])
 ```
 
 JOGOS {data-navmenu="PREÇO E PERFORMANCE"}
@@ -231,7 +232,7 @@ Row {data-height=450}
 
 ```
 
-INTELIGÊNCIA ARTIFICIAL {data-navmenu="PREÇO E PERFORMANCE"}
+TREINAMENTO DE IA {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
 Row {data-height=550}
