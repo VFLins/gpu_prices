@@ -13,6 +13,21 @@ catHeader <- function(text = "", level = 3) {
         " ", text, "\n\n"))
 }
 
+# Default theme for all plots
+plot_theme <- function() {
+    theme(
+        plot.title=element_text(color=cores["bg"]),
+        plot.background=element_rect(fill=cores["bg"], color=cores["bg"]),
+        panel.background=element_rect(fill=cores["bg"], color=cores["bg"]),
+        panel.grid=element_line(color=cores["bg"]),
+        axis.text=element_text(color=cores["fg"], size=12),
+        axis.title=element_text(color=cores["fg"]),
+        strip.text=element_text(color=cores["fg"], face="bold", size=16),
+        panel.grid.minor = element_line(color=cores["bg"]),
+        panel.grid.major = element_line(color=cores["bg"]),
+    )
+}
+
 # Format indexr data
 indexr_data <- function(price_table) {
     ### create index data
@@ -28,7 +43,7 @@ indexr_data <- function(price_table) {
         setNames(c("Semana", "Chip", "Melhor preço"))
     # Mean of best prices for each week
     index_table <- aggregate(index_table$`Melhor preço`, list(index_table$Semana), FUN=mean) |>
-        setNames(c("Semana", "Índice"))
+        setNames(c("Semana", "Indice"))
     # Adding week last dates
     dates_table <- aggregate(date, list(week), FUN=max) |>
         setNames(c("Semana", "Dia"))
@@ -45,7 +60,7 @@ plot_indexr <- function(price_table) {
     prediction_date <- max(index_table$Dia) + 604800
     prediction_week <- max(index_table$Semana) + 1
     
-    ets_mdl <- ets(index_table$Índice)
+    ets_mdl <- ets(index_table$Indice)
     ets_pred <- forecast.ets(ets_mdl, h=1, level=c(60))
     
     # Add new point of data
@@ -53,7 +68,7 @@ plot_indexr <- function(price_table) {
     index_table <- rbind(index_table, new_line)
     
     ### Plot index
-    p <- ggplot(index_table, aes(x=Dia, y=Índice)) + 
+    p <- ggplot(index_table, aes(x=Dia, y=Indice)) + 
         geom_line(
             data=~subset(index_table, Semana>=prediction_week-1),
             linewidth=1.2, color=cores["fg"], linetype="dotted") +
@@ -75,21 +90,6 @@ plot_indexr <- function(price_table) {
     ggplotly(p) %>%
         config(displayModeBar = FALSE) %>%
         layout(margin = list(t = 0, b = 0, l = 0, r = 0))
-}
-
-# ggplot template
-plot_theme <- function() {
-    theme(
-        plot.title=element_text(color=cores["bg"]),
-        plot.background=element_rect(fill=cores["bg"], color=cores["bg"]),
-        panel.background=element_rect(fill=cores["bg"], color=cores["bg"]),
-        panel.grid=element_line(color=cores["bg"]),
-        axis.text=element_text(color=cores["fg"], size=9),
-        axis.title=element_text(color=cores["fg"]),
-        strip.text=element_text(color=cores["fg"], face="bold", size=16),
-        panel.grid.minor = element_line(color=cores["bg"]),
-        panel.grid.major = element_line(color=cores["bg"])
-    )
 }
 
 # Return a vector with all the accepeted dates
