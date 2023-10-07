@@ -1,7 +1,6 @@
 .navbar-inverse {
     background-color: #427f53;
     border-color: #427f53;
-    
 }
 
 .navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus {
@@ -27,6 +26,29 @@
     border-color: #427f53;
 }
 
+.dropdown-menu {
+    background-color: #427f53;
+}
+
+.dropdown-menu>li>a{
+    color: #b4edc4;
+}
+
+.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus{
+    font-weight: 900;
+    background-color: #427f53;
+}
+
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
+    color: #ffffff;
+    background-color: #427f53;
+}
+
+.dropdown-menu>.active>a, .dropdown-menu>.active>a:focus{
+    font-weight: 900;
+    color: #ffffff;
+    background-color: #427f53;
+}
 span.navbar-brand{
     font-size: 24px;
     font-weight: 900
