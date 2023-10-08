@@ -16,7 +16,6 @@ source("functions.R")
 
 library(bslib)
 library(htmltools)
-library(plotly)
 library(flexdashboard)
 prices <- readRDS("data/prices.rds")
 ```
@@ -28,14 +27,15 @@ INICIO {data-orientation=rows}
 plot_and_title <- card(
     height="92%",
     card_title(h1("Índice dos preços de placas de vídeo")), 
-    plot_indexr(prices)
+    plot_indexr()
 )
 
 plot_info <- card(
     card_title(h1("Informações")),
     p("Atualizamos o banco de dados todos os dias, com cada modelo específico de placa de vídeo sendo atualizado a cada 3 dias. Aqui no índice, os preços são agregados em conjuntos de 7 dias para uma maior consistência."),
     p("Em verde vemos a média simples do melhor preço encontrado para cada chip gráfico acompanhado aqui, independentemente do modelo ou fabricante, este é nosso índice de preços."),
-    p("Já em branco temos uma previsão do que esperamos para o valor do índice até o fim da próxima semana.")
+    p("Já em branco temos uma previsão do que esperamos para o valor do índice até o fim da próxima semana."),
+    p("Algumas instabilidades aparecem nas primeiras semanas do índice, isto se deve à falta de modelos de placas de vídeo inseridos na base durante as primeiras semanas.")
 )
 ```
 
@@ -61,8 +61,8 @@ Row {data-height=80}
 ### Tendência do índice nos últimos meses
 
 ```{r pg1-content3-valuetrend}
-trend_str <- lm(Indice~Semana, data=indexr_data(prices))
-trend <- trend_str$coefficients[[2]]
+trend_str <- index_data
+trend <- cor(trend_str$Indice, trend_str$Semana)
 
 if (trend > 0) {
     display_icon <- "ion-arrow-graph-up-right"
@@ -70,10 +70,10 @@ if (trend > 0) {
     display_icon <- "ion-arrow-graph-down-right"
 }
 
-if (trend >25) {
+if (trend > .35) {
     display_message <- "Preços subindo"
     display_color <- cores["second"]
-} else if (trend < -25) {
+} else if (trend < -.35) {
     display_message <- "Preços caindo"
     display_color <- cores["third"]
 } else {
