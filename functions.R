@@ -1,9 +1,10 @@
 library(forecast)
 library(zoo)
+source("setup_data.R")
 
 cores <- c(
-    bg="#222222", fg="#E0E0E0", main="#69B57E", 
-    second="#FD5D63", third="#63A2BB")
+    bg="#222222", fg="#E0E0E0", 
+    main="#69B57E", second="#FD5D63", third="#63A2BB")
 
 # Dinamically generate headers for tabsets
 catHeader <- function(text = "", level = 3) {
@@ -11,6 +12,12 @@ catHeader <- function(text = "", level = 3) {
         "\n\n", 
         paste(rep("#", level), collapse = ""), 
         " ", text, "\n\n"))
+}
+
+totitle <- function(x) {
+    s <- strsplit(x, " ")[[1]]
+    paste(toupper(substring(s, 1, 1)), substring(s, 2),
+          sep = "", collapse = " ")
 }
 
 # Default theme for all plots
@@ -28,43 +35,19 @@ plot_theme <- function() {
     )
 }
 
-# Format indexr data
-indexr_data <- function(price_table) {
-    ### create index data
-    date <- price_table$Date
-    price <- price_table$Price
-    chip <- price_table$ProductName
-    # Add week data
-    week <- as.POSIXct(date, tz=Sys.timezone()) |> 
-        cut.POSIXt(breaks="1 week", labels=F)
-    # Best price for every GPU per week
-    index_table <- aggregate(
-        price, list(week, chip), FUN=min) |>
-        setNames(c("Semana", "Chip", "Melhor preço"))
-    # Mean of best prices for each week
-    index_table <- aggregate(index_table$`Melhor preço`, list(index_table$Semana), FUN=mean) |>
-        setNames(c("Semana", "Indice"))
-    # Adding week last dates
-    dates_table <- aggregate(date, list(week), FUN=max) |>
-        setNames(c("Semana", "Dia"))
-    index_table <- merge(index_table, dates_table, by="Semana")
-    
-    return(index_table)
-}
-
 # Plot indexer
-plot_indexr <- function(price_table) {
-    index_table <- indexr_data(price_table=price_table)
+plot_indexr <- function() {
+    index_table <- index_data
     
     ### Estimate next week prediction
     prediction_date <- max(index_table$Dia) + 604800
     prediction_week <- max(index_table$Semana) + 1
     
     ets_mdl <- ets(index_table$Indice)
-    ets_pred <- forecast.ets(ets_mdl, h=1, level=c(60))
+    ets_pred <- forecast.ets(ets_mdl, h=1, level=c(70))
     
     # Add new point of data
-    new_line <- c(prediction_week, ets_pred$mean[[1]], prediction_date)
+    new_line <- c(prediction_week, prediction_date, ets_pred$mean[[1]])
     index_table <- rbind(index_table, new_line)
     
     ### Plot index
@@ -88,8 +71,8 @@ plot_indexr <- function(price_table) {
         labs(x=NULL, y=NULL) +
         plot_theme()
     ggplotly(p) %>%
-        config(displayModeBar = FALSE) %>%
-        layout(margin = list(t = 0, b = 0, l = 0, r = 0))
+        config(displayModeBar=FALSE) %>%
+        layout(margin=list(t=0, b=0, l=0, r=0))
 }
 
 # Return a vector with all the accepeted dates
