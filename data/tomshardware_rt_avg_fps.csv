@@ -1,4 +1,4 @@
-Model,1080p_Ultra,1080p_Medium,1440p_Ultra,4K_Ultra,Specs
+model,fhd_ultra,fhd_medium,qhd_ultra,uhd_ultra,specs
 GeForce RTX 4090,159.9,132.7,97.8,53.5,"AD102, 16384 shaders, 2520MHz, 24GB GDDR6X@21Gbps, 1008GB/s, 450W"
 GeForce RTX 4080,132.9,104.8,71.3,36.7,"AD103, 9728 shaders, 2505MHz, 16GB GDDR6X@22.4Gbps, 717GB/s, 320W"
 GeForce RTX 3090 Ti,114.5,86.7,59.7,30.9,"GA102, 10752 shaders, 1860MHz, 24GB GDDR6X@21Gbps, 1008GB/s, 450W"

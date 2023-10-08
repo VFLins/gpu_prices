@@ -1,4 +1,4 @@
-Model,1080p_Ultra,1080p_Medium,1440p_Ultra,4K_Ultra,Specs
+model,fhd_ultra,fhd_medium,qhd_ultra,uhd_ultra,specs
 GeForce RTX 4090,151.6,189.6,143.1,114.1,"AD102, 16384 shaders, 2520MHz, 24GB GDDR6X@21Gbps, 1008GB/s, 450W"
 Radeon RX 7900 XTX,147.5,187.2,133.7,93.0,"Navi 31, 6144 shaders, 2500MHz, 24GB GDDR6@20Gbps, 960GB/s, 355W"
 GeForce RTX 4080,142.6,184.4,129.0,88.7,"AD103, 9728 shaders, 2505MHz, 16GB GDDR6X@22.4Gbps, 717GB/s, 320W"

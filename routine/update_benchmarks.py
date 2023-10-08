@@ -30,7 +30,7 @@ def get_fps_val(string):
 
 tbl_titles = ["raster", "rt"]
 tbl_header = [
-    "Model", "1080p_Ultra", "1080p_Medium", "1440p_Ultra", "4K_Ultra", "Specs"]
+    "model", "fhd_ultra", "fhd_medium", "qhd_ultra", "uhd_ultra", "specs"]
     
 for table, title in zip(webpage_tables, tbl_titles):
     #tbl_header = build_header(tbl_header)
