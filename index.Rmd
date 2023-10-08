@@ -103,13 +103,13 @@ valueBox(update_date, icon="ion-android-calendar", color=cores["fg"])
 JOGOS {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
-Row {data-height=550 .tabset}
+Row {data-height=550 .tabset .tabset-pills}
 -----------------------------------------------------------------------
 
 ### Full HD (1080p)
 
 ```{r}
-plot_scatter_raster()
+plot_scatter_raster("fhd_ultra")
 ```
 
 ### Quad HD (1440p)

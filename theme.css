@@ -1,3 +1,4 @@
+/* navbar */
 .navbar-inverse {
     background-color: #427f53;
     border-color: #427f53;
@@ -26,6 +27,14 @@
     border-color: #427f53;
 }
 
+span.navbar-brand{
+    font-size: 24px;
+    font-weight: 900
+}
+
+
+
+/* dropdown menu */
 .dropdown-menu {
     background-color: #427f53;
 }
@@ -49,9 +58,27 @@
     color: #ffffff;
     background-color: #427f53;
 }
-span.navbar-brand{
-    font-size: 24px;
-    font-weight: 900
+
+
+
+/* tabset pills */
+ul.nav-pills {
+    background-color: #222222;
+}
+
+.nav-pills>li>a{
+    color: #b4edc4;
+    background-color: #222222;
+}
+
+.nav>li>a:hover, .nav>li>a:focus {
+    color: #ffffff;
+    background-color: #222222;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+    color: #222222;
+    background-color: #b4edc4;
 }
 
 body {
