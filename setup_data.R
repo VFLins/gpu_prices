@@ -31,7 +31,7 @@ indexr_data <- function(price_table=PRICES, group_for_week=FALSE) {
     
     # Add week data
     week <- as.POSIXct(date, tz=Sys.timezone()) |> 
-        cut.POSIXt(breaks="week", labels=F, start.on.monday=F)
+        cut.POSIXt(breaks="week", labels=F)
     
     # Best price for every GPU per week
     index_table <- aggregate(
