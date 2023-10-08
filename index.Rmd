@@ -35,7 +35,8 @@ plot_info <- card(
     p("Atualizamos o banco de dados todos os dias, com cada modelo específico de placa de vídeo sendo atualizado a cada 3 dias. Aqui no índice, os preços são agregados em conjuntos de 7 dias para uma maior consistência."),
     p("Em verde vemos a média simples do melhor preço encontrado para cada chip gráfico acompanhado aqui, independentemente do modelo ou fabricante, este é nosso índice de preços."),
     p("Já em branco temos uma previsão do que esperamos para o valor do índice até o fim da próxima semana."),
-    p("Algumas instabilidades aparecem nas primeiras semanas do índice, isto se deve à falta de modelos de placas de vídeo inseridos na base durante as primeiras semanas.")
+    p("Algumas instabilidades aparecem nas primeiras semanas do índice, isto se deve à falta de modelos de placas de vídeo inseridos na base durante as primeiras semanas."),
+    p("Na última semana de agosto de 2023 surgiram problemas no processo de coleta que só foram corrigidos ao fim da segunda semana de setembro do mesmo ano.")
 )
 ```
 
@@ -95,43 +96,34 @@ valueBox(
 ### Última atualização
 
 ```{r pg1-content5-lastupdate}
-update_date <- format(Sys.Date(), "%d de %B de %Y")
+update_date <- format(max(PRICES$LastUpdate), "%d de %B de %Y")
 valueBox(update_date, icon="ion-android-calendar", color=cores["fg"])
 ```
 
 JOGOS {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
-Row {data-height=550}
+Row {data-height=550 .tabset}
 -----------------------------------------------------------------------
 
-### Posicionamento das placas {data-height=550}
+### Full HD (1080p)
 
 ```{r}
-
+plot_scatter_raster()
 ```
 
-### Melhores preços {data-height=550}
+### Quad HD (1440p)
 
 ```{r}
-
+plot_scatter_raster("qhd_ultra")
 ```
 
-
-Row {data-height=450}
------------------------------------------------------------------------
-
-### Posicionamento das placas {data-height=550 data-navmenu="Jogos com Ray Tracing"}
+### 4K (2160p)
 
 ```{r}
-
+plot_scatter_raster("uhd_ultra")
 ```
 
-### Melhores preços {data-height=550 data-navmenu="Jogos com Ray Tracing"}
-
-```{r}
-
-```
 
 JOGOS COM RAY TRACING {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
