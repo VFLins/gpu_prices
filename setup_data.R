@@ -1,26 +1,21 @@
 library(stringr)
 library(plotly)
 
-######## Primary datasets ########
+######## Primary data sets ########
 PRICES <- readRDS("data/prices.rds")
 RASTER <- read.csv("data/tomshardware_raster_avg_fps.csv")
 RAYTRC <- read.csv("data/tomshardware_rt_avg_fps.csv")
 
+# Eliminate stores with non-representative prices
 foreign_stores <- c(
     "Amazon.com.br - Seller", "AliExpress.com", "Smart Info Store", 
     "Tiendamia.com.br", "Shopee", "Techinn.com", "Amazon.com.br - Retail", 
     "swsimports.com.br")
 used_stores <- c(
     "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre")
-
-
-outlier_priceid <- PRICES[
-    PRICES$Date <= as.POSIXct("2023-06-30 14:59:48", tz=Sys.timezone()) & 
-    PRICES$NameId==9, ]$PriceId
-
-PRICES <- PRICES[
-    !(PRICES$Store %in% c(foreign_stores, used_stores)) &
-    !(PRICES$PriceId %in% outlier_priceid), ]
+if (nrow(PRICES) > 0) 
+    PRICES <- PRICES[
+        !(PRICES$Store %in% c(foreign_stores, used_stores)), ]
 
 ######## Manipulation functions ########
 indexr_data <- function(price_table=PRICES, group_for_week=FALSE) {
@@ -32,6 +27,7 @@ indexr_data <- function(price_table=PRICES, group_for_week=FALSE) {
     # Add week data
     week <- as.POSIXct(date, tz=Sys.timezone()) |> 
         cut.POSIXt(breaks="week", labels=F)
+    #week <- strftime(date, format="%V", tz=Sys.timezone()) |> as.numeric()
     
     # Best price for every GPU per week
     index_table <- aggregate(

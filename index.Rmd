@@ -34,9 +34,7 @@ plot_info <- card(
     card_title(h1("Informações")),
     p("Atualizamos o banco de dados todos os dias, com cada modelo específico de placa de vídeo sendo atualizado a cada 3 dias. Aqui no índice, os preços são agregados em conjuntos de 7 dias para uma maior consistência."),
     p("Em verde vemos a média simples do melhor preço encontrado para cada chip gráfico acompanhado aqui, independentemente do modelo ou fabricante, este é nosso índice de preços."),
-    p("Já em branco temos uma previsão do que esperamos para o valor do índice até o fim da próxima semana."),
-    p("Algumas instabilidades aparecem nas primeiras semanas do índice, isto se deve à falta de modelos de placas de vídeo inseridos na base durante as primeiras semanas."),
-    p("Na última semana de agosto de 2023 surgiram problemas no processo de coleta que só foram corrigidos ao fim da segunda semana de setembro do mesmo ano.")
+    p("Já em branco temos uma previsão do que esperamos para o valor do índice até o fim da próxima semana.")
 )
 ```
 
@@ -65,21 +63,27 @@ Row {data-height=80}
 trend_str <- index_data
 trend <- cor(trend_str$Indice, trend_str$Semana)
 
-if (trend > 0) {
+if (is.na(trend)){
     display_icon <- "ion-arrow-graph-up-right"
-} else {
-    display_icon <- "ion-arrow-graph-down-right"
-}
-
-if (trend > .35) {
-    display_message <- "Preços subindo"
-    display_color <- cores["second"]
-} else if (trend < -.35) {
-    display_message <- "Preços caindo"
-    display_color <- cores["third"]
-} else {
-    display_message <- "Preços estáveis"
+    display_message <- "Não é possível medir por enquanto..."
     display_color <- cores["fg"]
+} else {
+    if (trend > 0) {
+        display_icon <- "ion-arrow-graph-up-right"
+    } else {
+        display_icon <- "ion-arrow-graph-down-right"
+    }
+    
+    if (trend > .35) {
+        display_message <- "Preços subindo"
+        display_color <- cores["second"]
+    } else if (trend < -.35) {
+        display_message <- "Preços caindo"
+        display_color <- cores["third"]
+    } else {
+        display_message <- "Preços estáveis"
+        display_color <- cores["fg"]
+    }
 }
 valueBox(display_message, icon=display_icon, color=display_color)
 ```
