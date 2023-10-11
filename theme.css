@@ -107,3 +107,7 @@ div#section.level3.chart-wrapper.chart-wrapper-flex{
 .chart-wrapper, .nav-tabs-custom, .sbframe-commentary {
     border: 1px solid #222222;
 }
+
+.bootstrap-table table>thead {
+    background-color: #427f53;
+}

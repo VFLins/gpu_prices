@@ -14,9 +14,7 @@ output:
 ```{r setup, include=FALSE, message=FALSE}
 source("functions.R")
 
-library(bslib)
-library(htmltools)
-library(flexdashboard)
+
 prices <- readRDS("data/prices.rds")
 ```
 
@@ -110,22 +108,63 @@ JOGOS {data-navmenu="PREÇO E PERFORMANCE"}
 Row {data-height=550 .tabset .tabset-pills}
 -----------------------------------------------------------------------
 
+```{r pg2-p1-setup}
+# conteudo fhd
+fhd_scatterplot <- card(
+    card_title(h1("Preço x Performance (FPS médio)*")),
+    plot_scatter_raster("fhd_ultra"),
+    card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
+)
+
+fhd_table <- card(
+    card_title(h1("Melhores modelos para este uso*")),
+    card_body(plot_table_raster("fhd_ultra")),
+    card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
+)
+
+#conteudo qhd
+qhd_scatterplot <- card(
+    card_title(h1("Preço x Performance (FPS médio)*")),
+    plot_scatter_raster("qhd_ultra"),
+    card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
+)
+
+qhd_table <- card(
+    card_title(h1("Melhores modelos para este uso*")),
+    card_body(plot_table_raster("qhd_ultra")),
+    card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
+)
+
+#conteudo uhd
+uhd_scatterplot <- card(
+    card_title(h1("Preço x Performance (FPS médio)*")),
+    plot_scatter_raster("uhd_ultra"),
+    card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
+)
+
+uhd_table <- card(
+    card_title(h1("Melhores modelos para este uso*")),
+    card_body(plot_table_raster("uhd_ultra")),
+    card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
+)
+```
+
 ### Full HD (1080p)
 
 ```{r}
-plot_scatter_raster("fhd_ultra")
+layout_column_wrap(width=1/2, height="90%", fhd_scatterplot, fhd_table)
 ```
 
 ### Quad HD (1440p)
 
 ```{r}
-plot_scatter_raster("qhd_ultra")
+layout_column_wrap(width=1/2, height="90%", qhd_scatterplot, qhd_table)
 ```
 
 ### 4K (2160p)
 
 ```{r}
-plot_scatter_raster("uhd_ultra")
+layout_column_wrap(width=1/2, height="90%", uhd_scatterplot, uhd_table)
 ```
 
 

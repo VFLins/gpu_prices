@@ -1,5 +1,8 @@
 library(forecast)
-library(zoo)
+library(bslib)
+library(htmltools)
+library(flextable)
+library(flexdashboard)
 source("setup_data.R")
 
 cores <- c(
@@ -97,6 +100,21 @@ plot_scatter_raster <- function(preset="fhd_ultra") {
         labs(x="Preço (R$)", y="Desempenho (FPS médio)") + theme(legend.position="none") +
         plot_theme()
     ggplotly(p)
+}
+
+plot_table_raster <- function(preset="fhd_ultra") {
+    curr_dataset <- data.frame(
+        Chip = price_raster_perf$model,
+        Preço = price_raster_perf$`Melhor preço`,
+        Performance = price_raster_perf[[preset]],
+        Família = price_raster_perf$chip_family
+    )
+    
+    curr_dataset["R$ por FPS**"] <- curr_dataset$`Preço` / curr_dataset$Performance
+    out <- curr_dataset[with(curr_dataset, order(`R$ por FPS**`)), ]
+
+    DT::datatable(out, style="bootstrap4")
+    
 }
 
 # Return a vector with all the accepeted dates
