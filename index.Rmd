@@ -112,58 +112,58 @@ Row {data-height=550 .tabset .tabset-pills}
 # conteudo fhd
 fhd_scatterplot <- card(
     card_title(h1("Preço x Performance (FPS médio)*")),
-    plot_scatter_raster("fhd_ultra"),
+    plot_perf_scatter(preset="fhd_ultra"),
     card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
 )
 
 fhd_table <- card(
     card_title(h1("Melhores modelos para este uso*")),
-    card_body(plot_table_raster("fhd_ultra")),
+    card_body(plot_perf_table(preset="fhd_ultra")),
     card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
 )
 
 #conteudo qhd
 qhd_scatterplot <- card(
     card_title(h1("Preço x Performance (FPS médio)*")),
-    plot_scatter_raster("qhd_ultra"),
+    plot_perf_scatter(preset="qhd_ultra"),
     card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
 )
 
 qhd_table <- card(
     card_title(h1("Melhores modelos para este uso*")),
-    card_body(plot_table_raster("qhd_ultra")),
+    card_body(plot_perf_table(preset="qhd_ultra")),
     card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
 )
 
 #conteudo uhd
 uhd_scatterplot <- card(
     card_title(h1("Preço x Performance (FPS médio)*")),
-    plot_scatter_raster("uhd_ultra"),
+    plot_perf_scatter(preset="uhd_ultra"),
     card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
 )
 
 uhd_table <- card(
     card_title(h1("Melhores modelos para este uso*")),
-    card_body(plot_table_raster("uhd_ultra")),
+    card_body(plot_perf_table(preset="uhd_ultra")),
     card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
 )
 ```
 
 ### Full HD (1080p)
 
-```{r}
+```{r pg2-p1-1}
 layout_column_wrap(width=1/2, height="90%", fhd_scatterplot, fhd_table)
 ```
 
 ### Quad HD (1440p)
 
-```{r}
+```{r pg2-p1-2}
 layout_column_wrap(width=1/2, height="90%", qhd_scatterplot, qhd_table)
 ```
 
 ### 4K (2160p)
 
-```{r}
+```{r pg2-p1-3}
 layout_column_wrap(width=1/2, height="90%", uhd_scatterplot, uhd_table)
 ```
 
@@ -171,35 +171,69 @@ layout_column_wrap(width=1/2, height="90%", uhd_scatterplot, uhd_table)
 JOGOS COM RAY TRACING {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
-Row {data-height=550}
+Row {data-height=550 .tabset .tabset-pills}
 -----------------------------------------------------------------------
 
-### Posicionamento das placas {data-height=550}
+```{r pg2-p2-setup}
+# conteudo fhd
+fhd_scatterplot <- card(
+    card_title(h1("Preço x Performance (FPS médio)*")),
+    plot_perf_scatter(price_rt_perf, "fhd_ultra"),
+    card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
+)
 
-```{r}
+fhd_table <- card(
+    card_title(h1("Melhores modelos para este uso*")),
+    card_body(plot_perf_table(price_rt_perf, "fhd_ultra")),
+    card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
+)
 
+#conteudo qhd
+qhd_scatterplot <- card(
+    card_title(h1("Preço x Performance (FPS médio)*")),
+    plot_perf_scatter(price_rt_perf, "qhd_ultra"),
+    card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
+)
+
+qhd_table <- card(
+    card_title(h1("Melhores modelos para este uso*")),
+    card_body(plot_perf_table(price_rt_perf, "qhd_ultra")),
+    card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
+)
+
+#conteudo uhd
+uhd_scatterplot <- card(
+    card_title(h1("Preço x Performance (FPS médio)*")),
+    plot_perf_scatter(price_rt_perf, "uhd_ultra"),
+    card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
+)
+
+uhd_table <- card(
+    card_title(h1("Melhores modelos para este uso*")),
+    card_body(plot_perf_table(price_rt_perf, "uhd_ultra")),
+    card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
+)
 ```
 
-### Melhores preços {data-height=550}
 
-```{r}
+### Full HD (1080p)
 
+```{r pg2-p2-1}
+layout_column_wrap(width=1/2, height="90%", fhd_scatterplot, fhd_table)
 ```
 
-Row {data-height=450}
------------------------------------------------------------------------
+### Quad HD (1440p)
 
-### Posicionamento das placas {data-height=550 data-navmenu="Jogos com Ray Tracing"}
-
-```{r}
-
+```{r pg2-p2-2}
+layout_column_wrap(width=1/2, height="90%", qhd_scatterplot, qhd_table)
 ```
 
-### Melhores preços {data-height=550 data-navmenu="Jogos com Ray Tracing"}
+### 4K (2160p)
 
-```{r}
-
+```{r pg2-p2-3}
+layout_column_wrap(width=1/2, height="90%", uhd_scatterplot, uhd_table)
 ```
+
 
 RENDERIZAÇÃO 3D {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
@@ -207,32 +241,7 @@ RENDERIZAÇÃO 3D {data-navmenu="PREÇO E PERFORMANCE"}
 Row {data-height=550}
 -----------------------------------------------------------------------
 
-### Posicionamento das placas {data-height=550}
-
-```{r}
-
-```
-
-### Melhores preços {data-height=550}
-
-```{r}
-
-```
-
-Row {data-height=450}
------------------------------------------------------------------------
-
-### Posicionamento das placas {data-height=550 data-navmenu="Jogos com Ray Tracing"}
-
-```{r}
-
-```
-
-### Melhores preços {data-height=550 data-navmenu="Jogos com Ray Tracing"}
-
-```{r}
-
-```
+### Em construção...
 
 RENDERIZAÇÃO VIDEO {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
@@ -240,32 +249,7 @@ RENDERIZAÇÃO VIDEO {data-navmenu="PREÇO E PERFORMANCE"}
 Row {data-height=550}
 -----------------------------------------------------------------------
 
-### Posicionamento das placas {data-height=550}
-
-```{r}
-
-```
-
-### Melhores preços {data-height=550}
-
-```{r}
-
-```
-
-Row {data-height=450}
------------------------------------------------------------------------
-
-### Posicionamento das placas {data-height=550 data-navmenu="Jogos com Ray Tracing"}
-
-```{r}
-
-```
-
-### Melhores preços {data-height=550 data-navmenu="Jogos com Ray Tracing"}
-
-```{r}
-
-```
+### Em construção...
 
 TREINAMENTO DE IA {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
@@ -273,34 +257,11 @@ TREINAMENTO DE IA {data-navmenu="PREÇO E PERFORMANCE"}
 Row {data-height=550}
 -----------------------------------------------------------------------
 
-### Posicionamento das placas {data-height=550}
-
-```{r}
-
-```
-
-### Melhores preços {data-height=550}
-
-```{r}
-
-```
-
-Row {data-height=450}
------------------------------------------------------------------------
-
-### Posicionamento das placas {data-height=550 data-navmenu="Jogos com Ray Tracing"}
-
-```{r}
-
-```
-
-### Melhores preços {data-height=550 data-navmenu="Jogos com Ray Tracing"}
-
-```{r}
-
-```
+### Em construção...
 
 SOBRE
 ======================================================================
 
-Ícones da logo e favicon: <a href="https://www.flaticon.com/free-icons/graphic-card" title="graphic-card icons">Graphic-card icons created by prettycons - Flaticon</a>
+Ícones da logo e favicon: [prettycon - Flaticon](https://www.flaticon.com/free-icons/graphic-card)
+
+Dados de performance em jogos (FPS médio): [Tom's Hardware](https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html)

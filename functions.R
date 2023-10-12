@@ -1,7 +1,7 @@
 library(forecast)
 library(bslib)
 library(htmltools)
-library(flextable)
+library(DT)
 library(flexdashboard)
 source("setup_data.R")
 
@@ -15,6 +15,10 @@ catHeader <- function(text = "", level = 3) {
         "\n\n", 
         paste(rep("#", level), collapse = ""), 
         " ", text, "\n\n"))
+}
+
+format_number <- function(x, prefix="R$") {
+    paste(prefix, formatC(x=x, format="f", decimal.mark=",", digits=2))
 }
 
 totitle <- function(x) {
@@ -79,42 +83,53 @@ plot_indexr <- function() {
 }
 
 # scatterplot for rasterization data with regression line
-plot_scatter_raster <- function(preset="fhd_ultra") {
+plot_perf_scatter <- function(dataset=price_raster_perf, preset="fhd_ultra") {
     discrete_palette <- c("#63A2BB", "#69B57E", "#FD5D63")
     
     curr_dataset <- data.frame(
-        Chip = price_raster_perf$model,
-        Preço = price_raster_perf$`Melhor preço`,
-        Performance = price_raster_perf[[preset]],
-        Família = price_raster_perf$chip_family
+        Chip = dataset$model,
+        Preço = dataset$`Melhor preço`,
+        Performance = dataset[[preset]],
+        Família = dataset$chip_family
     )
     
     model <- lm(Performance~Preço, data=curr_dataset)
     coefs <- coef(model)
     
-    p <- ggplot(curr_dataset, aes(x=Preço, y=Performance, color=Família, group=Chip)) +
+    p <- ggplot(
+        curr_dataset, 
+        aes(x=Preço, y=Performance, color=Família, group=Chip)) +
         geom_point(size=4, alpha=.8) +
         geom_abline(intercept=coefs[1], slope=coefs[2], color=cores["fg"]) +
         geom_hline(yintercept=60, color=cores["fg"], linetype="dotted") +
         scale_color_manual(values=discrete_palette) +
-        labs(x="Preço (R$)", y="Desempenho (FPS médio)") + theme(legend.position="none") +
+        labs(x="Preço (R$)", y="Desempenho (FPS médio)") + 
+        theme(legend.position="none") +
         plot_theme()
     ggplotly(p)
 }
 
-plot_table_raster <- function(preset="fhd_ultra") {
+plot_perf_table <- function(dataset=price_raster_perf, preset="fhd_ultra") {
     curr_dataset <- data.frame(
-        Chip = price_raster_perf$model,
-        Preço = price_raster_perf$`Melhor preço`,
-        Performance = price_raster_perf[[preset]],
-        Família = price_raster_perf$chip_family
-    )
+        Chip = dataset$model,
+        Preço = dataset$`Melhor preço`,
+        Performance = dataset[[preset]]
+    ) |> na.omit() |> setNames(c("Chip", "Preço", "FPS médio"))
     
-    curr_dataset["R$ por FPS**"] <- curr_dataset$`Preço` / curr_dataset$Performance
+    price <- curr_dataset$`Preço`
+    perfr <- curr_dataset$`FPS médio`
+    curr_dataset["R$ por FPS**"] <- price / perfr
+    
+    # ordering and numerating from most relevant to least
     out <- curr_dataset[with(curr_dataset, order(`R$ por FPS**`)), ]
-
-    DT::datatable(out, style="bootstrap4")
+    row.names(out) <- seq_along(curr_dataset$Chip)
     
+    # formatting columns for pretty printing
+    out["R$ por FPS**"] <- format_number(out[["R$ por FPS**"]])
+    out["Preço"] <- format_number(out[["Preço"]])
+    out["FPS médio"] <- format_number(out[["FPS médio"]], prefix="")
+    
+    DT::datatable(out, style="bootstrap4")
 }
 
 # Return a vector with all the accepeted dates

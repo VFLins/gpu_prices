@@ -76,3 +76,4 @@ raster_data <- function(raster_table=RASTER) {
 index_data <- indexr_data(group_for_week=TRUE)
 weekly_best_prices <- indexr_data()
 price_raster_perf <- raster_data()
+price_rt_perf <- raster_data(RAYTRC)

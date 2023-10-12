@@ -64,6 +64,7 @@ span.navbar-brand{
 /* tabset pills */
 ul.nav-pills {
     background-color: #222222;
+    font-size: large;
 }
 
 .nav-pills>li>a{
@@ -108,6 +109,13 @@ div#section.level3.chart-wrapper.chart-wrapper-flex{
     border: 1px solid #222222;
 }
 
+
+
+/* tables */
 .bootstrap-table table>thead {
     background-color: #427f53;
+}
+
+.table-hover>tbody>tr:hover {
+    background-color: transparent;
 }
