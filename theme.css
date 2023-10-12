@@ -119,3 +119,27 @@ div#section.level3.chart-wrapper.chart-wrapper-flex{
 .table-hover>tbody>tr:hover {
     background-color: transparent;
 }
+
+.pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus {
+    color: #919191;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {
+    color: #ffffff;
+    background-color: #353535;
+    border-color: transparent;
+}
+
+.pagination>li>a, .pagination>li>span {
+    color: #ffffff;
+    background-color: transparent;
+    border-color: transparent
+}
+
+.pagination>li>a:hover, .pagination>li>span:hover, .pagination>li>a:focus, .pagination>li>span:focus {
+    color: #ffffff;
+    background-color: #427f53;
+    border-color: #4d4d4d;
+}
