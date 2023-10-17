@@ -106,7 +106,9 @@ plot_perf_scatter <- function(dataset=price_raster_perf, preset="fhd_ultra") {
         labs(x="Preço (R$)", y="Desempenho (FPS médio)") + 
         theme(legend.position="none") +
         plot_theme()
-    ggplotly(p)
+    ggplotly(p) %>%
+        config(displayModeBar=FALSE) %>%
+        layout(margin=list(t=0, b=0, l=0, r=0))
 }
 
 plot_perf_table <- function(dataset=price_raster_perf, preset="fhd_ultra") {

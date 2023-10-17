@@ -19,6 +19,18 @@
     font-weight: 900;
 }
 
+.dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus {
+    background-color: #427f53;
+}
+
+.navbar-inverse .navbar-nav .open .dropdown-menu>.active>a, .navbar-inverse .navbar-nav .open .dropdown-menu>.active>a:hover, .navbar-inverse .navbar-nav .open .dropdown-menu>.active>a:focus{
+    background-color: #4f9563;
+}
+
+.navbar-inverse .navbar-nav .open .dropdown-menu>li>a:hover, .navbar-inverse .navbar-nav .open .dropdown-menu>li>a:focus{
+    background-color: #4f9563;
+}
+
 .navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
     background-color: #427f53;
 }
@@ -90,11 +102,16 @@ body {
     background: #222222;
 }
 
+h3 {
+    font-weight: 400;
+}
+
 .chart-title {
-    border-bottom: none;
+    border-bottom: 1px solid #b4edc4;
     background-color: #222222;
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 26px;
+    font-weight: 400;
+    color: #b4edc4;
 }
 
 .chart-wrapper .chart-stage {
@@ -128,7 +145,7 @@ div#section.level3.chart-wrapper.chart-wrapper-flex{
 
 .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {
     color: #ffffff;
-    background-color: #353535;
+    background-color: #427f53;
     border-color: transparent;
 }
 
@@ -140,6 +157,6 @@ div#section.level3.chart-wrapper.chart-wrapper-flex{
 
 .pagination>li>a:hover, .pagination>li>span:hover, .pagination>li>a:focus, .pagination>li>span:focus {
     color: #ffffff;
-    background-color: #427f53;
+    background-color: #353535;
     border-color: #4d4d4d;
 }

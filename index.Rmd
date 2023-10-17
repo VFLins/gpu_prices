@@ -13,8 +13,6 @@ output:
 
 ```{r setup, include=FALSE, message=FALSE}
 source("functions.R")
-
-
 prices <- readRDS("data/prices.rds")
 ```
 
@@ -109,62 +107,64 @@ Row {data-height=550 .tabset .tabset-pills}
 -----------------------------------------------------------------------
 
 ```{r pg2-p1-setup}
-# conteudo fhd
-fhd_scatterplot <- card(
-    card_title(h1("Preço x Performance (FPS médio)*")),
-    plot_perf_scatter(preset="fhd_ultra"),
-    card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
-)
+# conteudo fhd medium
+perf_fullpage <- function(title, dataset, perf_col, perf_obs){
+    
+    card_right <- card(
+        card_header(h3(paste0("Preço x Performance ", perf_obs, "*"))),
+        plot_perf_scatter(dataset, perf_col),
+        card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE', *Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
+    )
+    card_left <- card(
+        card_header(card_title(h3(paste("Ranking GPUs para", title, "*")))),
+        card_body(plot_perf_table(dataset, perf_col)),
+    )
+    layout_column_wrap(width=1/2, height="100%", card_left, card_right)
+}
+```
 
-fhd_table <- card(
-    card_title(h1("Melhores modelos para este uso*")),
-    card_body(plot_perf_table(preset="fhd_ultra")),
-    card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
-)
+### Full HD (1080p) Medium
 
-#conteudo qhd
-qhd_scatterplot <- card(
-    card_title(h1("Preço x Performance (FPS médio)*")),
-    plot_perf_scatter(preset="qhd_ultra"),
-    card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
-)
-
-qhd_table <- card(
-    card_title(h1("Melhores modelos para este uso*")),
-    card_body(plot_perf_table(preset="qhd_ultra")),
-    card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
-)
-
-#conteudo uhd
-uhd_scatterplot <- card(
-    card_title(h1("Preço x Performance (FPS médio)*")),
-    plot_perf_scatter(preset="uhd_ultra"),
-    card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
-)
-
-uhd_table <- card(
-    card_title(h1("Melhores modelos para este uso*")),
-    card_body(plot_perf_table(preset="uhd_ultra")),
-    card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
+```{r fhd-med-raster}
+perf_fullpage(
+    title="games em FHD medium",
+    dataset=price_raster_perf,
+    perf_col="fhd_medium",
+    perf_obs="(FPS médio)"
 )
 ```
 
-### Full HD (1080p)
+### Full HD (1080p) Ultra
 
-```{r pg2-p1-1}
-layout_column_wrap(width=1/2, height="90%", fhd_scatterplot, fhd_table)
+```{r fhd-ult-raster}
+perf_fullpage(
+    title="games em FHD ultra",
+    dataset=price_raster_perf,
+    perf_col="fhd_ultra",
+    perf_obs="(FPS médio)"
+)
 ```
 
-### Quad HD (1440p)
+### Quad HD (1440p) Ultra
 
-```{r pg2-p1-2}
-layout_column_wrap(width=1/2, height="90%", qhd_scatterplot, qhd_table)
+```{r qhd-ult-raster}
+perf_fullpage(
+    title="games em QHD ultra",
+    dataset=price_raster_perf,
+    perf_col="qhd_ultra",
+    perf_obs="(FPS médio)"
+)
 ```
 
-### 4K (2160p)
+### 4K (2160p) Ultra
 
-```{r pg2-p1-3}
-layout_column_wrap(width=1/2, height="90%", uhd_scatterplot, uhd_table)
+```{r uhd-ult-raster}
+perf_fullpage(
+    title="games em 4K ultra",
+    dataset=price_raster_perf,
+    perf_col="uhd_ultra",
+    perf_obs="(FPS médio)"
+)
 ```
 
 
@@ -174,64 +174,48 @@ JOGOS COM RAY TRACING {data-navmenu="PREÇO E PERFORMANCE"}
 Row {data-height=550 .tabset .tabset-pills}
 -----------------------------------------------------------------------
 
-```{r pg2-p2-setup}
-# conteudo fhd
-fhd_scatterplot <- card(
-    card_title(h1("Preço x Performance (FPS médio)*")),
-    plot_perf_scatter(price_rt_perf, "fhd_ultra"),
-    card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
-)
+### Full HD (1080p) Medium
 
-fhd_table <- card(
-    card_title(h1("Melhores modelos para este uso*")),
-    card_body(plot_perf_table(price_rt_perf, "fhd_ultra")),
-    card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
-)
-
-#conteudo qhd
-qhd_scatterplot <- card(
-    card_title(h1("Preço x Performance (FPS médio)*")),
-    plot_perf_scatter(price_rt_perf, "qhd_ultra"),
-    card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
-)
-
-qhd_table <- card(
-    card_title(h1("Melhores modelos para este uso*")),
-    card_body(plot_perf_table(price_rt_perf, "qhd_ultra")),
-    card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
-)
-
-#conteudo uhd
-uhd_scatterplot <- card(
-    card_title(h1("Preço x Performance (FPS médio)*")),
-    plot_perf_scatter(price_rt_perf, "uhd_ultra"),
-    card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE'"))
-)
-
-uhd_table <- card(
-    card_title(h1("Melhores modelos para este uso*")),
-    card_body(plot_perf_table(price_rt_perf, "uhd_ultra")),
-    card_body(p("*Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
+```{r fhd-med-rt}
+perf_fullpage(
+    title="games em FHD medium com Ray Tracing",
+    dataset=price_rt_perf,
+    perf_col="fhd_medium",
+    perf_obs="(FPS médio)"
 )
 ```
 
+### Full HD (1080p) Ultra
 
-### Full HD (1080p)
-
-```{r pg2-p2-1}
-layout_column_wrap(width=1/2, height="90%", fhd_scatterplot, fhd_table)
+```{r fhd-ult-rt}
+perf_fullpage(
+    title="games em FHD ultra com Ray Tracing",
+    dataset=price_rt_perf,
+    perf_col="fhd_ultra",
+    perf_obs="(FPS médio)"
+)
 ```
 
-### Quad HD (1440p)
+### Quad HD (1440p) Ultra
 
-```{r pg2-p2-2}
-layout_column_wrap(width=1/2, height="90%", qhd_scatterplot, qhd_table)
+```{r qhd-ult-rt}
+perf_fullpage(
+    title="games em QHD ultra com Ray Tracing",
+    dataset=price_rt_perf,
+    perf_col="qhd_ultra",
+    perf_obs="(FPS médio)"
+)
 ```
 
-### 4K (2160p)
+### 4K (2160p) Ultra
 
-```{r pg2-p2-3}
-layout_column_wrap(width=1/2, height="90%", uhd_scatterplot, uhd_table)
+```{r uhd-ult-rt}
+perf_fullpage(
+    title="games em 4K ultra com Ray Tracing",
+    dataset=price_rt_perf,
+    perf_col="uhd_ultra",
+    perf_obs="(FPS médio)"
+)
 ```
 
 
