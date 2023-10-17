@@ -103,12 +103,16 @@ valueBox(update_date, icon="ion-android-calendar", color=cores["fg"])
 JOGOS {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
-Row {data-height=550 .tabset .tabset-pills}
+Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
 
 ```{r pg2-p1-setup}
 # conteudo fhd medium
-perf_fullpage <- function(title, dataset, perf_col, perf_obs){
+perf_fullpage <- function(title, 
+                          dataset, 
+                          perf_col, 
+                          perf_obs, 
+                          table_cols=c("FPS médio", "R$ por FPS**")){
     
     card_right <- card(
         card_header(h3(paste0("Preço x Performance ", perf_obs, "*"))),
@@ -117,7 +121,7 @@ perf_fullpage <- function(title, dataset, perf_col, perf_obs){
     )
     card_left <- card(
         card_header(card_title(h3(paste("Ranking GPUs para", title, "*")))),
-        card_body(plot_perf_table(dataset, perf_col)),
+        plot_perf_table(dataset, perf_col, table_cols=table_cols),
     )
     layout_column_wrap(width=1/2, height="100%", card_left, card_right)
 }
@@ -171,7 +175,7 @@ perf_fullpage(
 JOGOS COM RAY TRACING {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
-Row {data-height=550 .tabset .tabset-pills}
+Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
 
 ### Full HD (1080p) Medium
@@ -222,10 +226,20 @@ perf_fullpage(
 RENDERIZAÇÃO 3D {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
-Row {data-height=550}
+Row  {.tabset .tabset-pills}
 -----------------------------------------------------------------------
 
-### Em construção...
+### Blender
+
+```{r blender-bench}
+perf_fullpage(
+    title="Renderização no Blender",
+    dataset=price_blender_perf,
+    perf_col="CUDA",
+    perf_obs="(pontos no benchmark)",
+    table_cols=c("Pontuação", "R$ por ponto")
+)
+```
 
 RENDERIZAÇÃO VIDEO {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
@@ -249,3 +263,5 @@ SOBRE
 Ícones da logo e favicon: [prettycon - Flaticon](https://www.flaticon.com/free-icons/graphic-card)
 
 Dados de performance em jogos (FPS médio): [Tom's Hardware](https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html)
+
+Pontuação de desempenho no Blender: [Blender - Open Data](https://opendata.blender.org/)

@@ -111,25 +111,25 @@ plot_perf_scatter <- function(dataset=price_raster_perf, preset="fhd_ultra") {
         layout(margin=list(t=0, b=0, l=0, r=0))
 }
 
-plot_perf_table <- function(dataset=price_raster_perf, preset="fhd_ultra") {
+plot_perf_table <- function(dataset=price_raster_perf, preset="fhd_ultra", table_cols) {
     curr_dataset <- data.frame(
         Chip = dataset$model,
         Preço = dataset$`Melhor preço`,
         Performance = dataset[[preset]]
-    ) |> na.omit() |> setNames(c("Chip", "Preço", "FPS médio"))
+    ) |> na.omit() |> setNames(c("Chip", "Preço", table_cols[1]))
     
     price <- curr_dataset$`Preço`
-    perfr <- curr_dataset$`FPS médio`
-    curr_dataset["R$ por FPS**"] <- price / perfr
+    perfr <- curr_dataset[[table_cols[1]]]
+    curr_dataset[table_cols[2]] <- price / perfr
     
     # ordering and numerating from most relevant to least
-    out <- curr_dataset[with(curr_dataset, order(`R$ por FPS**`)), ]
+    out <- curr_dataset |> dplyr::arrange_at(table_cols[2])
     row.names(out) <- seq_along(curr_dataset$Chip)
     
     # formatting columns for pretty printing
-    out["R$ por FPS**"] <- format_number(out[["R$ por FPS**"]])
+    out[table_cols[2]] <- format_number(out[[table_cols[2]]])
     out["Preço"] <- format_number(out[["Preço"]])
-    out["FPS médio"] <- format_number(out[["FPS médio"]], prefix="")
+    out[table_cols[1]] <- format_number(out[[table_cols[1]]], prefix="")
     
     DT::datatable(out, style="bootstrap4")
 }
