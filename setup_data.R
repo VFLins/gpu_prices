@@ -5,6 +5,7 @@ library(plotly)
 PRICES <- readRDS("data/prices.rds")
 RASTER <- read.csv("data/tomshardware_raster_avg_fps.csv")
 RAYTRC <- read.csv("data/tomshardware_rt_avg_fps.csv")
+BLENDR <- readxl::read_excel("data/prods.xlsx", sheet="blender")
 
 # Eliminate stores with non-representative prices
 foreign_stores <- c(
@@ -51,8 +52,8 @@ indexr_data <- function(price_table=PRICES, group_for_week=FALSE) {
     return(index_table)
 }
 
-raster_data <- function(raster_table=RASTER) {
-    raster_cols <- c("model", "fhd_medium", "fhd_ultra", "qhd_ultra", "uhd_ultra")
+perf_data <- function(perf_table=RASTER) {
+    perf_cols <- names(perf_table)
     prices_cols <- c("model", "Melhor preço", "Dia", "Semana")
     
     prices_table <- indexr_data()
@@ -61,10 +62,10 @@ raster_data <- function(raster_table=RASTER) {
         prices_table$Semana == max(prices_table$Semana))
     
     prices_table["model"] <- tolower(prices_table$Chip)
-    raster_table["model"] <- tolower(raster_table$model)
-    raster_table["model"] <- gsub("intel ", "", raster_table$model)
+    perf_table["model"] <- tolower(perf_table$model)
+    perf_table["model"] <- gsub("intel ", "", perf_table$model)
     
-    out <- merge(raster_table[, raster_cols], prices_table[, prices_cols])
+    out <- merge(perf_table[, perf_cols], prices_table[, prices_cols])
     out["chip_family"] <- sapply(
         out$model, 
         function(x )strsplit(x, " ")[[1]][1])
@@ -75,5 +76,6 @@ raster_data <- function(raster_table=RASTER) {
 ######## Secondary datasets ########
 index_data <- indexr_data(group_for_week=TRUE)
 weekly_best_prices <- indexr_data()
-price_raster_perf <- raster_data()
-price_rt_perf <- raster_data(RAYTRC)
+price_raster_perf <- perf_data()
+price_rt_perf <- perf_data(RAYTRC)
+price_blender_perf <- perf_data(BLENDR)
