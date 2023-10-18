@@ -117,7 +117,7 @@ perf_fullpage <- function(title,
     card_right <- card(
         card_header(h3(paste0("Preço x Performance ", perf_obs, "*"))),
         plot_perf_scatter(dataset, perf_col),
-        card_body(p("*Fonte de dados de desempenho em jogos na página 'SOBRE', *Considerando os dados de desempenho obtidos, quanto mais próximo do canto superior esquerdo do gráfico, melhor é a placa de vídeo **Menor é melhor"))
+        card_body(p("*Fonte de dados de desempenho na página 'SOBRE', **Menor é melhor"))
     )
     card_left <- card(
         card_header(card_title(h3(paste("Ranking GPUs para", title, "*")))),
