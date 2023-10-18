@@ -131,7 +131,14 @@ plot_perf_table <- function(dataset=price_raster_perf, preset="fhd_ultra", table
     out["Preço"] <- format_number(out[["Preço"]])
     out[table_cols[1]] <- format_number(out[[table_cols[1]]], prefix="")
     
-    DT::datatable(out, style="bootstrap4")
+    DT::datatable(
+        out, 
+        style="bootstrap4", 
+        options=list(
+            lengthMenu=list(c(15, -1), c("15", "All")),
+            pageLength=15
+        )
+    )
 }
 
 # Return a vector with all the accepeted dates
