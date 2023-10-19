@@ -107,17 +107,20 @@ Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
 
 ```{r pg2-p1-setup}
-# conteudo fhd medium
+default_footnote <- "*Fonte de dados de desempenho na página 'SOBRE', **Menor é melhor"
+
+
 perf_fullpage <- function(title, 
                           dataset, 
                           perf_col, 
                           perf_obs, 
-                          table_cols=c("FPS médio", "R$ por FPS**")){
+                          table_cols=c("FPS médio", "R$ por FPS**"),
+                          footnote=default_footnote){
     
     card_right <- card(
         card_header(h3(paste0("Preço x Performance ", perf_obs, "*"))),
         plot_perf_scatter(dataset, perf_col),
-        card_body(p("*Fonte de dados de desempenho na página 'SOBRE', **Menor é melhor"))
+        card_body(p(footnote))
     )
     card_left <- card(
         card_header(card_title(h3(paste("Ranking GPUs para", title, "*")))),
@@ -244,10 +247,20 @@ perf_fullpage(
 RENDERIZAÇÃO VIDEO {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
-Row {data-height=550}
+Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
 
-### Em construção...
+### Cinebench Redshift
+
+```{r redshift-bench}
+perf_fullpage(
+    title="Renderização de vídeos (Cinebench Redshift)",
+    dataset=price_videos_perf,
+    perf_col="redshift_score",
+    perf_obs="(1 milhão sobre o tempo de renderização em segundos)",
+    table_cols=c("Pontuação", "R$ por ponto")
+)
+```
 
 TREINAMENTO DE IA {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
@@ -265,3 +278,5 @@ SOBRE
 Dados de performance em jogos (FPS médio): [Tom's Hardware](https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html)
 
 Pontuação de desempenho no Blender: [Blender - Open Data](https://opendata.blender.org/)
+
+Pontuação de desempenho no Cinebench Redshift: [CG Director](https://www.cgdirector.com/redshift-benchmark-results/)

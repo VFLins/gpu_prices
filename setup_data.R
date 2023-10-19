@@ -6,6 +6,7 @@ PRICES <- readRDS("data/prices.rds")
 RASTER <- read.csv("data/tomshardware_raster_avg_fps.csv")
 RAYTRC <- read.csv("data/tomshardware_rt_avg_fps.csv")
 BLENDR <- readxl::read_excel("data/prods.xlsx", sheet="blender")
+VIDEOS <- readxl::read_excel("data/prods.xlsx", sheet="videos")
 
 # Eliminate stores with non-representative prices
 foreign_stores <- c(
@@ -79,3 +80,4 @@ weekly_best_prices <- indexr_data()
 price_raster_perf <- perf_data()
 price_rt_perf <- perf_data(RAYTRC)
 price_blender_perf <- perf_data(BLENDR)
+price_videos_perf <- perf_data(VIDEOS)
