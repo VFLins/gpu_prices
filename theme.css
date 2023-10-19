@@ -106,6 +106,14 @@ h3 {
     font-weight: 400;
 }
 
+a {
+    color: #85c597;
+}
+
+a:hover, a:focus {
+    color: #b4edc4
+}
+
 .chart-title {
     border-bottom: 1px solid #b4edc4;
     background-color: #222222;
