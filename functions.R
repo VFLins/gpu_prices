@@ -103,7 +103,7 @@ plot_perf_scatter <- function(dataset=price_raster_perf, preset="fhd_ultra") {
         geom_abline(intercept=coefs[1], slope=coefs[2], color=cores["fg"]) +
         geom_hline(yintercept=60, color=cores["fg"], linetype="dotted") +
         scale_color_manual(values=discrete_palette) +
-        labs(x="Preço (R$)", y="Desempenho (FPS médio)") + 
+        labs(x="Preço (R$)", y="Desempenho") + 
         theme(legend.position="none") +
         plot_theme()
     ggplotly(p) %>%
