@@ -54,24 +54,31 @@ def get_th_avg_fps() :
 
 URL = "https://benchmark.chaos.com/v5/vray-gpu-cuda"
 
-MODEL_NAMES = read_r(getcwd() + "\data\prices.rds")[None]["ProductName"]\
-    .unique()
+df = read_r(getcwd() + "\\data\\prices.rds")[None]
+
+unique_combinations = df.groupby(['ProductName','ProductFilters'])\
+    .size().reset_index()
+
+best_combinations = unique_combinations\
+    .loc[unique_combinations['ProductFilters'].str.len()\
+    .groupby(unique_combinations['ProductName']).idxmin()]
+
+MODEL_NAMES = best_combinations[["ProductName"]]
+MODEL_FILTERS = best_combinations[["ProductFilters"]]
 
 def get_vray5_render_pts():
     DRIVER = webdriver.Chrome()
     DRIVER.get(URL)
     
     results = []
-    for model in MODEL_NAMES:
-        #params = {
-        #    "gpu" : f"{model};1",
-        #    "show-hybrid" : "false",
-        #    "my-scores-only" : "false"
-        #}
+    for model, filters in zip(MODEL_NAMES, MODEL_FILTERS):
         
-        #response_url = requests.get(URL, params=params).url
-        #print(response_url)
+        filter_is_empty = len(filters) == 0
         
+        if filter_is_empty:
+            filters = None
+        else:
+            filters = filters.split(", ")
         
         navigate = DRIVER.find_element(By.CLASS_NAME, "advanced")
         navigate.click()
@@ -85,7 +92,7 @@ def get_vray5_render_pts():
         DRIVER.find_element(By.XPATH, d_count_box).clear()
         DRIVER.find_element(By.XPATH, d_count_box).send_keys("1")
         
-        search_btn = "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[2]/div/div/button"
+        search_btn = "//button[contains(., 'Search')]"
         navigate = DRIVER.find_element(By.XPATH, search_btn)
         navigate.click()
         
