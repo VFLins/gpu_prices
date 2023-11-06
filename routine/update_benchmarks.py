@@ -7,7 +7,6 @@ import pandas as pd
 import requests
 import re
 
-DRIVER = webdriver.Chrome()
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2088.57"
 
 #### Update avg fps data from Tom's Hardware ####
@@ -63,12 +62,11 @@ best_combinations = unique_combinations\
     .loc[unique_combinations['ProductFilters'].str.len()\
     .groupby(unique_combinations['ProductName']).idxmin()]
 
-MODEL_NAMES = best_combinations[["ProductName"]]
-MODEL_FILTERS = best_combinations[["ProductFilters"]]
+MODEL_NAMES = best_combinations["ProductName"]
+MODEL_FILTERS = best_combinations["ProductFilters"]
 
 def get_vray5_render_pts():
     DRIVER = webdriver.Chrome()
-    DRIVER.get(URL)
     
     results = []
     for model, filters in zip(MODEL_NAMES, MODEL_FILTERS):
@@ -79,6 +77,8 @@ def get_vray5_render_pts():
             filters = None
         else:
             filters = filters.split(", ")
+        
+        DRIVER.get(URL)
         
         navigate = DRIVER.find_element(By.CLASS_NAME, "advanced")
         navigate.click()
@@ -96,8 +96,12 @@ def get_vray5_render_pts():
         navigate = DRIVER.find_element(By.XPATH, search_btn)
         navigate.click()
         
-        webpage = BeautifulSoup(DRIVER.page_source, "lxml")
-        webpage.find("localised-number").get_text()
+        webpage = BeautifulSoup(DRIVER.page_source)
+        found_tbl_item = webpage.find("localised-number")
+        if not found_tbl_item:
+            continue
+        else:
+            print(found_tbl_item.get_text())
         
     DRIVER.quit()
     
@@ -108,12 +112,12 @@ if __name__ == "__main__":
         print("Error trying to collect Avg. FPS from Tom's Hardware")
         print(expt)
     
-    #if path.isfile(getcwd() + "\data\prices.rds"):
-    #    try: get_vray5_render_pts()
-    #    except Exception as expt: 
-    #    print("Error trying to collect performance from Vray-5 Benchmarks")
-    #    print(expt)
-    #else: 
-    #    print("Not able to collect Vray-5 benchmarks, '\data\prices.rds' not found in this folder")
+    if path.isfile(getcwd() + "\data\prices.rds"):
+        try: get_vray5_render_pts()
+        except Exception as expt: 
+            print("Error trying to collect performance from Vray-5 Benchmarks")
+            print(expt)
+    else: 
+        print("Not able to collect Vray-5 benchmarks, '\data\prices.rds' not found in this folder")
     
     
