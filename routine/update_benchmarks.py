@@ -30,7 +30,7 @@ def get_th_avg_fps() :
         return rows
     
     def get_fps_val(string):
-        re_match = re.search("\d+\.\d(?=[fps])", string)
+        re_match = re.search(r"\d+\.\d(?=[fps])", string)
         return float(re_match.group(0)) if re_match else None
     
     tbl_titles = ["raster", "rt"]
@@ -65,9 +65,10 @@ best_combinations = unique_combinations\
 MODEL_NAMES = best_combinations["ProductName"]
 MODEL_FILTERS = best_combinations["ProductFilters"]
 
+DRIVER = webdriver.Chrome()
+
 def get_vray5_render_pts():
-    DRIVER = webdriver.Chrome()
-    
+       
     results = []
     for model, filters in zip(MODEL_NAMES, MODEL_FILTERS):
         
@@ -96,6 +97,10 @@ def get_vray5_render_pts():
         navigate = DRIVER.find_element(By.XPATH, search_btn)
         navigate.click()
         
+        grid_display = DRIVER.find_element(By.XPATH, "//ul[@class='vray-gpu table']")
+        wait = WebDriverWait(DRIVER, timeout=8)
+        wait.until(lambda d : grid_display.presence_of_element_located())
+
         webpage = BeautifulSoup(DRIVER.page_source)
         found_tbl_item = webpage.find("localised-number")
         if not found_tbl_item:
@@ -112,12 +117,12 @@ if __name__ == "__main__":
         print("Error trying to collect Avg. FPS from Tom's Hardware")
         print(expt)
     
-    if path.isfile(getcwd() + "\data\prices.rds"):
+    if path.isfile(getcwd() + "\\data\\prices.rds"):
         try: get_vray5_render_pts()
         except Exception as expt: 
             print("Error trying to collect performance from Vray-5 Benchmarks")
             print(expt)
     else: 
-        print("Not able to collect Vray-5 benchmarks, '\data\prices.rds' not found in this folder")
+        print("Not able to collect Vray-5 benchmarks, '\\data\\prices.rds' not found in this folder")
     
     
