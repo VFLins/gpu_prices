@@ -70,8 +70,19 @@ MODEL_FILTERS = best_combinations["ProductFilters"]
 DRIVER = webdriver.Chrome()
 
 def get_vray5_render_pts():
+
+    def filtered_result(name_to_filter: str, filters: list) -> bool:
+        checks_up = False        
+        for word in filters:
+            if not bool( re.search(word.lower(), name_to_filter.lower()) ): 
+                checks_up = True
+            else: 
+                checks_up = False
+            if not checks_up: 
+                break
+        return checks_up
        
-    results = []
+    results = {}
     for model, filters in zip(MODEL_NAMES, MODEL_FILTERS):
         
         filter_is_empty = len(filters) == 0
@@ -113,16 +124,25 @@ def get_vray5_render_pts():
         )
 
         grid_html =  DRIVER.find_element("xpath", results_grid)\
-            .get_attribute('innerHTML')
-        found_tbl_item = results_grid.find("localised-number")
-        if not found_tbl_item:
-            continue
-        else:
-            print(found_tbl_item)
-        
+            .get_attribute("innerHTML")
+        bs_table = BeautifulSoup(grid_html)
+
+        scores = []
+        if filters:
+            for row in bs_table.find_all("li", {"class" : "row"}):
+                config_name = row.find("li", {"class" : "configuration"}).get_text()
+                is_valid = filtered_result(config_name, filters=filters)
+            else:
+                is_valid = True
+        if is_valid:
+            score = row\
+                .find("localised-number", {"number" : True})\
+                .get_attribute("number")
+            scores.append(score)
+        print(scores)
     DRIVER.quit()
     
-# run from command line 'python3 ./routine/update_benchmarks.py'
+# run from command line: python3 ./routine/update_benchmarks.py
 if __name__ == "__main__":
     try: get_th_avg_fps()
     except Exception as expt: 
