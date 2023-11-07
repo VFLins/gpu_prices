@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup
 from pyreadr import read_r
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from os import getcwd, path
 import pandas as pd
 import requests
@@ -97,16 +99,26 @@ def get_vray5_render_pts():
         navigate = DRIVER.find_element(By.XPATH, search_btn)
         navigate.click()
         
-        grid_display = DRIVER.find_element(By.XPATH, "//ul[@class='vray-gpu table']")
-        wait = WebDriverWait(DRIVER, timeout=8)
-        wait.until(lambda d : grid_display.presence_of_element_located())
+        results_grid = "//div[@class='scores']"
+        wait = WebDriverWait(DRIVER, timeout=15)
+        wait.until(
+            EC.invisibility_of_element_located(
+                (By.XPATH, results_grid)
+            )
+        )
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, results_grid)
+            )
+        )
 
-        webpage = BeautifulSoup(DRIVER.page_source)
-        found_tbl_item = webpage.find("localised-number")
+        grid_html =  DRIVER.find_element("xpath", results_grid)\
+            .get_attribute('innerHTML')
+        found_tbl_item = results_grid.find("localised-number")
         if not found_tbl_item:
             continue
         else:
-            print(found_tbl_item.get_text())
+            print(found_tbl_item)
         
     DRIVER.quit()
     
