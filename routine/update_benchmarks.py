@@ -81,6 +81,21 @@ def get_vray5_render_pts():
             if not checks_up: 
                 break
         return checks_up
+    
+    def wait_grid_update(DRIVER):
+        results_grid = "//div[@class='scores']"
+
+        wait = WebDriverWait(DRIVER, timeout=15)
+        wait.until(
+            EC.invisibility_of_element_located(
+                (By.XPATH, results_grid)
+            )
+        )
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, results_grid)
+            )
+        )
        
     results = {}
     for model, filters in zip(MODEL_NAMES, MODEL_FILTERS):
@@ -110,50 +125,57 @@ def get_vray5_render_pts():
         navigate = DRIVER.find_element(By.XPATH, search_btn)
         navigate.click()
         
-        results_grid = "//div[@class='scores']"
-        wait = WebDriverWait(DRIVER, timeout=15)
-        wait.until(
-            EC.invisibility_of_element_located(
-                (By.XPATH, results_grid)
-            )
-        )
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, results_grid)
-            )
-        )
+        wait_grid_update(DRIVER)
 
+        sort_by_bench_amount = "//span[contains(., 'Benchmarks')]"
+        navigate = DRIVER.find_element(By.XPATH, sort_by_bench_amount)
+        
+        while True:
+            wait_grid_update(DRIVER)
+            current_itm_classes = navigate.get_attribute("class")
+            if not all(["current", "desc"] in current_itm_classes):
+                navigate.click()
+                wait_grid_update(DRIVER)
+            else:
+                break
+        
         grid_html =  DRIVER.find_element("xpath", results_grid)\
             .get_attribute("innerHTML")
-        bs_table = BeautifulSoup(grid_html)
+        bs_table = BeautifulSoup(grid_html, "lxml")
 
         scores = []
-        if filters:
-            for row in bs_table.find_all("li", {"class" : "row"}):
-                config_name = row.find("li", {"class" : "configuration"}).get_text()
-                is_valid = filtered_result(config_name, filters=filters)
-            else:
-                is_valid = True
-        if is_valid:
+        def save_score(row):
             score = row\
-                .find("localised-number", {"number" : True})\
-                .get_attribute("number")
-            scores.append(score)
-        print(scores)
+                .find("localised-number", {"number" : True})
+            if score:
+                scores.append(float(score["number"].replace(" ", "")))
+            else:
+                scores.append(None)
+        
+        for row in bs_table.find_all("li", {"class" : "row"}):
+            if filters:
+                config_name = row.find("span", {"class" : "configuration"}).get_text()
+                if filtered_result(config_name, filters=filters):
+                    save_score(row=row)
+                    break
+            else:
+                save_score(row=row)
+                break
+            
+        df = pd.DataFrame({"model" : MODEL_NAMES, "score" : scores})
+        print(df)
     DRIVER.quit()
     
 # run from command line: python3 ./routine/update_benchmarks.py
 if __name__ == "__main__":
-    try: get_th_avg_fps()
-    except Exception as expt: 
-        print("Error trying to collect Avg. FPS from Tom's Hardware")
-        print(expt)
+    #try: 
+    #    get_th_avg_fps()
+    #except Exception as expt: 
+    #    print("Error trying to collect Avg. FPS from Tom's Hardware")
+    #    print(expt)
     
     if path.isfile(getcwd() + "\\data\\prices.rds"):
-        try: get_vray5_render_pts()
-        except Exception as expt: 
-            print("Error trying to collect performance from Vray-5 Benchmarks")
-            print(expt)
+        get_vray5_render_pts()
     else: 
         print("Not able to collect Vray-5 benchmarks, '\\data\\prices.rds' not found in this folder")
     
