@@ -14,7 +14,8 @@ foreign_stores <- c(
     "Tiendamia.com.br", "Shopee", "Techinn.com", "Amazon.com.br - Retail", 
     "swsimports.com.br", "B&H Photo-Video-Audio")
 used_stores <- c(
-    "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre")
+    "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
+    "Black Friday")
 if (nrow(PRICES) > 0) 
     PRICES <- PRICES[
         !(PRICES$Store %in% c(foreign_stores, used_stores)), ]
