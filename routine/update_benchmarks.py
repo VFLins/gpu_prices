@@ -105,17 +105,24 @@ def get_vray5_render_pts(MODEL_NAMES, MODEL_FILTERS):
         navigate = DRIVER.find_element(By.XPATH, clickable_sort_by_sample)
         inspect = DRIVER.find_element(By.XPATH, element_sort_by_sample)
         
+        wait = WebDriverWait(DRIVER, 10)
         required_status = ["current", "desc"]
-
         success = False
-        for i in range(attempts):
+
+        ## test this section ##
+        for att in range(attempts):
+            wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, element_sort_by_sample)
+                )
+            )
+            
             current_grid_sort_status = inspect.get_attribute("class")
 
             if not all(i in current_grid_sort_status for i in required_status):
-                wait = WebDriverWait(DRIVER, 10)
                 wait.until(
                     EC.element_to_be_clickable(
-                        (By.XPATH, sort_by_bench_amount)
+                        (By.XPATH, clickable_sort_by_sample)
                     )
                 )
                 navigate.click()
@@ -124,13 +131,14 @@ def get_vray5_render_pts(MODEL_NAMES, MODEL_FILTERS):
             else:
                 success = True
                 break
+        ## ---- ##
         
         if not success:
             raise TimeoutError(
                 f"Couldn't sort the list correctly, list status:\n {current_grid_sort_status}"
             )
        
-    results = {}
+    results = []
     for model, filters in zip(MODEL_NAMES, MODEL_FILTERS):
         
         filter_is_empty = len(filters) == 0
@@ -145,8 +153,8 @@ def get_vray5_render_pts(MODEL_NAMES, MODEL_FILTERS):
         navigate = DRIVER.find_element(By.CLASS_NAME, "advanced")
         navigate.click()
         
-        d_name_box = "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[2]/div/ul/li/ol/li/span[1]/div/input"
-        d_count_box = "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[2]/div/ul/li/ol/li/span[2]/div/input"
+        d_name_box = "(//input)[2]"
+        d_count_box = "(//input)[3]"
         
         DRIVER.find_element(By.XPATH, d_name_box).clear()
         DRIVER.find_element(By.XPATH, d_name_box).send_keys(model)
@@ -161,31 +169,24 @@ def get_vray5_render_pts(MODEL_NAMES, MODEL_FILTERS):
         wait_grid_update(DRIVER)
         set_desired_sorting(DRIVER)
         
-        grid_html =  DRIVER.find_element("xpath", results_grid)\
-            .get_attribute("innerHTML")
-        bs_table = BeautifulSoup(grid_html, "lxml")
-
-        scores = []
-        def save_score(row):
-            score = row\
-                .find("localised-number", {"number" : True})
-            if score:
-                scores.append(float(score["number"].replace(" ", "")))
-            else:
-                scores.append(None)
+        desired_element = "(//localised-number)[1]"
+        wait = WebDriverWait(DRIVER, 10)
+        wait.until(
+            EC.visibility_of_element_located(
+                (By.XPATH, desired_element)
+            )
+        )
         
-        for row in bs_table.find_all("li", {"class" : "row"}):
-            if filters:
-                config_name = row.find("span", {"class" : "configuration"}).get_text()
-                if filtered_result(config_name, filters=filters):
-                    save_score(row=row)
-                    break
-            else:
-                save_score(row=row)
-                break
-            
-        df = pd.DataFrame({"model" : MODEL_NAMES, "score" : scores})
-        print(df)
+        try:
+            best_score = DRIVER.find_element(By.XPATH, desired_element)\
+                .get_attribute("number")
+            best_score = float(best_score)
+        except:
+            best_score = None
+        scores.append(best_score)
+        
+    df = pd.DataFrame({"model" : MODEL_NAMES, "score" : scores})
+    print(df)
     DRIVER.quit()
     
 # run from command line: python3 ./routine/update_benchmarks.py
