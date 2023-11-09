@@ -68,8 +68,9 @@ MODEL_NAMES = best_combinations["ProductName"]
 MODEL_FILTERS = best_combinations["ProductFilters"]
 
 DRIVER = webdriver.Chrome()
+DRIVER.maximize_window() # Required to ensure all elements are on screen
 
-def get_vray5_render_pts():
+def get_vray5_render_pts(MODEL_NAMES, MODEL_FILTERS):
 
     def filtered_result(name_to_filter: str, filters: list) -> bool:
         checks_up = False        
@@ -96,6 +97,38 @@ def get_vray5_render_pts():
                 (By.XPATH, results_grid)
             )
         )
+    
+    def set_desired_sorting(DRIVER, attempts=5):
+        clickable_sort_by_sample = "//a[@href and contains(text(), 'Benchmarks')]"
+        element_sort_by_sample = "//span[@class='benchmarks']"
+        
+        navigate = DRIVER.find_element(By.XPATH, clickable_sort_by_sample)
+        inspect = DRIVER.find_element(By.XPATH, element_sort_by_sample)
+        
+        required_status = ["current", "desc"]
+
+        success = False
+        for i in range(attempts):
+            current_grid_sort_status = inspect.get_attribute("class")
+
+            if not all(i in current_grid_sort_status for i in required_status):
+                wait = WebDriverWait(DRIVER, 10)
+                wait.until(
+                    EC.element_to_be_clickable(
+                        (By.XPATH, sort_by_bench_amount)
+                    )
+                )
+                navigate.click()
+                wait_grid_update(DRIVER)
+
+            else:
+                success = True
+                break
+        
+        if not success:
+            raise TimeoutError(
+                f"Couldn't sort the list correctly, list status:\n {current_grid_sort_status}"
+            )
        
     results = {}
     for model, filters in zip(MODEL_NAMES, MODEL_FILTERS):
@@ -126,18 +159,7 @@ def get_vray5_render_pts():
         navigate.click()
         
         wait_grid_update(DRIVER)
-
-        sort_by_bench_amount = "//span[contains(., 'Benchmarks')]"
-        navigate = DRIVER.find_element(By.XPATH, sort_by_bench_amount)
-        
-        while True:
-            wait_grid_update(DRIVER)
-            current_itm_classes = navigate.get_attribute("class")
-            if not all(["current", "desc"] in current_itm_classes):
-                navigate.click()
-                wait_grid_update(DRIVER)
-            else:
-                break
+        set_desired_sorting(DRIVER)
         
         grid_html =  DRIVER.find_element("xpath", results_grid)\
             .get_attribute("innerHTML")
@@ -175,7 +197,7 @@ if __name__ == "__main__":
     #    print(expt)
     
     if path.isfile(getcwd() + "\\data\\prices.rds"):
-        get_vray5_render_pts()
+        get_vray5_render_pts(['Geforce Rtx 3060'], ['Ti'])
     else: 
         print("Not able to collect Vray-5 benchmarks, '\\data\\prices.rds' not found in this folder")
     
