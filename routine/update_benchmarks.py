@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
 from os import getcwd, path
 import pandas as pd
 import requests
@@ -70,7 +71,7 @@ MODEL_FILTERS = best_combinations["ProductFilters"]
 DRIVER = webdriver.Chrome()
 DRIVER.maximize_window() # Required to ensure all elements are on screen
 
-def get_vray5_render_pts(MODEL_NAMES, MODEL_FILTERS):
+def get_vray5_render_pts():
 
     def filtered_result(name_to_filter: str, filters: list) -> bool:
         checks_up = False        
@@ -98,46 +99,49 @@ def get_vray5_render_pts(MODEL_NAMES, MODEL_FILTERS):
             )
         )
     
-    def set_desired_sorting(DRIVER, attempts=5):
+    def chek_results(DRIVER, attempts=5) -> bool:
         clickable_sort_by_sample = "//a[@href and contains(text(), 'Benchmarks')]"
         element_sort_by_sample = "//span[@class='benchmarks']"
-        
-        navigate = DRIVER.find_element(By.XPATH, clickable_sort_by_sample)
-        inspect = DRIVER.find_element(By.XPATH, element_sort_by_sample)
-        
-        wait = WebDriverWait(DRIVER, 10)
-        required_status = ["current", "desc"]
-        success = False
+        sample_size_elems = "//li[contains(@class, 'row') and not(contains(@class, 'head'))]"
 
-        ## test this section ##
+        is_empty = False
+        wait = WebDriverWait(DRIVER, 10)
+
+        try:
+            navigate = DRIVER.find_element(By.XPATH, clickable_sort_by_sample)
+            inspect = DRIVER.find_element(By.XPATH, element_sort_by_sample)
+        except NoSuchElementException:
+            return 
+
         for att in range(attempts):
             wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, element_sort_by_sample)
+                    (By.XPATH, sample_size_elems)
                 )
             )
-            
-            current_grid_sort_status = inspect.get_attribute("class")
 
-            if not all(i in current_grid_sort_status for i in required_status):
-                wait.until(
-                    EC.element_to_be_clickable(
-                        (By.XPATH, clickable_sort_by_sample)
-                    )
-                )
-                navigate.click()
+            counts_list = DRIVER.find_elements(By.XPATH, "//span[contains(@class, 'count')]")
+            counts_values = [int(score.text.replace(",", "")) for score in counts_list]
+            
+            if counts_values != sorted(counts_values, reverse=True):
+                # Click the option to sort by benchmark
+                DRIVER.find_element(By.LINK_TEXT, "Benchmarks").click()
+                # Wait until the scores are updated
                 wait_grid_update(DRIVER)
+                # Check if the scores are sorted by number of benchmarks (decreasing)
+                counts_list = DRIVER.find_elements(By.XPATH, "//span[contains(@class, 'count')]")
+                counts_values = [int(score.text.replace(",", "")) for score in counts_list]
 
             else:
                 success = True
                 break
-        ## ---- ##
-        
+
         if not success:
+            print(f"Model: {model}; Filters: {filters}")
             raise TimeoutError(
-                f"Couldn't sort the list correctly, list status:\n {current_grid_sort_status}"
-            )
-       
+                f"Number of retries exceeded when interacting with sort\n{counts_values}")
+
+
     results = []
     for model, filters in zip(MODEL_NAMES, MODEL_FILTERS):
         
@@ -169,23 +173,28 @@ def get_vray5_render_pts(MODEL_NAMES, MODEL_FILTERS):
         wait_grid_update(DRIVER)
         set_desired_sorting(DRIVER)
         
-        desired_element = "(//localised-number)[1]"
+        returned_scores = "//localised-number[contains(@number, True)]"
+        returned_labels = "//span[@class='configuration']"
         wait = WebDriverWait(DRIVER, 10)
         wait.until(
             EC.visibility_of_element_located(
-                (By.XPATH, desired_element)
+                (By.XPATH, returned_scores)
             )
         )
         
+        # _append_result_
         try:
-            best_score = DRIVER.find_element(By.XPATH, desired_element)\
-                .get_attribute("number")
-            best_score = float(best_score)
-        except:
-            best_score = None
-        scores.append(best_score)
+            scores = [i.text for i in DRIVER.find_elements(By.XPATH, returned_scores)]
+            labels = [i.text for i in DRIVER.find_elements(By.XPATH, returned_labels)]
+            for score, label in zip(scores, labels):
+                if filtered_result(label, MODEL_FILTERS):
+                    results.append(score.replace(" ", ""))
+                    break
+        except Exception as grid_faliure:
+            print(f"Exception at _append_result_\n{grid_faliure}")
+            results.append(None)            
         
-    df = pd.DataFrame({"model" : MODEL_NAMES, "score" : scores})
+    df = pd.DataFrame({"model" : MODEL_NAMES, "score" : results})
     print(df)
     DRIVER.quit()
     
@@ -198,7 +207,7 @@ if __name__ == "__main__":
     #    print(expt)
     
     if path.isfile(getcwd() + "\\data\\prices.rds"):
-        get_vray5_render_pts(['Geforce Rtx 3060'], ['Ti'])
+        get_vray5_render_pts()
     else: 
         print("Not able to collect Vray-5 benchmarks, '\\data\\prices.rds' not found in this folder")
     
