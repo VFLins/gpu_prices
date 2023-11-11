@@ -7,6 +7,8 @@ RASTER <- read.csv("data/tomshardware_raster_avg_fps.csv")
 RAYTRC <- read.csv("data/tomshardware_rt_avg_fps.csv")
 BLENDR <- readxl::read_excel("data/prods.xlsx", sheet="blender")
 VIDEOS <- readxl::read_excel("data/prods.xlsx", sheet="videos")
+RAY5VD <- read.csv("data/vray5_benchmarks.csv")[, c("model", "score")]
+GENRAI <- readxl::read_excel("data/prods.xlsx", sheet="gen_ai")
 
 # Eliminate stores with non-representative prices
 foreign_stores <- c(
@@ -82,3 +84,5 @@ price_raster_perf <- perf_data()
 price_rt_perf <- perf_data(RAYTRC)
 price_blender_perf <- perf_data(BLENDR)
 price_videos_perf <- perf_data(VIDEOS)
+price_vray5_perf <- perf_data(RAY5VD)
+price_gen_ai_perf <- perf_data(GENRAI)
