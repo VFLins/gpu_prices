@@ -88,7 +88,7 @@ valueBox(display_message, icon=display_icon, color=display_color)
 
 ```{r pg1-content4-datacount}
 valueBox(
-    paste(nrow(prices), "preços coletados"),
+    paste(nrow(PRICES), "preços coletados"),
     icon="ion-stats-bars", color=cores["fg"]
 )
 ```
@@ -270,6 +270,10 @@ Row {data-height=550}
 
 ### Em construção...
 
+SEGMENTAÇÃO ATUAL
+=======================================================================
+
+
 SOBRE
 ======================================================================
 
@@ -280,3 +284,7 @@ Dados de performance em jogos (FPS médio): [Tom's Hardware](https://www.tomshar
 Pontuação de desempenho no Blender: [Blender - Open Data](https://opendata.blender.org/)
 
 Pontuação de desempenho no Cinebench Redshift: [CG Director](https://www.cgdirector.com/redshift-benchmark-results/)
+
+Pontuação de desempenho Chaos V-Ray: [V-Ray 5 Benchmark](https://benchmark.chaos.com/v5/vray-gpu-cuda)
+
+Geação de imagens com Stable Diffusion: [Tom's Hardware](https://www.tomshardware.com/pc-components/gpus/stable-diffusion-benchmarks)
