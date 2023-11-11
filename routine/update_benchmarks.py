@@ -68,7 +68,9 @@ best_combinations = unique_combinations\
 MODEL_NAMES = best_combinations["ProductName"]
 MODEL_FILTERS = best_combinations["ProductFilters"]
 
-DRIVER = webdriver.Chrome()
+DRIVER = webdriver.Chrome(
+    options=webdriver.ChromeOptions().add_argument("headless")
+)
 DRIVER.maximize_window() # Required to ensure all elements are on screen
 
 def get_vray5_render_pts():
@@ -103,34 +105,39 @@ def get_vray5_render_pts():
     
     def grid_is_present(driver):
         try:
-            wait = WebDriverWait(driver, timeout=15)
             driver.find_element(By.CLASS_NAME, "no-scores")
             return False
         except NoSuchElementException:
             return True
     
     def set_desired_sorting(driver, attempts=5) -> bool:
-        sample_size_elems = "//li[contains(@class, 'row') and not(contains(@class, 'head'))]"
-
+        #row_elems = "//li[contains(@class, 'row') and not(contains(@class, 'head'))]"
+        count_elements = "//span[contains(@class, 'count')]"
         wait = WebDriverWait(driver, 10)
 
         for att in range(attempts):
             wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, sample_size_elems)
+                    (By.XPATH, count_elements)
                 )
             )
-            counts_list = driver.find_elements(By.XPATH, "//span[contains(@class, 'count')]")
-            counts_values = [int(count.text.replace(",", "")) for count in counts_list]
+            
+            counts_list = driver.find_elements(By.XPATH, count_elements)
+            counts_values = [int(count.text.replace(" ", "")) for count in counts_list]
             
             if counts_values != sorted(counts_values, reverse=True):
                 # Click the option to sort by benchmark
+                wait.until(
+                    EC.element_to_be_clickable(
+                        (By.LINK_TEXT, "Benchmarks")
+                    )
+                )
                 driver.find_element(By.LINK_TEXT, "Benchmarks").click()
                 # Wait until the scores are updated
                 wait_grid_update(driver)
                 # Check if the scores are sorted by number of benchmarks (decreasing)
-                counts_list = driver.find_elements(By.XPATH, "//span[contains(@class, 'count')]")
-                counts_values = [int(score.text.replace(",", "")) for score in counts_list]
+                #counts_list = driver.find_elements(By.XPATH, count_elements)
+                #counts_values = [int(score.text.replace(",", "")) for score in counts_list]
 
             else:
                 success = True
@@ -140,10 +147,16 @@ def get_vray5_render_pts():
             print(f"Model: {model}; Filters: {filters}")
             raise TimeoutError(
                 f"Number of retries exceeded when interacting with sort\n{counts_values}")
+        else:
+            wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, count_elements)
+                )
+            )
 
-    results = []
+    results = {}
     for model, filters in zip(MODEL_NAMES, MODEL_FILTERS):
-        
+        results_size = len(results)
         filter_is_empty = len(filters) == 0
         
         if filter_is_empty:
@@ -181,7 +194,6 @@ def get_vray5_render_pts():
         
             returned_scores = "//localised-number[contains(@number, True)]"
             returned_labels = "//span[@class='configuration']"
-            wait = WebDriverWait(DRIVER, 10)
             wait.until(
                 EC.visibility_of_element_located(
                     (By.XPATH, returned_scores)
@@ -194,18 +206,17 @@ def get_vray5_render_pts():
                 labels = [i.text for i in DRIVER.find_elements(By.XPATH, returned_labels)]
                 for score, label in zip(scores, labels):
                     if filtered_result(label, filters):
-                        results.append(float(score.replace(" ", "")))
+                        results[model] = float(score.replace(" ", ""))
                         break
             except Exception as grid_faliure:
                 print(f"Exception at _append_result_\n{grid_faliure}")
-                results.append(grid_faliure)
+                results[model] = grid_faliure
         else:
-            results.append("NA")
+            results[model] = "NA"
         
     print(results)
-    print(MODEL_NAMES)
-    df = pd.DataFrame({"model" : MODEL_NAMES, "score" : results})
-    print(df)
+    df = pd.DataFrame({"model" : results.keys(), "score":results.values()})
+    df.to_csv("data/vray5_benchmarks.csv")
     DRIVER.quit()
     
 # run from command line: python3 ./routine/update_benchmarks.py
