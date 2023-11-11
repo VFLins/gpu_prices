@@ -68,10 +68,11 @@ best_combinations = unique_combinations\
 MODEL_NAMES = best_combinations["ProductName"]
 MODEL_FILTERS = best_combinations["ProductFilters"]
 
-DRIVER = webdriver.Chrome(
-    options=webdriver.ChromeOptions().add_argument("headless")
-)
-DRIVER.maximize_window() # Required to ensure all elements are on screen
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument("headless")
+
+DRIVER = webdriver.Chrome(options=chrome_options)
+DRIVER.maximize_window() # Ensure all elements are on screen
 
 def get_vray5_render_pts():
 
