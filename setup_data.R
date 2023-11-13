@@ -82,20 +82,25 @@ perf_data <- function(perf_table=RASTER) {
 
 price_drops <- function(n_weeks) {
     full_data <- indexr_data()
-    last_week <- max(full_data$Semana)
+    last_week <- max(full_data$Semana)-1
 
-    older <- full_data
-    older <- subset(
-        older, 
-        older$Semana >= last_week-n_weeks)
+    older <- subset(full_data, full_data$Semana >= last_week-n_weeks+1)
+    current <- subset(full_data, full_data$Semana >= last_week)
     
-    result <- aggregate(
+    percent_var <- aggregate(
         older$`Melhor preço`, 
-        by = list(older$`Chip`), 
-        FUN = function(x) sum(diff(x)/x[-length(x)]))
-    result$date <- older$Semana[match(result$Group.1, older$Chip)]
-    result
+        by = list(older$Chip), 
+        FUN = function(x) sum(diff(x)/x[-length(x)]) *100
+    )
     
+    curr_price <- aggregate(
+        current$`Melhor preço`, 
+        by = list(current$Chip), 
+        FUN = min
+    )
+    
+    out <- merge(percent_var, curr_price, by="Group.1")
+    return(out |> setNames(c("Chip", "Variação % do preço", "Preço atual")))
 }
 
 ######## Secondary datasets ########
@@ -107,5 +112,3 @@ price_blender_perf <- perf_data(BLENDR)
 price_videos_perf <- perf_data(VIDEOS)
 price_vray5_perf <- perf_data(RAY5VD)
 price_gen_ai_perf <- perf_data(GENRAI)
-
-price_drops(6) |> View()
