@@ -246,7 +246,7 @@ perf_fullpage(
 
 ### Vray-5
 
-```{r}
+```{r vray5-bench}
 perf_fullpage(
     title="Renderização de vídeos (Cinebench Redshift)",
     dataset=price_vray5_perf,
@@ -282,7 +282,7 @@ Row {.tabset .tabset-pills}
 
 ### Stable Diffusion 512p
 
-```{r stable-diffusion-bench}
+```{r stable-diffusion-512}
 perf_fullpage(
     title="Imagens geradas por minuto (Stable Diffusion)",
     dataset=price_gen_ai_perf,
@@ -294,7 +294,7 @@ perf_fullpage(
 
 ### Stable Diffusion 768p
 
-```{r}
+```{r stable-diffusion-768}
 perf_fullpage(
     title="Imagens geradas por minuto (Stable Diffusion)",
     dataset=price_gen_ai_perf,
@@ -308,6 +308,14 @@ IA (USO PROFISSIONAL) {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
 ### Em construção...
+
+QUEDAS DE PREÇO
+======================================================================
+
+```{r}
+
+```
+
 
 SOBRE
 ======================================================================
