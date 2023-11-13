@@ -60,21 +60,42 @@ perf_data <- function(perf_table=RASTER) {
     perf_cols <- names(perf_table)
     prices_cols <- c("model", "Melhor preço", "Dia", "Semana")
     
+    # Select last best prices
     prices_table <- indexr_data()
     prices_table <- subset(
         prices_table, 
         prices_table$Semana == max(prices_table$Semana))
     
+    # Padronize model names
     prices_table["model"] <- tolower(prices_table$Chip)
     perf_table["model"] <- tolower(perf_table$model)
     perf_table["model"] <- gsub("intel ", "", perf_table$model)
     
+    # Merge performance and prices by model names
     out <- merge(perf_table[, perf_cols], prices_table[, prices_cols])
     out["chip_family"] <- sapply(
         out$model, 
         function(x )strsplit(x, " ")[[1]][1])
     
     return(out)
+}
+
+price_drops <- function(n_weeks) {
+    full_data <- indexr_data()
+    last_week <- max(full_data$Semana)
+
+    older <- full_data
+    older <- subset(
+        older, 
+        older$Semana >= last_week-n_weeks)
+    
+    result <- aggregate(
+        older$`Melhor preço`, 
+        by = list(older$`Chip`), 
+        FUN = function(x) sum(diff(x)/x[-length(x)]))
+    result$date <- older$Semana[match(result$Group.1, older$Chip)]
+    result
+    
 }
 
 ######## Secondary datasets ########
@@ -86,3 +107,5 @@ price_blender_perf <- perf_data(BLENDR)
 price_videos_perf <- perf_data(VIDEOS)
 price_vray5_perf <- perf_data(RAY5VD)
 price_gen_ai_perf <- perf_data(GENRAI)
+
+price_drops(6) |> View()
