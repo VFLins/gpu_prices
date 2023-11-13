@@ -321,10 +321,7 @@ Row {.tabset .tabset-pills}
 opts <- list(lengthMenu=list(c(15, -1), c("15", "All")), pageLength=15)
 table <- DT::datatable(price_drops(1), style="bootstrap4", options=opts)
 
-card(
-    card_header(card_title(h3("Quedas de preço durante a última semana"))),
-    table,
-)
+layout_column_wrap(height="100%", width=1/1, table)
 ```
 
 
@@ -333,10 +330,7 @@ card(
 ```{r price-drops-month}
 table <- DT::datatable(price_drops(5), style="bootstrap4", options=opts)
 
-card(
-    card_header(card_title(h3("Quedas de preço durante o último mês"))),
-    table,
-)
+layout_column_wrap(height="100%", width=1/1, table)
 ```
 
 
