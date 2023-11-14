@@ -114,7 +114,8 @@ price_drops <- function(n_weeks, include_last_update=FALSE) {
         setNames(
             c(
                 "Chip", "Variação do preço", 
-                "Melhor preço atual", "Melhor preço no início do período"
+                "Melhor preço atual", 
+                paste("Melhor preço", (n_weeks-1)*7, "dias atrás")
             )
         )
     if (include_last_update){
