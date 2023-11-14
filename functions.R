@@ -48,7 +48,7 @@ plot_theme <- function() {
 
 # Plot indexer
 plot_indexr <- function() {
-    index_table <- index_data
+    index_table <- index_data[-nrow(index_data),]
     
     ### Estimate next week prediction
     prediction_date <- max(index_table$Dia) + 604800
