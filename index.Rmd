@@ -114,11 +114,12 @@ perf_fullpage <- function(title,
                           perf_col, 
                           perf_obs, 
                           table_cols=c("FPS médio", "R$ por FPS**"),
-                          footnote=default_footnote){
+                          footnote=default_footnote,
+                          threshold=NULL){
     
     card_right <- card(
         card_header(h3(paste0("Preço x Performance ", perf_obs, "*"))),
-        plot_perf_scatter(dataset, perf_col),
+        plot_perf_scatter(dataset, perf_col, threshold=threshold),
         card_body(p(footnote))
     )
     card_left <- card(
@@ -136,7 +137,8 @@ perf_fullpage(
     title="games em FHD medium",
     dataset=price_raster_perf,
     perf_col="fhd_medium",
-    perf_obs="(FPS médio)"
+    perf_obs="(FPS médio)",
+    threshold=60
 )
 ```
 
@@ -147,7 +149,8 @@ perf_fullpage(
     title="games em FHD ultra",
     dataset=price_raster_perf,
     perf_col="fhd_ultra",
-    perf_obs="(FPS médio)"
+    perf_obs="(FPS médio)",
+    threshold=60
 )
 ```
 
@@ -158,7 +161,8 @@ perf_fullpage(
     title="games em QHD ultra",
     dataset=price_raster_perf,
     perf_col="qhd_ultra",
-    perf_obs="(FPS médio)"
+    perf_obs="(FPS médio)",
+    threshold=60
 )
 ```
 
@@ -169,7 +173,8 @@ perf_fullpage(
     title="games em 4K ultra",
     dataset=price_raster_perf,
     perf_col="uhd_ultra",
-    perf_obs="(FPS médio)"
+    perf_obs="(FPS médio)",
+    threshold=60
 )
 ```
 
@@ -187,7 +192,8 @@ perf_fullpage(
     title="games em FHD medium com Ray Tracing",
     dataset=price_rt_perf,
     perf_col="fhd_medium",
-    perf_obs="(FPS médio)"
+    perf_obs="(FPS médio)",
+    threshold=60
 )
 ```
 
@@ -198,7 +204,8 @@ perf_fullpage(
     title="games em FHD ultra com Ray Tracing",
     dataset=price_rt_perf,
     perf_col="fhd_ultra",
-    perf_obs="(FPS médio)"
+    perf_obs="(FPS médio)",
+    threshold=60
 )
 ```
 
@@ -209,7 +216,8 @@ perf_fullpage(
     title="games em QHD ultra com Ray Tracing",
     dataset=price_rt_perf,
     perf_col="qhd_ultra",
-    perf_obs="(FPS médio)"
+    perf_obs="(FPS médio)",
+    threshold=60
 )
 ```
 
@@ -220,7 +228,8 @@ perf_fullpage(
     title="games em 4K ultra com Ray Tracing",
     dataset=price_rt_perf,
     perf_col="uhd_ultra",
-    perf_obs="(FPS médio)"
+    perf_obs="(FPS médio)",
+    threshold=60
 )
 ```
 

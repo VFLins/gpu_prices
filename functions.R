@@ -87,7 +87,8 @@ plot_indexr <- function() {
 }
 
 # scatterplot for rasterization data with regression line
-plot_perf_scatter <- function(dataset=price_raster_perf, preset="fhd_ultra") {
+plot_perf_scatter <- function(
+        dataset=price_raster_perf, preset="fhd_ultra", threshold=NULL) {
     discrete_palette <- c("#63A2BB", "#69B57E", "#FD5D63")
     
     curr_dataset <- data.frame(
@@ -96,26 +97,30 @@ plot_perf_scatter <- function(dataset=price_raster_perf, preset="fhd_ultra") {
         Performance = dataset[[preset]],
         Família = dataset$chip_family
     )
-    
-    model <- lm(Performance~Preço, data=curr_dataset)
-    coefs <- coef(model)
-    
+
     p <- ggplot(
         curr_dataset, 
         aes(x=Preço, y=Performance, color=Família, group=Chip)) +
         geom_point(size=4, alpha=.8) +
-        geom_abline(intercept=coefs[1], slope=coefs[2], color=cores["fg"]) +
-        geom_hline(yintercept=60, color=cores["fg"], linetype="dotted") +
         scale_color_manual(values=discrete_palette) +
         labs(x="Preço (R$)", y="Desempenho") + 
         theme(legend.position="none") +
         plot_theme()
-    ggplotly(p) %>%
+    
+    if (!is.null(threshold)){
+        p <- p + 
+            geom_hline(
+                yintercept=threshold, 
+                color=cores["fg"], linetype="dotted")
+    }
+    plotly::ggplotly(p) %>%
         config(displayModeBar=FALSE) %>%
         layout(margin=list(t=0, b=0, l=0, r=0))
 }
 
-plot_perf_table <- function(dataset=price_raster_perf, preset="fhd_ultra", table_cols) {
+plot_perf_table <- function(
+        dataset=price_raster_perf, preset="fhd_ultra", table_cols) {
+    
     curr_dataset <- data.frame(
         Chip = dataset$model,
         Preço = dataset$`Melhor preço`,
