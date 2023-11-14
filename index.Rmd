@@ -13,7 +13,6 @@ output:
 
 ```{r setup, include=FALSE, message=FALSE}
 source("functions.R")
-prices <- readRDS("data/prices.rds")
 ```
 
 INICIO {data-orientation=rows}
@@ -319,14 +318,19 @@ Columns
 
 ```{r price-drops}
 opts <- list(lengthMenu=list(c(15, -1), c("15", "All")), pageLength=15)
-table_left <- DT::datatable(price_drops(2), style="bootstrap4", options=opts)
-table_right <- DT::datatable(price_drops(5, TRUE), style="bootstrap4", options=opts)
+table_left <- DT::datatable(
+    price_drops(2), 
+    style="bootstrap4", options=opts
+)
+table_right <- DT::datatable(
+    price_drops(5, TRUE), 
+    style="bootstrap4", options=opts
+)
 
 card_left <- card(
     card_header(card_title(h3("Quedas de preço durante a última semana"))),
     table_left,
 )
-
 card_right <- card(
     card_header(card_title(h3("Quedas de preço durante o último mês"))),
     table_right,
