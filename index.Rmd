@@ -312,33 +312,28 @@ IA (USO PROFISSIONAL) {data-navmenu="PREÇO E PERFORMANCE"}
 VARIAÇÕES DE PREÇO
 ======================================================================
 
-Row {.tabset .tabset-pills}
+Columns 
 -----------------------------------------------------------------------
 
-### Última semana
+###
 
-```{r price-drops-week}
+```{r price-drops}
 opts <- list(lengthMenu=list(c(15, -1), c("15", "All")), pageLength=15)
-table <- DT::datatable(price_drops(1), style="bootstrap4", options=opts)
+table_left <- DT::datatable(price_drops(2), style="bootstrap4", options=opts)
+table_right <- DT::datatable(price_drops(5, TRUE), style="bootstrap4", options=opts)
 
-card(
+card_left <- card(
     card_header(card_title(h3("Quedas de preço durante a última semana"))),
-    table,
+    table_left,
 )
-```
 
-
-### Último mês
-
-```{r price-drops-month}
-table <- DT::datatable(price_drops(5), style="bootstrap4", options=opts)
-
-card(
+card_right <- card(
     card_header(card_title(h3("Quedas de preço durante o último mês"))),
-    table,
+    table_right,
 )
-```
 
+layout_column_wrap(width=1/2, height="100%", card_left, card_right)
+```
 
 SOBRE
 ======================================================================
