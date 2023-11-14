@@ -17,8 +17,12 @@ catHeader <- function(text = "", level = 3) {
         " ", text, "\n\n"))
 }
 
-format_number <- function(x, prefix="R$") {
-    paste(prefix, formatC(x=x, format="f", decimal.mark=",", digits=2))
+format_number <- function(x, prefix="R$", suffix="") {
+    paste(
+        prefix, 
+        formatC(x=x, format="f", decimal.mark=",", digits=2), 
+        suffix
+    )
 }
 
 totitle <- function(x) {

@@ -80,27 +80,61 @@ perf_data <- function(perf_table=RASTER) {
     return(out)
 }
 
-price_drops <- function(n_weeks) {
+price_drops <- function(n_weeks, include_last_update=FALSE) {
     full_data <- indexr_data()
     last_week <- max(full_data$Semana)-1
-
+    
+    first <- subset(full_data, full_data$Semana == last_week-n_weeks+1)
     older <- subset(full_data, full_data$Semana >= last_week-n_weeks+1)
     current <- subset(full_data, full_data$Semana >= last_week)
+    
+    total_pdiff <- function(x) {
+        percent_diff_decimal <- sum(diff(x)/x[-length(x)]) *100
+    }
     
     percent_var <- aggregate(
         older$`Melhor preço`, 
         by = list(older$Chip), 
-        FUN = function(x) sum(diff(x)/x[-length(x)]) *100
+        FUN = total_pdiff
     )
     
     curr_price <- aggregate(
         current$`Melhor preço`, 
         by = list(current$Chip), 
-        FUN = min
+        FUN = function(x) format_number(min(x))
+    )
+    first_price <- aggregate(
+        first$`Melhor preço`, 
+        by = list(first$Chip), 
+        FUN = function(x) format_number(min(x))
     )
     
-    out <- merge(percent_var, curr_price, by="Group.1")
-    return(out |> setNames(c("Chip", "Variação % do preço", "Preço atual")))
+    out <- merge(percent_var, curr_price, by="Group.1") 
+    out <- merge(out, first_price) |> 
+        setNames(
+            c(
+                "Chip", "Variação do preço", 
+                "Melhor preço atual", "Melhor preço no início do período"
+            )
+        )
+    if (include_last_update){
+        last_update <-  aggregate(
+            PRICES$LastUpdate, 
+            by = list(PRICES$ProductName), 
+            FUN = max
+        ) |> setNames(c("Chip", "Última atualização"))
+        out <- merge(out, last_update, by="Chip")
+    }
+    
+    out <- out[order(out$`Variação do preço`), ]
+    
+    out$`Variação do preço` <- format_number(
+        out$`Variação do preço`, 
+        prefix="", 
+        suffix="%"
+    )
+    row.names(out) <- NULL
+    return(out)
 }
 
 ######## Secondary datasets ########
