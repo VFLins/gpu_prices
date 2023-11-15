@@ -18,9 +18,11 @@ foreign_stores <- c(
 used_stores <- c(
     "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
     "Black Friday")
+unavailable_chips <- c("Geforce Rtx 3090 Ti", "")
 if (nrow(PRICES) > 0) 
     PRICES <- PRICES[
-        !(PRICES$Store %in% c(foreign_stores, used_stores)), ]
+        !(PRICES$Store %in% c(foreign_stores, used_stores)) & 
+        !(PRICES$ProductName %in% unavailable_chips), ]
 
 ######## Manipulation functions ########
 indexr_data <- function(price_table=PRICES, group_for_week=FALSE) {

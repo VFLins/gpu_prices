@@ -145,7 +145,8 @@ plot_perf_table <- function(
         style="bootstrap4", 
         options=list(
             lengthMenu=list(c(15, -1), c("15", "All")),
-            pageLength=15
+            pageLength=15,
+            language=list(url="https://cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese.json")
         )
     )
 }

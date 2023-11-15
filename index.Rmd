@@ -29,7 +29,10 @@ plot_info <- card(
     card_title(h1("Informações")),
     p("Atualizamos o banco de dados todos os dias, com cada modelo específico de placa de vídeo sendo atualizado a cada 3 dias. Aqui no índice, os preços são agregados em conjuntos de 7 dias para uma maior consistência."),
     p("Em verde vemos a média simples do melhor preço encontrado para cada chip gráfico acompanhado aqui, independentemente do modelo ou fabricante, este é nosso índice de preços."),
-    p("Já em branco temos uma previsão do que esperamos para o valor do índice até o fim da próxima semana.")
+    p("Já em branco temos uma previsão do que esperamos para o valor do índice até o fim da próxima semana."),
+    hr(),
+    p("Alguns chips podem estar sendo desconsiderados, por disponibilidade excessivamente baixa ou preços excessivamente incoerentes:"),
+    tags$li(unavailable_chips[1])
 )
 ```
 
@@ -244,7 +247,7 @@ Row  {.tabset .tabset-pills}
 
 ```{r blender-bench}
 perf_fullpage(
-    title="Renderização no Blender",
+    title="Renderização 3D no Blender",
     dataset=price_blender_perf,
     perf_col="CUDA",
     perf_obs="(pontuação no teste sintético)",
@@ -256,7 +259,7 @@ perf_fullpage(
 
 ```{r vray5-bench}
 perf_fullpage(
-    title="Renderização de vídeos (Cinebench Redshift)",
+    title="Renderização 3D no Vray-5",
     dataset=price_vray5_perf,
     perf_col="score",
     perf_obs="(pontuação no teste sintético)",
@@ -326,7 +329,11 @@ Columns
 ###
 
 ```{r price-drops}
-opts <- list(lengthMenu=list(c(15, -1), c("15", "All")), pageLength=15)
+opts <- list(
+    lengthMenu=list(c(17, -1), c("17", "All")), 
+    pageLength=17, 
+    language=list(url="https://cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese.json")
+)
 table_left <- DT::datatable(
     price_drops(2), 
     style="bootstrap4", options=opts
@@ -337,11 +344,11 @@ table_right <- DT::datatable(
 )
 
 card_left <- card(
-    card_header(card_title(h3("Quedas de preço durante a última semana"))),
+    card_header(card_title(h1("Quedas de preço durante a última semana"))),
     table_left,
 )
 card_right <- card(
-    card_header(card_title(h3("Quedas de preço durante o último mês"))),
+    card_header(card_title(h1("Quedas de preço durante o último mês"))),
     table_right,
 )
 
