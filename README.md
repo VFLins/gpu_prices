@@ -7,6 +7,6 @@ Este projeto é voltado à monitorar os dados obtidos com ajuda do meu outro pro
 - Temos informação sobre a variação recente dos preços de diferentes chips de placas de vídeo
 - [planejamento] Análise de agrupamento para indicar as melhores GPUs para cada possível conjunto de necessidades (games, render 3D, IA, etc.)
 
-Para ver o projeto, basta **[Clicar aqui](https://vflins.github.io/Prind_Monitor)**
+Para visitar o webapp, basta **[Clicar aqui](https://vflins.github.io/Prind_Monitor)**
 
 Se quiser deixar alguma sugestão, não deixe de acessar o menu "[Issues](https://github.com/VFLins/Prind_Monitor/issues)" daqui do GitHub, e deixar sua sugestão lá!
