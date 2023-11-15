@@ -9,4 +9,4 @@ Este projeto é voltado à monitorar os dados obtidos com ajuda do meu outro pro
 
 Para ver o projeto, basta **[Clicar aqui](https://vflins.github.io/Prind_Monitor)**
 
-Se quiser deixar alguma sugestão, não deixe de acessar o menu "issues" daqui do GitHub, e deixar sua sugestão lá!
+Se quiser deixar alguma sugestão, não deixe de acessar o menu "[Issues](https://github.com/VFLins/Prind_Monitor/issues)" daqui do GitHub, e deixar sua sugestão lá!
