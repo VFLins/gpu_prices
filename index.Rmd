@@ -32,7 +32,8 @@ plot_info <- card(
     p("Já em branco temos uma previsão do que esperamos para o valor do índice até o fim da próxima semana."),
     hr(),
     p("Alguns chips podem estar sendo desconsiderados, por disponibilidade excessivamente baixa ou preços excessivamente incoerentes:"),
-    tags$li(unavailable_chips[1])
+    tags$li(unavailable_chips[1]),
+    tags$li(unavailable_chips[2])
 )
 ```
 
