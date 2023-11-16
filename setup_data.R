@@ -1,6 +1,8 @@
 library(stringr)
 library(plotly)
 
+source("routine/update_prices.r")
+
 ######## Primary data sets ########
 PRICES <- readRDS("data/prices.rds")
 RASTER <- read.csv("data/tomshardware_raster_avg_fps.csv")
@@ -18,7 +20,9 @@ foreign_stores <- c(
 used_stores <- c(
     "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
     "Black Friday")
-unavailable_chips <- c("Geforce Rtx 3090 Ti", "")
+unavailable_chips <- c(
+    "Geforce Rtx 3090 Ti", "Radeon Rx 6800 Xt"
+                       )
 if (nrow(PRICES) > 0) 
     PRICES <- PRICES[
         !(PRICES$Store %in% c(foreign_stores, used_stores)) & 
