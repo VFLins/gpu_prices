@@ -27,6 +27,7 @@ plot_and_title <- card(
 
 plot_info <- card(
     card_title(h1("Informações")),
+    p("Disclaimer: Este índice está em fase experimental, pode não ser representativo dos preços e suas flutuações com precisão suficiente."),
     p("Atualizamos o banco de dados todos os dias, com cada modelo específico de placa de vídeo sendo atualizado a cada 3 dias. Aqui no índice, os preços são agregados em conjuntos de 7 dias para uma maior consistência."),
     p("Em verde vemos a média simples do melhor preço encontrado para cada chip gráfico acompanhado aqui, independentemente do modelo ou fabricante, este é nosso índice de preços (por enquanto)."),
     p("Já em branco temos uma previsão do que esperamos para o valor do índice até o fim da próxima semana."),
