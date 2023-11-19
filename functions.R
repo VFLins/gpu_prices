@@ -43,6 +43,7 @@ plot_theme <- function() {
         strip.text=element_text(color=cores["fg"], face="bold", size=16),
         panel.grid.minor = element_line(color=cores["bg"]),
         panel.grid.major = element_line(color=cores["bg"]),
+        axis.ticks=element_line(color=cores["bg"]),
     )
 }
 
