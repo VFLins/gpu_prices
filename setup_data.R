@@ -2,7 +2,7 @@ library(stringr)
 library(plotly)
 library(reshape2)
 
-source("routine/update_prices.r")
+#source("routine/update_prices.r")
 
 ######## Primary data sets ########
 PRICES <- readRDS("data/prices.rds")
@@ -17,13 +17,16 @@ GENRAI <- readxl::read_excel("data/prods.xlsx", sheet="gen_ai")
 foreign_stores <- c(
     "Amazon.com.br - Seller", "AliExpress.com", "Smart Info Store", 
     "Tiendamia.com.br", "Shopee", "Techinn.com", "Amazon.com.br - Retail", 
-    "swsimports.com.br", "B&H Photo-Video-Audio")
+    "swsimports.com.br", "B&H Photo-Video-Audio"
+)
 used_stores <- c(
     "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
-    "Black Friday")
+    "Black Friday"
+)
+# Eliminate unavailable or badly priced GPUs
 unavailable_chips <- c(
     "Geforce Rtx 3090 Ti", "Radeon Rx 6800 Xt"
-                       )
+)
 if (nrow(PRICES) > 0) 
     PRICES <- PRICES[
         !(PRICES$Store %in% c(foreign_stores, used_stores)) & 
@@ -58,23 +61,35 @@ indexr_data <- function(price_table=PRICES, group_for_week=FALSE) {
         date <- index_table$Dia
         
         index_table_wide <- dcast(
-            weekly_best_prices, 
+            index_table, 
             Semana + Dia ~ Chip, 
             value.var="Melhor preço"
         )
-        rownames(index_table_wide)
+        #rownames(index_table_wide)
         
-        base_week <- index_table_long$Semana |> min()
+        base_week <- index_table_wide$Semana |> min()
         base_value <- index_table[index_table$Semana == base_week, ] |>
             _[["Melhor preço"]] %>% mean()
         
         ignore_cols <- c("Semana", "Dia")
         use_cols <- index_table$Chip |> unique()
-        centered_index_table_wide <- scale(index_table_wide[, use_cols])
-        centered_index_table_wide[is.na(centered_index_table_wide)] <- 0
+        
+        cum_pdiff <- function(x) {
+            cumsum(diff(x)/x[-length(x)])
+        }
+        
+        scaled_index_table_wide <- sapply(
+            index_table_wide[, use_cols], 
+            cum_pdiff)
+        scaled_index_table_wide[is.na(scaled_index_table_wide)] <- 0
+        
+        price_index <- rowMeans(scaled_index_table_wide, na.rm=TRUE)
+        price_index <- c(0, price_index)
+        price_index <- base_value + (base_value*price_index)
         
         index_table <- aggregate(price, list(week, date), FUN=mean) |> 
             setNames(c("Semana", "Dia", "Indice"))
+        index_table[["Indice"]] <- price_index
     }
     return(index_table)
 }
@@ -122,8 +137,8 @@ price_drops <- function(n_weeks, include_last_update=FALSE) {
     )
     
     curr_price <- aggregate(
-        current$`Melhor preço`, 
-        by = list(current$Chip), 
+        current[["Melhor preço"]], 
+        by = list(current[["Chip"]]), 
         FUN = function(x) format_number(min(x))
     )
     first_price <- aggregate(
@@ -150,9 +165,9 @@ price_drops <- function(n_weeks, include_last_update=FALSE) {
         out <- merge(out, last_update, by="Chip")
     }
     
-    out <- out[order(out$`Variação do preço`), ]
+    out <- out[order(out[["Variação do preço"]]), ]
     
-    out$`Variação do preço` <- format_number(
+    out[["Variação do preço"]] <- format_number(
         out$`Variação do preço`, 
         prefix="", 
         suffix="%"
