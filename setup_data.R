@@ -1,5 +1,6 @@
 library(stringr)
 library(plotly)
+library(reshape2)
 
 source("routine/update_prices.r")
 
@@ -55,6 +56,22 @@ indexr_data <- function(price_table=PRICES, group_for_week=FALSE) {
         price <- index_table$`Melhor preço`
         week <- index_table$Semana
         date <- index_table$Dia
+        
+        index_table_wide <- dcast(
+            weekly_best_prices, 
+            Semana + Dia ~ Chip, 
+            value.var="Melhor preço"
+        )
+        rownames(index_table_wide)
+        
+        base_week <- index_table_long$Semana |> min()
+        base_value <- index_table[index_table$Semana == base_week, ] |>
+            _[["Melhor preço"]] %>% mean()
+        
+        ignore_cols <- c("Semana", "Dia")
+        use_cols <- index_table$Chip |> unique()
+        centered_index_table_wide <- scale(index_table_wide[, use_cols])
+        centered_index_table_wide[is.na(centered_index_table_wide)] <- 0
         
         index_table <- aggregate(price, list(week, date), FUN=mean) |> 
             setNames(c("Semana", "Dia", "Indice"))
