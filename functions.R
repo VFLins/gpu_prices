@@ -1,5 +1,7 @@
 library(forecast)
+library(Benchmarking)
 library(bslib)
+library(bsicons)
 library(htmltools)
 library(DT)
 library(flexdashboard)
