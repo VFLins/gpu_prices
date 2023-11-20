@@ -1,5 +1,6 @@
 library(stringr)
 library(plotly)
+library(Benchmarking)
 library(reshape2)
 
 #source("routine/update_prices.r")
@@ -185,3 +186,5 @@ price_blender_perf <- perf_data(BLENDR)
 price_videos_perf <- perf_data(VIDEOS)
 price_vray5_perf <- perf_data(RAY5VD)
 price_gen_ai_perf <- perf_data(GENRAI)
+
+#dea.direct(price_rt_perf$fhd_ultra, price_rt_perf$`Melhor preço`, DIRECT=c(1))
