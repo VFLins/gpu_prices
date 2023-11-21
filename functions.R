@@ -91,16 +91,80 @@ plot_indexr <- function() {
 
 # scatterplot for rasterization data with regression line
 plot_perf_scatter <- function(
-        dataset=price_raster_perf, preset="fhd_ultra", threshold=NULL) {
+        dataset=price_raster_perf, preset="fhd_ultra", 
+        threshold=NULL, low_threshold=NULL) {
     discrete_palette <- c("#63A2BB", "#69B57E", "#FD5D63")
     
+    # Standard names to `dataset`
     curr_dataset <- data.frame(
         Chip = dataset$model,
         Preço = dataset$`Melhor preço`,
         Performance = dataset[[preset]],
         Família = dataset$chip_family
     )
+    
+    clean_dataset <- na.omit(curr_dataset)
+    
+    # Metadata for recommendations
+    efficient <- dea.direct( 
+        clean_dataset$Preço, 
+        clean_dataset$Performance,
+        DIRECT=1, RTS="fdh")$eff == 1
+    
+    if (is.null(low_threshold))
+        min_perf <- clean_dataset$Performance > 0
+    else
+        min_perf <- clean_dataset$Performance > low_threshold
+    
+    if (is.null(low_threshold))
+        ideal_perf <- clean_dataset$Performance > 0
+    else
+        ideal_perf <- clean_dataset$Performance > threshold
+    
+    price_limit <- quantile(clean_dataset$Preço, probs=c(.33, .66))
+    
+    low_budget_recom <- clean_dataset$Chip[
+        efficient & 
+        min_perf & 
+        (clean_dataset$Preço <= price_limit[1])
+    ]
+    average_recom <- clean_dataset$Chip[
+        efficient & 
+        ideal_perf &
+        (clean_dataset$Preço > price_limit[1]) &
+        (clean_dataset$Preço <= price_limit[2])
+    ]
+    high_end_recom <-  clean_dataset$Chip[
+        efficient & 
+        ideal_perf &
+        (clean_dataset$Preço > price_limit[2])
+    ]
+    
+    # Recommendation cards
+    recommends <- list(
+        low=value_box(
+            title = "Opções para o orçamento mais apertado",
+            value = paste(length(low_budget_recom), "recomendações:"),
+            showcase = bs_icon("wallet"),
+            !!!lapply(low_budget_recom, function(x) tags$li(x |> toupper()))
+        ),
+        mid=value_box(
+            title = "Desempenho satisfatório, custo moderado",
+            value = paste(length(average_recom), "recomendações:"),
+            theme_color = "success",
+            showcase = bs_icon("hand-thumbs-up-fill"),
+            !!!lapply(average_recom, function(x) tags$li(x |> toupper()))
+        ),
+        hi=value_box(
+            title = "Total desempenho, poder sem limites!",
+            value = paste(length(high_end_recom), "recomendações:"),
+            theme_color = "danger",
+            showcase = bs_icon("rocket-takeoff-fill"),
+            !!!lapply(high_end_recom, function(x) tags$li(x |> toupper()))
+        )
+    )
 
+    # Price x Performance plot
     p <- ggplot(
         curr_dataset, 
         aes(x=Preço, y=Performance, color=Família, group=Chip)) +
@@ -116,9 +180,14 @@ plot_perf_scatter <- function(
                 yintercept=threshold, 
                 color=cores["fg"], linetype="dotted")
     }
-    plotly::ggplotly(p) %>%
+    
+    p <- plotly::ggplotly(p) %>%
         config(displayModeBar=FALSE) %>%
         layout(margin=list(t=0, b=0, l=0, r=0))
+    
+    # Card with VBs and plot
+
+    return(list(recommends[[1]], recommends[[2]], recommends[[3]], p))
 }
 
 plot_perf_table <- function(

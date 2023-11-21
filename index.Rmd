@@ -25,6 +25,8 @@ plot_and_title <- card(
     plot_indexr()
 )
 
+bullet_point <- lapply(unavailable_chips, function(x) tags$li(x |> toupper()))
+
 plot_info <- card(
     card_title(h1("Informações")),
     p("Disclaimer: Este índice está em fase experimental, pode não ser representativo dos preços e suas flutuações com precisão suficiente."),
@@ -33,8 +35,7 @@ plot_info <- card(
     p("Já em branco temos uma previsão do que esperamos para o valor do índice até o fim da próxima semana."),
     hr(),
     p("Alguns chips podem estar sendo desconsiderados, por disponibilidade excessivamente baixa ou preços excessivamente incoerentes:"),
-    tags$li(unavailable_chips[1]),
-    tags$li(unavailable_chips[2])
+    !!!bullet_point
 )
 ```
 
@@ -111,7 +112,7 @@ Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
 
 ```{r pg2-p1-setup}
-default_footnote <- "*Fonte de dados de desempenho na página 'SOBRE', **Menor é melhor"
+default_footnote <- "*Fonte de dados de desempenho na página 'SOBRE', **Menor é melhor, Aviso: As recomendações ainda estão em fase experimental"
 
 
 perf_fullpage <- function(title, 
@@ -120,11 +121,23 @@ perf_fullpage <- function(title,
                           perf_obs, 
                           table_cols=c("FPS médio", "R$ por FPS**"),
                           footnote=default_footnote,
-                          threshold=NULL){
+                          threshold=NULL,
+                          low_threshold=NULL){
+    
+    visual_elements <- plot_perf_scatter(
+        dataset, perf_col, 
+        threshold=threshold, 
+        low_threshold=low_threshold
+    )
     
     card_right <- card(
         card_header(h3(paste0("Preço x Performance ", perf_obs, "*"))),
-        plot_perf_scatter(dataset, perf_col, threshold=threshold),
+        layout_columns(
+            fillable=FALSE,
+            visual_elements[[1]], visual_elements[[2]], visual_elements[[3]]),
+        layout_columns(
+            fillable=TRUE,
+            visual_elements[[4]]),
         card_body(p(footnote))
     )
     card_left <- card(
@@ -182,7 +195,6 @@ perf_fullpage(
     threshold=60
 )
 ```
-
 
 JOGOS COM RAY TRACING {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
