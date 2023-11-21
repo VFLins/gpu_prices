@@ -112,8 +112,11 @@ Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
 
 ```{r pg2-p1-setup}
-default_footnote <- "*Fonte de dados de desempenho na página 'SOBRE', **Menor é melhor, Aviso: As recomendações ainda estão em fase experimental"
-
+default_footnotes <- c(
+    "*Fonte de dados de desempenho na página 'SOBRE'", 
+    "**Menor é melhor", 
+    "Aviso: As recomendações ainda estão em fase experimental"
+)
 
 perf_fullpage <- function(title, 
                           dataset, 
@@ -130,20 +133,32 @@ perf_fullpage <- function(title,
         low_threshold=low_threshold
     )
     
-    card_right <- card(
-        card_header(h3(paste0("Preço x Performance ", perf_obs, "*"))),
-        layout_columns(
-            fillable=FALSE,
-            visual_elements[[1]], visual_elements[[2]], visual_elements[[3]]),
-        layout_columns(
-            fillable=TRUE,
-            visual_elements[[4]]),
-        card_body(p(footnote))
+    card_right <- navset_card_tab(
+        title=h3(paste0("Preço x Performance ", perf_obs, "*")),
+        nav_panel(
+            "Gráfico",
+            visual_elements[[4]]
+        ),
+        nav_panel(
+            "Recomendações",
+            layout_column_wrap(
+                width=1,
+                visual_elements[[1]], 
+                visual_elements[[2]], 
+                visual_elements[[3]]
+            )
+        ),
+        nav_panel(
+            title=bs_icon("info-circle"),
+            !!!lapply(default_footnotes, function(x) p(x))
+        )
+        
     )
     card_left <- card(
         card_header(card_title(h3(paste("Ranking GPUs para", title, "*")))),
         plot_perf_table(dataset, perf_col, table_cols=table_cols),
     )
+    
     layout_column_wrap(width=1/2, height="100%", card_left, card_right)
 }
 ```
@@ -156,7 +171,8 @@ perf_fullpage(
     dataset=price_raster_perf,
     perf_col="fhd_medium",
     perf_obs="(FPS médio)",
-    threshold=60
+    threshold=60,
+    low_threshold=30 
 )
 ```
 
@@ -168,7 +184,8 @@ perf_fullpage(
     dataset=price_raster_perf,
     perf_col="fhd_ultra",
     perf_obs="(FPS médio)",
-    threshold=60
+    threshold=60,
+    low_threshold=30
 )
 ```
 
@@ -180,7 +197,8 @@ perf_fullpage(
     dataset=price_raster_perf,
     perf_col="qhd_ultra",
     perf_obs="(FPS médio)",
-    threshold=60
+    threshold=60,
+    low_threshold=30
 )
 ```
 
@@ -192,7 +210,8 @@ perf_fullpage(
     dataset=price_raster_perf,
     perf_col="uhd_ultra",
     perf_obs="(FPS médio)",
-    threshold=60
+    threshold=60,
+    low_threshold=30
 )
 ```
 
@@ -208,9 +227,10 @@ Row {.tabset .tabset-pills}
 perf_fullpage(
     title="games em FHD medium com Ray Tracing",
     dataset=price_rt_perf,
-    perf_col="fhd_medium",
+    perf_col="fhd_ultra",
     perf_obs="(FPS médio)",
-    threshold=60
+    threshold=60,
+    low_threshold=30
 )
 ```
 
@@ -220,9 +240,10 @@ perf_fullpage(
 perf_fullpage(
     title="games em FHD ultra com Ray Tracing",
     dataset=price_rt_perf,
-    perf_col="fhd_ultra",
+    perf_col="fhd_medium",
     perf_obs="(FPS médio)",
-    threshold=60
+    threshold=60,
+    low_threshold=30
 )
 ```
 
@@ -234,7 +255,8 @@ perf_fullpage(
     dataset=price_rt_perf,
     perf_col="qhd_ultra",
     perf_obs="(FPS médio)",
-    threshold=60
+    threshold=60,
+    low_threshold=30
 )
 ```
 
@@ -246,7 +268,8 @@ perf_fullpage(
     dataset=price_rt_perf,
     perf_col="uhd_ultra",
     perf_obs="(FPS médio)",
-    threshold=60
+    threshold=60,
+    low_threshold=30
 )
 ```
 
