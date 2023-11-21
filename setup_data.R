@@ -2,7 +2,7 @@ library(stringr)
 library(plotly)
 library(reshape2)
 
-#source("routine/update_prices.r")
+source("routine/update_prices.r")
 
 ######## Primary data sets ########
 PRICES <- readRDS("data/prices.rds")
@@ -185,19 +185,3 @@ price_blender_perf <- perf_data(BLENDR)
 price_videos_perf <- perf_data(VIDEOS)
 price_vray5_perf <- perf_data(RAY5VD)
 price_gen_ai_perf <- perf_data(GENRAI)
-
-efficient <- dea.direct( 
-    price_rt_perf$`Melhor preço`, 
-    price_rt_perf$fhd_ultra,
-    DIRECT=1, RTS="fdh")$eff == 1
-min_fps <- price_rt_perf$fhd_ultra > 60
-max_price <-price_rt_perf$`Melhor preço` < 3500
-recm <- price_rt_perf$model[efficient & min_fps & max_price]
-
-value_box(
-    title = "I got",
-    value = "99 problems",
-    showcase = bs_icon("music-note-beamed"),
-    !!!paste0("[", toupper(recm), "] ")
-)
-           
