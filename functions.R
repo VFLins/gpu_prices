@@ -143,23 +143,23 @@ plot_perf_scatter <- function(
     # Recommendation cards
     recommends <- list(
         low=value_box(
-            title = "Opções para o orçamento mais apertado",
-            value = paste(length(low_budget_recom), "recomendações:"),
-            showcase = bs_icon("wallet"),
+            title = "",
+            value = "Opções para o orçamento mais apertado",
+            showcase = bs_icon("wallet2"),
             !!!lapply(low_budget_recom, function(x) tags$li(x |> toupper()))
         ),
         mid=value_box(
-            title = "Desempenho satisfatório, custo moderado",
-            value = paste(length(average_recom), "recomendações:"),
+            title = "",
+            value = "Desempenho satisfatório, custo moderado",
             theme_color = "success",
-            showcase = bs_icon("hand-thumbs-up-fill"),
+            showcase = bs_icon("hand-thumbs-up"),
             !!!lapply(average_recom, function(x) tags$li(x |> toupper()))
         ),
         hi=value_box(
-            title = "Total desempenho, poder sem limites!",
-            value = paste(length(high_end_recom), "recomendações:"),
+            title = "",
+            value = "Total desempenho, poder sem limites!",
             theme_color = "danger",
-            showcase = bs_icon("rocket-takeoff-fill"),
+            showcase = bs_icon("rocket-takeoff"),
             !!!lapply(high_end_recom, function(x) tags$li(x |> toupper()))
         )
     )
