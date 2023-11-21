@@ -183,3 +183,25 @@ div.dataTables_wrapper div.dataTables_length select {
     background-color: #353535;
     border-color: #4d4d4d;
 }
+
+/* cards */
+
+.html-fill-container{
+    border-radius: 10px;
+}
+
+.bslib-value-box .value-box-area.border-start {
+    font-size: medium;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus{
+    color: #ffffff;
+    background-color: #222222;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.nav>li>a:hover, .nav>li>a:focus{
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
