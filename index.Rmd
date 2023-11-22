@@ -133,8 +133,8 @@ perf_fullpage <- function(title,
         low_threshold=low_threshold
     )
     
-    card_right <- navset_card_tab(
-        title=h3(paste0("Preço x Performance ", perf_obs, "*")),
+    card_right <- navset_bar(
+        title=paste0("Preço x Performance ", perf_obs, "*"),
         nav_panel(
             "Gráfico",
             visual_elements[[4]]
@@ -142,7 +142,7 @@ perf_fullpage <- function(title,
         nav_panel(
             "Recomendações",
             layout_column_wrap(
-                width=1,
+                width="38%",
                 visual_elements[[1]], 
                 visual_elements[[2]], 
                 visual_elements[[3]]
@@ -155,7 +155,7 @@ perf_fullpage <- function(title,
         
     )
     card_left <- card(
-        card_header(card_title(h3(paste("Ranking GPUs para", title, "*")))),
+        card_header(h3(paste("Ranking GPUs para", title, "*"))),
         plot_perf_table(dataset, perf_col, table_cols=table_cols),
     )
     
