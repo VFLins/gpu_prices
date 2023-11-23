@@ -187,7 +187,7 @@ plot_perf_scatter <- function(
     
     # Card with VBs and plot
 
-    return(list(recommends[[1]], recommends[[2]], recommends[[3]], p))
+    return(list(recommends, p))
 }
 
 plot_perf_table <- function(
