@@ -108,7 +108,7 @@ valueBox(update_date, icon="ion-android-calendar", color=cores["fg"])
 JOGOS {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
-Row {.tabset}
+Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
 
 ```{r pg2-p1-setup}
@@ -132,30 +132,21 @@ perf_fullpage <- function(title,
         threshold=threshold, 
         low_threshold=low_threshold
     )
-    
-    card_right <- navset_pill(
-        header=h3(paste0("Preço x Performance ", perf_obs, "*")),
-        nav_panel(
-            "Gráfico",
-            visual_elements[[4]]
-        ),
-        nav_panel(
-            "Recomendações",
-            layout_column_wrap(
-                width=1,
-                visual_elements[[1]], 
-                visual_elements[[2]], 
-                visual_elements[[3]]
+    #title=paste0("Preço x Performance ", perf_obs, "*")
+    card_right <- card(
+        card_header(h3(paste0("Preço x Performance ", perf_obs, "*"))),
+        navset_card_tab(
+            height="100%",
+            nav_panel("Gráfico", visual_elements[[2]]),
+            nav_panel("Recomendações", !!!visual_elements[1]),
+            nav_panel(
+                title=bs_icon("info-circle"),
+                !!!lapply(default_footnotes, function(x) p(x))
             )
-        ),
-        nav_panel(
-            title=bs_icon("info-circle"),
-            !!!lapply(default_footnotes, function(x) p(x))
         )
-        
     )
     card_left <- card(
-        card_header(card_title(h3(paste("Ranking GPUs para", title, "*")))),
+        card_header(h3(paste("Ranking GPUs para", title, "*"))),
         plot_perf_table(dataset, perf_col, table_cols=table_cols),
     )
     

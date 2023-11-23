@@ -95,6 +95,7 @@ ul.nav-pills {
 .nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
     color: #222222;
     background-color: #b4edc4;
+    border-radius: 10px;
 }
 
 
@@ -173,6 +174,7 @@ div.dataTables_wrapper div.dataTables_length select {
     color: #ffffff;
     background-color: #427f53;
     border-color: transparent;
+    border-radius: 10px;
 }
 
 .pagination>li>a, .pagination>li>span {
@@ -188,11 +190,6 @@ div.dataTables_wrapper div.dataTables_length select {
 }
 
 /* cards */
-
-.html-fill-container{
-    border-radius: 10px;
-}
-
 .bslib-value-box .value-box-area.border-start {
     font-size: medium;
 }
