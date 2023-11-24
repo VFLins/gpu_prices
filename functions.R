@@ -109,7 +109,7 @@ plot_perf_scatter <- function(
     efficient <- dea.direct( 
         clean_dataset$Preço, 
         clean_dataset$Performance,
-        DIRECT=1, RTS="fdh")$eff == 1
+        DIRECT=1, RTS="add")$eff == 1
     
     if (is.null(low_threshold))
         min_perf <- clean_dataset$Performance > 0
@@ -183,7 +183,10 @@ plot_perf_scatter <- function(
     
     p <- plotly::ggplotly(p) %>%
         config(displayModeBar=FALSE) %>%
-        layout(margin=list(t=0, b=0, l=0, r=0))
+        layout(
+            margin=list(t=0, b=0, l=0, r=0), 
+            aspectratio=list(x=1, y=1)
+        )
     
     # Card with VBs and plot
 
