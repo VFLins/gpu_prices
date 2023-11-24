@@ -109,7 +109,7 @@ plot_perf_scatter <- function(
     efficient <- dea.direct( 
         clean_dataset$Preço, 
         clean_dataset$Performance,
-        DIRECT=1, RTS="vrs")$eff == 1
+        DIRECT=1, RTS="fdh")$eff == 1
     
     if (is.null(low_threshold))
         min_perf <- clean_dataset$Performance > 0
@@ -122,6 +122,8 @@ plot_perf_scatter <- function(
         ideal_perf <- clean_dataset$Performance > threshold
     
     price_limit <- quantile(clean_dataset$Preço, probs=c(.33, .66))
+    
+    efficient_chips <- clean_dataset$Chip[efficient]
     
     low_budget_recom <- clean_dataset$Chip[
         efficient & 
@@ -167,8 +169,11 @@ plot_perf_scatter <- function(
     # Price x Performance plot
     p <- ggplot(
         curr_dataset, 
-        aes(x=Preço, y=Performance, color=Família, group=Chip)) +
-        geom_point(size=4, alpha=.8) +
+        aes(x=Preço, y=Performance, color=Família)) +
+        geom_line(
+            data=~subset(curr_dataset, Chip %in% efficient_chips),
+            linewidth=1.2, color=cores["fg"]) +
+        geom_point(mapping=aes(group=Chip), size=4, alpha=.8) +
         scale_color_manual(values=discrete_palette) +
         labs(x="Preço (R$)", y="Desempenho") + 
         theme(legend.position="none") +
@@ -185,11 +190,10 @@ plot_perf_scatter <- function(
         config(displayModeBar=FALSE) %>%
         layout(
             margin=list(t=0, b=0, l=0, r=0), 
-            aspectratio=list(x=1, y=1)
+            autosize=TRUE
         )
     
-    # Card with VBs and plot
-
+    # Card with Value-Boxes and Plot
     return(list(recommends, p))
 }
 
