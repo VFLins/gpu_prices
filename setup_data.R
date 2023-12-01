@@ -2,7 +2,7 @@ library(stringr)
 library(plotly)
 library(reshape2)
 
-source("routine/update_prices.r")
+#source("routine/update_prices.r")
 
 ######## Primary data sets ########
 PRICES <- readRDS("data/prices.rds")
@@ -17,7 +17,8 @@ GENRAI <- readxl::read_excel("data/prods.xlsx", sheet="gen_ai")
 foreign_stores <- c(
     "Amazon.com.br - Seller", "AliExpress.com", "Smart Info Store", 
     "Tiendamia.com.br", "Shopee", "Techinn.com", "Amazon.com.br - Retail", 
-    "swsimports.com.br", "B&H Photo-Video-Audio"
+    "swsimports.com.br", "B&H Photo-Video-Audio", "eBay", "eBay - pluto-house",
+    "eBay - imicros"
 )
 used_stores <- c(
     "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
