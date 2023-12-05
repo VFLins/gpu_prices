@@ -2,7 +2,7 @@ library(stringr)
 library(plotly)
 library(reshape2)
 
-#source("routine/update_prices.r")
+source("routine/update_prices.r")
 
 ######## Primary data sets ########
 PRICES <- readRDS("data/prices.rds")

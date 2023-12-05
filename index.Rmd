@@ -313,7 +313,7 @@ perf_fullpage(
 )
 ```
 
-IA (USO RECREATIVO) {data-navmenu="PREÇO E PERFORMANCE"}
+IA Generativa {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
 Row {.tabset .tabset-pills}
@@ -342,11 +342,6 @@ perf_fullpage(
     table_cols=c("Imagens por minuto", "R$/imagem/minuto")
 )
 ```
-
-IA (USO PROFISSIONAL) {data-navmenu="PREÇO E PERFORMANCE"}
-=======================================================================
-
-### Em construção...
 
 VARIAÇÕES DE PREÇO
 ======================================================================
