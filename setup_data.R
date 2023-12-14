@@ -18,7 +18,7 @@ foreign_stores <- c(
     "Amazon.com.br - Seller", "AliExpress.com", "Smart Info Store", 
     "Tiendamia.com.br", "Shopee", "Techinn.com", "Amazon.com.br - Retail", 
     "swsimports.com.br", "B&H Photo-Video-Audio", "eBay", "eBay - pluto-house",
-    "eBay - imicros"
+    "eBay - imicros", "aliexpress.com"
 )
 used_stores <- c(
     "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
