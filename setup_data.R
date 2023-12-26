@@ -22,7 +22,7 @@ foreign_stores <- c(
 )
 used_stores <- c(
     "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
-    "Black Friday", "4Gamers", "Site Oficial"
+    "Black Friday", "4Gamers", "Site Oficial", "Rhr Cosméticos"
 )
 # Eliminate unavailable or badly priced GPUs
 unavailable_chips <- c(
