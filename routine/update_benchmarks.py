@@ -222,15 +222,15 @@ def get_vray5_render_pts():
     
 # run from command line: python3 ./routine/update_benchmarks.py
 if __name__ == "__main__":
-    #try: 
-    #    get_th_avg_fps()
-    #except Exception as expt: 
-    #    print("Error trying to collect Avg. FPS from Tom's Hardware")
-    #    print(expt)
+    try: 
+        get_th_avg_fps()
+    except Exception as expt: 
+        print("Error trying to collect Avg. FPS from Tom's Hardware")
+        print(expt)
     
-    if path.isfile(getcwd() + "\\data\\prices.rds"):
-        get_vray5_render_pts()
-    else: 
-        print("Not able to collect Vray-5 benchmarks, '\\data\\prices.rds' not found in this folder")
+    #if path.isfile(getcwd() + r"\\data\\prices.rds"):
+    #    get_vray5_render_pts()
+    #else: 
+    #    print(r"Not able to collect Vray-5 benchmarks, '\\data\\prices.rds' not found in this folder")
     
     
