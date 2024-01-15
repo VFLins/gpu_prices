@@ -313,7 +313,7 @@ perf_fullpage(
 )
 ```
 
-IA Generativa {data-navmenu="PREÇO E PERFORMANCE"}
+IA GENERATIVA {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
 Row {.tabset .tabset-pills}
