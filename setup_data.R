@@ -103,7 +103,11 @@ perf_data <- function(perf_table=RASTER) {
     prices_table <- indexr_data()
     prices_table <- subset(
         prices_table, 
-        prices_table$Semana == max(prices_table$Semana))
+        prices_table$Semana >= max(prices_table$Semana)-1)
+
+    redundant_mask <- !(prices_table$Chip |> duplicated(fromLast=TRUE))
+    prices_table <- prices_table[redundant_mask, ]
+    
     
     # Padronize model names
     prices_table["model"] <- tolower(prices_table$Chip)
