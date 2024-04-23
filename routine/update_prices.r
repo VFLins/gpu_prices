@@ -3,7 +3,7 @@ library(DBI)
 ### Update price data ###
 
 # connecting to database
-db_path <- 'C:/Users/vflin/Projetos/Price_indexr/data/database.db'
+db_path <- 'C:/Users/vflin/code/Price_indexr/data/database.db'
 con <- dbConnect(RSQLite::SQLite(), db_path)
 
 # loading tables
