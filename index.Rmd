@@ -108,6 +108,8 @@ valueBox(update_date, icon="ion-android-calendar", color=cores["fg"])
 JOGOS {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
+<br><br>
+
 Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
 
@@ -209,6 +211,8 @@ perf_fullpage(
 JOGOS COM RAY TRACING {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
+<br><br>
+
 Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
 
@@ -268,6 +272,8 @@ perf_fullpage(
 RENDERIZAÇÃO 3D {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
+<br><br>
+
 Row  {.tabset .tabset-pills}
 -----------------------------------------------------------------------
 
@@ -298,6 +304,8 @@ perf_fullpage(
 RENDERIZAÇÃO VIDEO {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
+<br><br>
+
 Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
 
@@ -315,6 +323,8 @@ perf_fullpage(
 
 IA GENERATIVA {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
+
+<br><br>
 
 Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
@@ -345,6 +355,8 @@ perf_fullpage(
 
 VARIAÇÕES DE PREÇO
 ======================================================================
+
+<br><br>
 
 Columns 
 -----------------------------------------------------------------------
@@ -380,6 +392,8 @@ layout_column_wrap(width=1/2, height="100%", card_left, card_right)
 
 SOBRE
 ======================================================================
+
+<br><br>
 
 Ícones da logo e favicon: [prettycon - Flaticon](https://www.flaticon.com/free-icons/graphic-card)
 
