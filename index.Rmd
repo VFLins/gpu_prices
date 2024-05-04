@@ -351,7 +351,7 @@ Columns
 
 ###
 
-```{r price-drops, eval=FALSE}
+```{r price-drops}
 opts <- list(
     lengthMenu=list(c(17, -1), c("17", "All")), 
     pageLength=17, 
