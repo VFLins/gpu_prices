@@ -28,7 +28,7 @@ floor_date <- as.POSIXct((Sys.Date() - 184))
 data <- data[data$Date >= floor_date, ]
 
 # save file
-saveRDS(data, file = "data/prices.rds")
+saveRDS(data, file = here::here("backend", "data", "prices.rds"))
 
 # cleanup
 dbDisconnect(con)

@@ -1,17 +1,22 @@
 library(stringr)
 library(plotly)
 library(reshape2)
+source(here::here("frontend", "scripts", "update_prices.R"))
 
-source("routine/update_prices.r")
+PRICES_RDS_PATH <- here::here("backend", "data", "prices.Rds")
+VRAY5_BENCH_PATH <- here::here("backend", "data", "vray5_benchmarks.csv")
+TH_RASTER_PERF_PATH <- here::here("backend", "data", "tomshardware_raster_avg_fps.csv")
+TH_RT_PERF_PATH <- here::here("backend", "data", "tomshardware_rt_avg_fps.csv")
+PRODUCTS_SHEET_PATH <- here::here("backend", "data", "prods.xlsx")
 
 ######## Primary data sets ########
-PRICES <- readRDS("data/prices.rds")
-RASTER <- read.csv("data/tomshardware_raster_avg_fps.csv")
-RAYTRC <- read.csv("data/tomshardware_rt_avg_fps.csv")
-BLENDR <- readxl::read_excel("data/prods.xlsx", sheet="blender")
-VIDEOS <- readxl::read_excel("data/prods.xlsx", sheet="videos")
-RAY5VD <- read.csv("data/vray5_benchmarks.csv")[, c("model", "score")]
-GENRAI <- readxl::read_excel("data/prods.xlsx", sheet="gen_ai")
+PRICES <- readRDS(PRICES_RDS_PATH)
+RASTER <- read.csv(TH_RASTER_PERF_PATH)
+RAYTRC <- read.csv(TH_RT_PERF_PATH)
+BLENDR <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="blender")
+VIDEOS <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="videos")
+GENRAI <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="gen_ai")
+RAY5VD <- read.csv(VRAY5_BENCH_PATH)[, c("model", "score")]
 
 # Eliminate stores with non-representative prices
 foreign_stores <- c(
