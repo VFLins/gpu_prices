@@ -3,6 +3,7 @@ library(DBI)
 ### Update price data ###
 
 # connecting to database
+
 db_path <- readRDS(file=here::here("frontend", "assets", "dbpath.rds"))
 con <- dbConnect(RSQLite::SQLite(), db_path)
 
