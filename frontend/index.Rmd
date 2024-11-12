@@ -8,7 +8,7 @@ output:
       - {icon: "ion-social-github", title: "Código",href: "https://github.com/VFLins/Prind_Monitor"}
       - {icon: "ion-android-person", title: "Sobre mim", href: "https://sites.google.com/view/vflins/"}
       - {icon: "ion-cash", title: "Me apoie", href: "https://www.paypal.com/donate/?hosted_button_id=LCT6TBWH4LN8S"}
-    css: "theme.css"
+    css: "assets/theme.css"
 ---
 
 ```{r setup, include=FALSE, message=FALSE}
@@ -364,6 +364,7 @@ Columns
 ###
 
 ```{r price-drops}
+try
 opts <- list(
     lengthMenu=list(c(17, -1), c("17", "All")), 
     pageLength=17, 
