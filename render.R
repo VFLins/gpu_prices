@@ -1,4 +1,5 @@
-# run like: rscript .\render.R
+# run like: rscript render.R
+# to set a new prices db path: rscript render.R \path\to\database.db
 ## Check packages and install missing ones
 packages <- c(
     "zoo", "DBI", "shiny", "dplyr", "tidyr", "scales", "plotly", "rmarkdown",
@@ -13,8 +14,6 @@ for (pkg in packages) {
 PROJECT_ROOT = here::here()
 
 # Check pandoc installation places dynamically
-message("Using pandoc version:")
-
 pandoc_places <- c(
     paste0(Sys.getenv("USERPROFILE"),"\\AppData\\Local\\Pandoc"),
     paste0(Sys.getenv("PROGRAMFILES"),"\\Pandoc")
@@ -27,6 +26,14 @@ for (place in pandoc_places) {
 if (!rmarkdown::pandoc_available()) {
     message("Pandoc not found, please install it on an usual location.")
     quit()    
+}
+message(paste("Using pandoc version:", rmarkdown::pandoc_version()))
+
+# Update database path
+args <- commandArgs(trailingOnly=TRUE)
+if (length(args) == 1) {
+    message(paste("Setting dbpath variable to", args[1]))
+    saveRDS(args[1], file=here::here("frontend", "assets", "dbpath.rds"))
 }
 
 # Render document

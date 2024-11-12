@@ -43,3 +43,4 @@ vignettes/*.pdf
 /pyenv
 /.venv
 /venv
+frontend/assets/dbpath.rds
