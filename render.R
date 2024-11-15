@@ -32,8 +32,18 @@ message(paste("Using pandoc version:", rmarkdown::pandoc_version()))
 # Update database path
 args <- commandArgs(trailingOnly=TRUE)
 if (length(args) == 1) {
-    message(paste("Setting dbpath variable to", args[1]))
-    saveRDS(args[1], file=here::here("frontend", "assets", "dbpath.rds"))
+    if (file.exists(args[1])) {
+        message(paste("Setting dbpath variable to", args[1]))
+        saveRDS(args[1], file=here::here("frontend", "assets", "dbpath.rds"))
+    } else {
+        message("Could not update dbpath variable, file path does not exist.")
+    }
+}
+
+# exit if dbpath is not set
+if (!file.exists(here::here("frontend", "assets", "dbpath.rds"))) {
+    message("dbpath variable is not set, run this again with the dbpath as an argument.")
+    quit()
 }
 
 # Render document
