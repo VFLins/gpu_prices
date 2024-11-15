@@ -34,7 +34,7 @@ used_stores <- c(
 )
 # Eliminate unavailable or badly priced GPUs
 unavailable_chips <- c(
-    "Geforce Rtx 3090 Ti", "Radeon Rx 6800 Xt"
+    "Geforce Rtx 3090 Ti", "Radeon Rx 6800 Xt", "Geforce Rtx 3090"
 )
 if (nrow(PRICES) > 0) 
     PRICES <- PRICES[
