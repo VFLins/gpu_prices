@@ -23,12 +23,14 @@ foreign_stores <- c(
     "Amazon.com.br - Seller", "AliExpress.com", "Smart Info Store", 
     "Tiendamia.com.br", "Shopee", "Techinn.com", "Amazon.com.br - Retail", 
     "swsimports.com.br", "B&H Photo-Video-Audio", "eBay", "eBay - pluto-house",
-    "eBay - imicros", "eBay - mktllc", "aliexpress.com", "AliExpress"
+    "eBay - imicros", "eBay - mktllc", "aliexpress.com", "AliExpress",
+    "AliExpress.com - ...", "AliExpress.com - AliExpress-4449900785",
+    "AliExpress-4914015399"
 )
 used_stores <- c(
     "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
     "Black Friday", "4Gamers", "Site Oficial", "Rhr Cosméticos",
-    "Portal Celular", "Nat Vita Suplementos"
+    "Portal Celular", "Nat Vita Suplementos", "ProGaming Computer"
 )
 # Eliminate unavailable or badly priced GPUs
 unavailable_chips <- c(
