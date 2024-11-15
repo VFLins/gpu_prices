@@ -375,7 +375,7 @@ table_left <- DT::datatable(
     style="bootstrap4", options=opts
 )
 table_right <- DT::datatable(
-    price_drops(5, TRUE), 
+    price_drops(4, TRUE), # change back to 5 later
     style="bootstrap4", options=opts
 )
 
