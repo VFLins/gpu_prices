@@ -25,17 +25,20 @@ foreign_stores <- c(
     "swsimports.com.br", "B&H Photo-Video-Audio", "eBay", "eBay - pluto-house",
     "eBay - imicros", "eBay - mktllc", "aliexpress.com", "AliExpress",
     "AliExpress.com - ...", "AliExpress.com - AliExpress-4449900785",
-    "AliExpress-4914015399"
+    "AliExpress-4914015399", "Nissei"
 )
 used_stores <- c(
     "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
     "Black Friday", "4Gamers", "Site Oficial", "Rhr Cosméticos",
     "Portal Celular", "Nat Vita Suplementos", "ProGaming Computer",
-    "Login Informática"
+    "Login Informática", "Gi Eletronica", "Bontempo", "Ka Eletronicos",
+    "B&H Photo-Video-Audio"
 )
 # Eliminate unavailable or badly priced GPUs
 unavailable_chips <- c(
-    "Geforce Rtx 3090 Ti", "Radeon Rx 6800 Xt", "Geforce Rtx 3090"
+    "Geforce Rtx 3090 Ti", "Geforce Rtx 3090", "Geforce Rtx 3080",
+    "Geforce Rtx 3070 Ti", "Geforce Rtx 3070", "Geforce Rtx 4080",
+    "Radeon Rx 6900 Xt", "Radeon Rx 6800 Xt"
 )
 if (nrow(PRICES) > 0) 
     PRICES <- PRICES[
