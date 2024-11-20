@@ -49,6 +49,5 @@ if (!file.exists(here::here("frontend", "assets", "dbpath.rds"))) {
 # Render document
 rmarkdown::render(
     input = file.path(PROJECT_ROOT, "frontend", "index.Rmd"), 
-    output_format = "html_document",
     output_file = file.path(PROJECT_ROOT, "index.html")
 )
