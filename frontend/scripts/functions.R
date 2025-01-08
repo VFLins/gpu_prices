@@ -148,6 +148,7 @@ plot_perf_scatter <- function(
         low=value_box(
             title = "",
             value = "Opções para o orçamento mais apertado",
+            theme_color = "primary",
             showcase = bs_icon("wallet2"),
             !!!lapply(low_budget_recom, function(x) tags$li(x |> toupper()))
         ),
