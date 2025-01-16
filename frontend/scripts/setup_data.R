@@ -1,5 +1,5 @@
 library(stringr)
-library(plotly)
+suppressMessages(library(plotly))
 library(reshape2)
 source(here::here("frontend", "scripts", "update_prices.R"))
 
@@ -23,16 +23,17 @@ foreign_stores <- c(
     "Amazon.com.br - Seller", "AliExpress.com", "Smart Info Store", 
     "Tiendamia.com.br", "Shopee", "Techinn.com", "Amazon.com.br - Retail", 
     "swsimports.com.br", "B&H Photo-Video-Audio", "eBay", "eBay - pluto-house",
-    "eBay - imicros", "eBay - mktllc", "aliexpress.com", "AliExpress",
-    "AliExpress.com - ...", "AliExpress.com - AliExpress-4449900785",
-    "AliExpress-4914015399", "Nissei"
+    "eBay - imicros", "eBay - mktllc", "eBay - mujitech3", "aliexpress.com",
+    "AliExpress", "AliExpress.com - ...", "AliExpress-4914015399",
+    "AliExpress.com - AliExpress-4449900785", "Nissei"
 )
 used_stores <- c(
     "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
     "Black Friday", "4Gamers", "Site Oficial", "Rhr Cosméticos",
     "Portal Celular", "Nat Vita Suplementos", "ProGaming Computer",
     "Login Informática", "Gi Eletronica", "Bontempo", "Ka Eletronicos",
-    "B&H Photo-Video-Audio"
+    "B&H Photo-Video-Audio", "Luck Oficial", "XonGeek", "Promotop",
+    "Atacado Connect", "Fun4kids"
 )
 # Eliminate unavailable or badly priced GPUs
 unavailable_chips <- c(
@@ -43,8 +44,8 @@ unavailable_chips <- c(
 )
 if (nrow(PRICES) > 0) 
     PRICES <- PRICES[
-        !(PRICES$Store %in% c(foreign_stores, used_stores)) & 
-        !(PRICES$ProductName %in% unavailable_chips), ]
+        !(PRICES$Store %in% c(foreign_stores, used_stores)), ]
+#!(PRICES$ProductName %in% unavailable_chips)
 
 ######## Manipulation functions ########
 indexr_data <- function(price_table=PRICES, group_for_week=FALSE) {
@@ -55,7 +56,7 @@ indexr_data <- function(price_table=PRICES, group_for_week=FALSE) {
     
     # Add week data
     week <- as.POSIXct(date, tz=Sys.timezone()) |> 
-        cut.POSIXt(breaks="week", labels=F)
+        cut.POSIXt(breaks="week", labels=FALSE)
     #week <- strftime(date, format="%V", tz=Sys.timezone()) |> as.numeric()
     
     # Best price for every GPU per week
@@ -192,6 +193,10 @@ price_drops <- function(n_weeks, include_last_update=FALSE) {
     )
     row.names(out) <- NULL
     return(out)
+}
+
+prodcut_price_history <- function(product_name) {
+    PRICES
 }
 
 ######## Secondary datasets ########

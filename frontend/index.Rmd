@@ -101,7 +101,7 @@ valueBox(
 ### Última atualização
 
 ```{r pg1-content5-lastupdate}
-update_date <- format(max(PRICES$LastUpdate), "%d de %B de %Y")
+update_date <- format(max(PRICES$LastUpdate, na.rm=T), "%d de %B de %Y")
 valueBox(update_date, icon="ion-android-calendar", color=cores["fg"])
 ```
 
