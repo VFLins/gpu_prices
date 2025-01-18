@@ -19,21 +19,48 @@ GENRAI <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="gen_ai")
 RAY5VD <- read.csv(VRAY5_BENCH_PATH)[, c("model", "score")]
 
 # Eliminate stores with non-representative prices
-foreign_stores <- c(
-    "Amazon.com.br - Seller", "AliExpress.com", "Smart Info Store", 
-    "Tiendamia.com.br", "Shopee", "Techinn.com", "Amazon.com.br - Retail", 
-    "swsimports.com.br", "B&H Photo-Video-Audio", "eBay", "eBay - pluto-house",
-    "eBay - imicros", "eBay - mktllc", "eBay - mujitech3", "aliexpress.com",
-    "AliExpress", "AliExpress.com - ...", "AliExpress-4914015399",
-    "AliExpress.com - AliExpress-4449900785", "Nissei"
-)
+multi_grep <- function(
+        patterns, x, ignore.case = FALSE, perl = FALSE,
+        value = FALSE, fixed = FALSE,
+        useBytes = FALSE, invert = FALSE) {
+    output <- c()
+    for (term in patterns) {
+        new_elems <- grep(
+            pattern=term, x=x,
+            ignore.case=ignore.case, perl=perl,
+            value=value, fixed=fixed,
+            useBytes=useBytes, invert=invert)
+        output <- append(output, new_elems)
+    }
+    output
+}
+
+foreign_stores <- unique(multi_grep(
+    c(
+        "AliExpress", "Amazon.com.br - Seller", "Amazon.com.br - Retail",
+        "B&H Photo-Video-Audio", "eBay", "Shopee", "Smart Info Store",
+        "swsimports", "Tiendamia", "Techinn", "Nissei"
+    ),
+    PRICES$Store,
+    ignore.case=TRUE,
+    value=TRUE
+))
+# foreign_stores <- c(
+#     "Amazon.com.br - Seller", "AliExpress.com", "Smart Info Store", 
+#     "Tiendamia.com.br", "Shopee", "Techinn.com", "Amazon.com.br - Retail", 
+#     "swsimports.com.br", "B&H Photo-Video-Audio", "eBay", "eBay - pluto-house",
+#     "eBay - imicros", "eBay - mktllc", "eBay - mujitech3", "aliexpress.com",
+#     "AliExpress", "AliExpress.com - ...", "AliExpress-4914015399",
+#     "AliExpress.com - AliExpress-4449900785", "Nissei"
+# )
+
 used_stores <- c(
-    "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
+    "", "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
     "Black Friday", "4Gamers", "Site Oficial", "Rhr Cosméticos",
     "Portal Celular", "Nat Vita Suplementos", "ProGaming Computer",
     "Login Informática", "Gi Eletronica", "Bontempo", "Ka Eletronicos",
     "B&H Photo-Video-Audio", "Luck Oficial", "XonGeek", "Promotop",
-    "Atacado Connect", "Fun4kids", "Luck Oficial"
+    "Atacado Connect", "Fun4kids", "Luck Oficial", "Gi Ferretti Comercio"
 )
 # Eliminate unavailable or badly priced GPUs
 unavailable_chips <- c(
