@@ -1,8 +1,8 @@
 ![Banner do projeto com um ícone de uma placa de vídeo à esquerda. Está escrito "Indicador de Preços das GPUs" no título](https://github.com/VFLins/gpu_prices/blob/main/frontend/assets/gh_banner-prind_monitor.png?raw=true "Indicador de preços das GPUs")
 
-<a href="https://vflins.github.io/gpu_prices/"><img alt="Acessar a página" src="https://img.shields.io/badge/Acessar%20a%20p%C3%A1gina%20-%20green?style=for-the-badge&logo=move-up-right"></a>
-<a href="https://github.com/VFLins/Prind_Monitor/issues"><img alt="Static Badge" src="https://img.shields.io/badge/Fa%C3%A7a%20uma%20sugest%C3%A3o%20-%20grey?style=for-the-badge&logo=move-up-right"></a>
-<a href="https://github.com/VFLins/gpu_prices/wiki"><img alt="Static Badge" src="https://img.shields.io/badge/Leia%20a%20documenta%C3%A7%C3%A3o%20-%20grey?style=for-the-badge&logo=move-up-right"></a>
+<a href="https://vflins.github.io/gpu_prices/"><img alt="Acessar a página" src="https://img.shields.io/badge/Acessar%20a%20p%C3%A1gina%20-%20seagreen?style=for-the-badge&logo=move-up-right"></a>
+<a href="https://github.com/VFLins/Prind_Monitor/issues"><img alt="Static Badge" src="https://img.shields.io/badge/Dê%20uma%20sugest%C3%A3o%20-%20dimgrey?style=for-the-badge&logo=move-up-right"></a>
+<a href="https://github.com/VFLins/gpu_prices/wiki"><img alt="Static Badge" src="https://img.shields.io/badge/Leia%20a%20documenta%C3%A7%C3%A3o%20-%20dimgrey?style=for-the-badge&logo=move-up-right"></a>
 
 # Sobre 
 
