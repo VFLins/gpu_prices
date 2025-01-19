@@ -19,7 +19,3 @@ Para isso, é necessário dados de preço, demanda e desempenho de cada chip dis
   - [V-Ray 5 Benchmarks](https://benchmark.chaos.com/v5/vray-gpu-cuda?show-hybrid=false&index=1&ordering=desc&by=avg&my-scores-only=false) para edição de vídeo
   - Entre outros, acesse a página [SOBRE](https://vflins.github.io/gpu_prices/#sobre) do projeto para a lista completa
 - (Em breve) **Demanda** com a [Pesquisa de Hardware e Software da Steam](https://store.steampowered.com/hwsurvey/Steam-Hardware-Software-Survey-Welcome-to-Steam)
-
-Para visitar o webapp, basta **[Clicar aqui](https://vflins.github.io/gpu_prices)**
-
-Se quiser deixar alguma sugestão, não deixe de acessar o menu "[Issues](https://github.com/VFLins/Prind_Monitor/issues)" daqui do GitHub, e deixar sua sugestão lá!
