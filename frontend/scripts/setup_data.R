@@ -1,7 +1,7 @@
 library(stringr)
 suppressMessages(library(plotly))
 library(reshape2)
-source(here::here("frontend", "scripts", "update_prices.R"))
+#source(here::here("frontend", "scripts", "update_prices.R"))
 
 PRICES_RDS_PATH <- here::here("backend", "data", "prices.Rds")
 VRAY5_BENCH_PATH <- here::here("backend", "data", "vray5_benchmarks.csv")
