@@ -4,7 +4,7 @@
 <a href="https://github.com/VFLins/Prind_Monitor/issues"><img alt="Static Badge" src="https://img.shields.io/badge/Dê%20uma%20sugest%C3%A3o%20-%20dimgrey?style=for-the-badge&logo=move-up-right"></a>
 <a href="https://github.com/VFLins/gpu_prices/wiki"><img alt="Static Badge" src="https://img.shields.io/badge/Leia%20a%20documenta%C3%A7%C3%A3o%20-%20dimgrey?style=for-the-badge&logo=move-up-right"></a>
 
-# Sobre 
+# Sobre
 
 Este projeto foi desenvolvido com o intuito de ser uma fonte confiável e abrangente de informações sobre os preços e o mercado nacional de placas de vídeo. Além disso, busca fornecer dados relevantes e atualizados para ajudar as pessoas a tomarem decisões mais informadas em suas compras, levando em conta tanto as necessidades individuais quanto as tendências do mercado. A ideia é facilitar a comparação de preços e características, permitindo que os consumidores façam escolhas mais seguras e conscientes.
 
