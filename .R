@@ -9,7 +9,6 @@ prices_counts_percent <- (
     prices_counts / sum(prices_counts)
 ) *100
 
-indexr_data(group_for_week=FALSE)
 # chip_names <- sort(unique(PRICES[, 3]))
 # display_data <- c()
 # for (name in chip_names) {
@@ -42,7 +41,7 @@ indexr_data(group_for_week=FALSE)
 # print("low availability")
 # print(display_data[display_data > threshold])
 
-#PRICES[
-#    (PRICES$Price < 2200) &
-#    (PRICES$ProductName == "Geforce Rtx 3070 Ti"),
-#    c("Name", "Store")]
+PRICES0[
+    (PRICES$Price < 2200) &
+    (PRICES$ProductName == "Geforce Rtx 4060 Ti"),
+    c("Name", "Store")]
