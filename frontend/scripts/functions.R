@@ -5,7 +5,6 @@ library(bsicons)
 library(htmltools)
 library(DT)
 library(flexdashboard)
-source(here::here("frontend", "scripts", "setup_data.R"))
 
 cores <- c(
     bg = "#222222", fg = "#E0E0E0", 

@@ -1,7 +1,6 @@
 library(stringr)
 suppressMessages(library(plotly))
 library(reshape2)
-source(here::here("frontend", "scripts", "update_prices.R"))
 
 PRICES_RDS_PATH <- here::here("backend", "data", "prices.Rds")
 VRAY5_BENCH_PATH <- here::here("backend", "data", "vray5_benchmarks.csv")
@@ -45,14 +44,6 @@ foreign_stores <- unique(multi_grep(
     ignore.case=TRUE,
     value=TRUE
 ))
-# foreign_stores <- c(
-#     "Amazon.com.br - Seller", "AliExpress.com", "Smart Info Store", 
-#     "Tiendamia.com.br", "Shopee", "Techinn.com", "Amazon.com.br - Retail", 
-#     "swsimports.com.br", "B&H Photo-Video-Audio", "eBay", "eBay - pluto-house",
-#     "eBay - imicros", "eBay - mktllc", "eBay - mujitech3", "aliexpress.com",
-#     "AliExpress", "AliExpress.com - ...", "AliExpress-4914015399",
-#     "AliExpress.com - AliExpress-4449900785", "Nissei"
-# )
 
 used_stores <- c(
     "", "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
@@ -62,17 +53,21 @@ used_stores <- c(
     "B&H Photo-Video-Audio", "Luck Oficial", "XonGeek", "Promotop",
     "Atacado Connect", "Fun4kids", "Luck Oficial", "Gi Ferretti Comercio"
 )
-# Eliminate unavailable or badly priced GPUs
+# Eliminate superseded GPUs
 unavailable_chips <- c(
-    "Geforce Rtx 3090 Ti", "Geforce Rtx 3090", "Geforce Rtx 3080 Ti",
-    "Geforce Rtx 3080", "Geforce Rtx 3070 Ti", "Geforce Rtx 3070",
-    "Geforce Rtx 3060 Ti Gddr6X", "Geforce Rtx 3060 Ti", "Geforce Rtx 4080",
-    "Radeon Rx 6900 Xt", "Radeon Rx 6800 Xt", "Radeon Rx 6800"
+    "Geforce Rtx 3090 Ti", "Geforce Rtx 3090",
+    "Geforce Rtx 3080 Ti", "Geforce Rtx 3080",
+    "Geforce Rtx 3070 Ti", "Geforce Rtx 3070",
+    "Geforce Rtx 3060 Ti Gddr6X", "Geforce Rtx 3060 Ti",
+    "Geforce Rtx 4080",
+    "Geforce Rtx 4070", "Geforce Rtx 4070 Ti",
+    "Radeon Rx 6900 Xt",
+    "Radeon Rx 6800 Xt", "Radeon Rx 6800"
 )
 if (nrow(PRICES) > 0) 
     PRICES <- PRICES[
-        !(PRICES$Store %in% c(foreign_stores, used_stores)), ]
-#!(PRICES$ProductName %in% unavailable_chips)
+        !(PRICES$Store %in% c(foreign_stores, used_stores)) &
+        !(PRICES$ProductName %in% unavailable_chips), ]
 
 ######## Manipulation functions ########
 indexr_data <- function(price_table=PRICES, group_for_week=FALSE) {
