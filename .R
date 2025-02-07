@@ -5,39 +5,56 @@ PROJECT_ROOT = here::here()
 #PRICES0 <- readRDS(here::here("backend", "data", "prices.Rds"))
 source(here::here("frontend", "scripts", "setup_data.R"))
 
-low_availability_chip_names <- function() {
-    #' Obtenha uma lista de produtos com baixa disponibilidade (experimental)
+general_counts <- function() {
+    #' `data.frame` de contagens de Produtos
     #' 
-    #' Cria um vetor com os valores de `PRICES$ProductName` que corresponde aos produtos com baixa disponibilidade no mercado atualmente
+    #' Obtenha uma tabela com a contagens dos elementos relevantes de `PRICES$ProductName`.
     #' 
-    #' @returns Vetor do tipo "character"
-    prices_counts <- sort(table(PRICES$ProductName))
-    products_per_name <- aggregate(
+    #' @section Estrutura do `data.frame`:
+    #' * Name[character]: Nome do produto
+    #' * PricesCounts[integer]: Quantidade de preços coletados para produtos com este _Name_
+    #' * ProductsCount[integer]: Quantidade de produtos cadastrados para este _Name_
+    prices_counts <- aggregate(
+        x=PRICES$PriceId,
+        by=list(PRICES$ProductName),
+        FUN=function(x)length(x)
+    )
+    colnames(prices_counts) <- c("Name", "PricesCount")
+
+    products_counts <- aggregate(
         x=PRICES$ProductId,
         by=list(PRICES$ProductName),
         FUN=function(x)length(unique(x))
     )
-    colnames(products_per_name) <- c("Name", "ProductCount")
-    names_vec <- products_per_name$Name
-    products_per_name <- products_per_name$ProductCount
-    names(products_per_name) <- names_vec
+    colnames(products_counts) <- c("Name", "ProductsCount")
 
-    prices_counts_per_product <- c()
-    for (name in names(prices_counts)) {
-        prices_counts_per_product <- append(
-            prices_counts_per_product,
-            prices_counts[name] / products_per_name[name]
-        )
-    }
-    availability_index <- sort(
-        prices_counts_per_product
-        - median(prices_counts_per_product)
-        + sd(prices_counts_per_product) * 0.2
+    merged_counts <- merge(
+        x=products_counts,
+        y=prices_counts,
+        by="Name"
     )
-    names(availability_index[availability_index < 0])
+    return(merged_counts)
 }
 
 
+low_availability_chip_names <- function() {
+    #' `c` Combinação de nomes de chips com baixa disponibilidade (experimental)
+    #' 
+    #' Cria um vetor com os valores de `PRICES$ProductName` que corresponde aos produtos com baixa disponibilidade no mercado atualmente
+    counts_tbl <- general_counts()
+    counts_tbl <- counts_tbl$PricesCount / counts_tbl$ProductsCount
+
+    availability_index <- sort(
+        counts_tbl$PricesPerProduct
+        - median(counts_tbl$PricesPerProduct)
+        + sd(counts_tbl$PricesPerProduct) * 0.2
+    )
+    names(availability_index) <- counts_tbl$Name
+
+    names(availability_index[availability_index < 0])
+}
+
+?general_counts
 # chip_names <- sort(unique(PRICES[, 3]))
 # display_data <- c()
 # for (name in chip_names) {
