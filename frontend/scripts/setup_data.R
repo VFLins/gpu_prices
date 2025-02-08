@@ -8,7 +8,20 @@ TH_RASTER_PERF_PATH <- here::here("backend", "data", "tomshardware_raster_avg_fp
 TH_RT_PERF_PATH <- here::here("backend", "data", "tomshardware_rt_avg_fps.csv")
 PRODUCTS_SHEET_PATH <- here::here("backend", "data", "prods.xlsx")
 
-######## Primary data sets ########
+######## Conjuntos de dados principais ########
+#' [PRICES] Data Frame com os dados de preços
+#' 
+#' Colunas:
+#' ProductId[integer]: Número identificador de produto
+#' NameId[integer]: Número identificador de nome de produto
+#' ProductName[character]: Nome do produto indicado por `NameId` (Exemplo: Geforce RTX 4090)
+#' ProductModel[character]: Nome do modelo referente à `ProductId` (Exemplo: TUF Gaming)
+#' ProductBrand[character]: Nome da marca referente à `ProductId` (Exemplo: Asus)
+#' ProductFilters[character]: Nomes filtrados da pesquisa referente à `ProductId`
+#' Created[datetime]: Data e hora que os preços do produto começaram a ser monitorados referente à `ProductId`
+#' LastUpdate[datetime]: Data e hora da última vez que um preço foi coletado com sucesso referente à `ProductId`
+#' PriceId[integer]: Identificador de cada preço coletado, único para cada linha deste data frame
+#' Date[datetime]: Momento em que este preço foi coletado, referente à `PriceId`
 PRICES <- readRDS(PRICES_RDS_PATH)
 RASTER <- read.csv(TH_RASTER_PERF_PATH)
 RAYTRC <- read.csv(TH_RT_PERF_PATH)
@@ -16,12 +29,16 @@ BLENDR <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="blender")
 VIDEOS <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="videos")
 GENRAI <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="gen_ai")
 RAY5VD <- read.csv(VRAY5_BENCH_PATH)[, c("model", "score")]
+########
 
-# Eliminate stores with non-representative prices
 multi_grep <- function(
         patterns, x, ignore.case = FALSE, perl = FALSE,
         value = FALSE, fixed = FALSE,
         useBytes = FALSE, invert = FALSE) {
+    #' @title Apply multiple patterns with `grep`
+    #' @description Search for multiples patterns along a given character vector x.
+    #' @param patterns character vector containing regular expressions to be matched
+    #' @note Every other parameter should be interpreted exactly the same as in [grep](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/grep) function.
     output <- c()
     for (term in patterns) {
         new_elems <- grep(
@@ -34,6 +51,35 @@ multi_grep <- function(
     output
 }
 
+######## Conjuntos de dados assistentes ########
+#' [COUNTS] Data Frame de contagens
+#'
+#' Colunas:
+#' Name[character]: Nome do produto
+#' PricesCount[int]: Quantidade de preços coletados para este `Name`
+#' ProductsCount[int]: Quantidade de produtos cadastrados para este `Name`
+#' PricesPerProduct[double]: Razão entre PricesCount e ProductsCount
+COUNTS <- aggregate(
+    x=PRICES[, c("PriceId", "ProductId")],
+    by=list(PRICES$ProductName),
+    FUN=function(x)length(unique(x))
+)
+names(COUNTS) <- c("Name", "PricesCount", "ProductsCount")
+COUNTS$PricesPerProduct <- COUNTS$PricesCount / COUNTS$ProductsCount
+
+#' [superseded_chips] Nome dos produtos substituiídos por outro modelo
+superseded_chips <- c(
+    "Geforce Rtx 3090 Ti", "Geforce Rtx 3090",
+    "Geforce Rtx 3080 Ti", "Geforce Rtx 3080",
+    "Geforce Rtx 3070 Ti", "Geforce Rtx 3070",
+    "Geforce Rtx 3060 Ti Gddr6X", "Geforce Rtx 3060 Ti",
+    "Geforce Rtx 4080",
+    "Geforce Rtx 4070", "Geforce Rtx 4070 Ti",
+    "Radeon Rx 6900 Xt",
+    "Radeon Rx 6800 Xt", "Radeon Rx 6800"
+)
+
+#' [foreign_stores] Nomes de lojas estrangeiras
 foreign_stores <- unique(multi_grep(
     c(
         "AliExpress", "Amazon.com.br - Seller", "Amazon.com.br - Retail",
@@ -45,6 +91,7 @@ foreign_stores <- unique(multi_grep(
     value=TRUE
 ))
 
+#' [used_stores] Nomes de lojas que vendem produtos com preços de usado
 used_stores <- c(
     "", "Enjoei.com", "MeuGameUsado", "Ledebut", "bringIT", "Mercado Livre", 
     "Black Friday", "4Gamers", "Site Oficial", "Rhr Cosméticos",
@@ -53,21 +100,14 @@ used_stores <- c(
     "B&H Photo-Video-Audio", "Luck Oficial", "XonGeek", "Promotop",
     "Atacado Connect", "Fun4kids", "Luck Oficial", "Gi Ferretti Comercio"
 )
-# Eliminate superseded GPUs
-unavailable_chips <- c(
-    "Geforce Rtx 3090 Ti", "Geforce Rtx 3090",
-    "Geforce Rtx 3080 Ti", "Geforce Rtx 3080",
-    "Geforce Rtx 3070 Ti", "Geforce Rtx 3070",
-    "Geforce Rtx 3060 Ti Gddr6X", "Geforce Rtx 3060 Ti",
-    "Geforce Rtx 4080",
-    "Geforce Rtx 4070", "Geforce Rtx 4070 Ti",
-    "Radeon Rx 6900 Xt",
-    "Radeon Rx 6800 Xt", "Radeon Rx 6800"
-)
+########
+
+
 if (nrow(PRICES) > 0) 
     PRICES <- PRICES[
         !(PRICES$Store %in% c(foreign_stores, used_stores)) &
-        !(PRICES$ProductName %in% unavailable_chips), ]
+        !(PRICES$ProductName %in% superseded_chips), ]
+
 
 ######## Manipulation functions ########
 indexr_data <- function(price_table=PRICES, group_for_week=FALSE) {

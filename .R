@@ -1,5 +1,4 @@
 library(txtplot)
-library(docstring)
 PROJECT_ROOT = here::here()
 
 #PRICES0 <- readRDS(here::here("backend", "data", "prices.Rds"))
