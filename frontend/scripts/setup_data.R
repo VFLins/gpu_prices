@@ -2,11 +2,12 @@ library(stringr)
 suppressMessages(library(plotly))
 library(reshape2)
 
-PRICES_RDS_PATH <- here::here("backend", "data", "prices.Rds")
-VRAY5_BENCH_PATH <- here::here("backend", "data", "vray5_benchmarks.csv")
+PRICES_RDS_PATH     <- here::here("backend", "data", "prices.Rds")
+VRAY5_BENCH_PATH    <- here::here("backend", "data", "vray5_benchmarks.csv")
 TH_RASTER_PERF_PATH <- here::here("backend", "data", "tomshardware_raster_avg_fps.csv")
-TH_RT_PERF_PATH <- here::here("backend", "data", "tomshardware_rt_avg_fps.csv")
+TH_RT_PERF_PATH     <- here::here("backend", "data", "tomshardware_rt_avg_fps.csv")
 PRODUCTS_SHEET_PATH <- here::here("backend", "data", "prods.xlsx")
+
 
 ######## Conjuntos de dados principais ########
 #' [PRICES] Data Frame com os dados de preços
@@ -22,12 +23,56 @@ PRODUCTS_SHEET_PATH <- here::here("backend", "data", "prods.xlsx")
 #' LastUpdate[datetime]: Data e hora da última vez que um preço foi coletado com sucesso referente à `ProductId`
 #' PriceId[integer]: Identificador de cada preço coletado, único para cada linha deste data frame
 #' Date[datetime]: Momento em que este preço foi coletado, referente à `PriceId`
+#' Currency[character]: Simbolo da moeda no rótulo de preço, referente à `PriceId`
+#' Price[double]: Valor do preço no registro de preço, referente à `PriceId`
+#' Name[character]: Título do anúncio do produto no resultado da pesquisa, referente à `PriceId`
+#' Store[character]: Nome da loja anunciante no resultado da pesquisa, referente à `PriceId`
+#' Url[character]: Endereço web do produto anunciado no resultado da pesquisa, referente à `PriceId`
 PRICES <- readRDS(PRICES_RDS_PATH)
+
+#' [RASTER] Dados de desempenho em jogos rasterizados (FPS médio) em um conjunto de jogos rasterizados
+#'
+#' Colunas:
+#' model[character]: Nome do produto, equivalente aos valores únicos de `PRICES$ProductName`
+#' fhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 1920x1080, com preset "Ultra"
+#' fhd_medium[double]: Medida de desempenho (FPS médio) em resolução 1920x1080, com preset "Médio"
+#' qhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 2560x1440, com preset "Ultra"
+#' uhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 3840x2160, com preset "Ultra"
+#' specs[character]: Informações das especificações da placa de vídeo
 RASTER <- read.csv(TH_RASTER_PERF_PATH)
+
+#' [RAYTRC] Dados de desempenho em jogos rasterizados com efeitos de Ray Tracing adicionados (FPS médio) em um conjunto de jogos
+#'
+#' Colunas:
+#' model[character]: Nome do produto, equivalente aos valores únicos de `PRICES$ProductName`
+#' fhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 1920x1080, com preset "Ultra"
+#' fhd_medium[double]: Medida de desempenho (FPS médio) em resolução 1920x1080, com preset "Médio"
+#' qhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 2560x1440, com preset "Ultra"
+#' uhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 3840x2160, com preset "Ultra"
+#' specs[character]: Informações das especificações da placa de vídeo
 RAYTRC <- read.csv(TH_RT_PERF_PATH)
+
+#' [BELNDR] Dados de desempenho no benchmark do Blender
+#' 
+#' Colunas:
+#' model[character]: Nome do produto, equivalente aos valores únicos de `PRICES$ProductName`
+#' CUDA[double]: Pontuação usando o método de computação CUDA
+#' HIP[double]: Pontuação usando o método de computação HIP
+#' OneAPI[double]: Pontuação usando o método de computação OneAPI
 BLENDR <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="blender")
+
+#' [VIDEOS] Dados de desempenho em renderização de vídeo
+#' 
+#' Colunas:
+#' model[character]: Nome do produto, equivalente aos valores únicos de `PRICES$ProductName`
+#' redshift_seconds[double]: Tempo de renderização do vídeo de referência em segundos
+#' redshift_score[double]: Pontuação de desempenho baseada no tempo de renderização, 100.000/`redshift_seconds`
 VIDEOS <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="videos")
+
+#' [GENRAI] Dados de desempenho com IA generativa
 GENRAI <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="gen_ai")
+
+#' [RAY5VD] Pontuação de Benchmark no Ray-5
 RAY5VD <- read.csv(VRAY5_BENCH_PATH)[, c("model", "score")]
 ########
 
