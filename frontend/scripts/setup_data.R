@@ -9,6 +9,29 @@ TH_RT_PERF_PATH     <- here::here("backend", "data", "tomshardware_rt_avg_fps.cs
 PRODUCTS_SHEET_PATH <- here::here("backend", "data", "prods.xlsx")
 
 
+######## Funções auxiliares ########
+multi_grep <- function(
+        patterns, x, ignore.case = FALSE, perl = FALSE,
+        value = FALSE, fixed = FALSE,
+        useBytes = FALSE, invert = FALSE) {
+    #' @title Apply multiple patterns with `grep`
+    #' @description Search for multiples patterns along a given character vector x.
+    #' @param patterns character vector containing regular expressions to be matched
+    #' @note Every other parameter should be interpreted exactly the same as in [grep](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/grep) function.
+    output <- c()
+    for (term in patterns) {
+        new_elems <- grep(
+            pattern=term, x=x,
+            ignore.case=ignore.case, perl=perl,
+            value=value, fixed=fixed,
+            useBytes=useBytes, invert=invert)
+        output <- append(output, new_elems)
+    }
+    output
+}
+########
+
+
 ######## Conjuntos de dados principais ########
 #' [PRICES] Data Frame com os dados de preços
 #' 
@@ -29,6 +52,7 @@ PRODUCTS_SHEET_PATH <- here::here("backend", "data", "prods.xlsx")
 #' Store[character]: Nome da loja anunciante no resultado da pesquisa, referente à `PriceId`
 #' Url[character]: Endereço web do produto anunciado no resultado da pesquisa, referente à `PriceId`
 PRICES <- readRDS(PRICES_RDS_PATH)
+if (nrow(PRICES) == 0) stop("No price data available, cannot proceed with data setup.")
 
 #' [RASTER] Dados de desempenho em jogos rasterizados (FPS médio) em um conjunto de jogos rasterizados
 #'
@@ -76,25 +100,6 @@ GENRAI <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="gen_ai")
 RAY5VD <- read.csv(VRAY5_BENCH_PATH)[, c("model", "score")]
 ########
 
-multi_grep <- function(
-        patterns, x, ignore.case = FALSE, perl = FALSE,
-        value = FALSE, fixed = FALSE,
-        useBytes = FALSE, invert = FALSE) {
-    #' @title Apply multiple patterns with `grep`
-    #' @description Search for multiples patterns along a given character vector x.
-    #' @param patterns character vector containing regular expressions to be matched
-    #' @note Every other parameter should be interpreted exactly the same as in [grep](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/grep) function.
-    output <- c()
-    for (term in patterns) {
-        new_elems <- grep(
-            pattern=term, x=x,
-            ignore.case=ignore.case, perl=perl,
-            value=value, fixed=fixed,
-            useBytes=useBytes, invert=invert)
-        output <- append(output, new_elems)
-    }
-    output
-}
 
 ######## Conjuntos de dados assistentes ########
 #' [COUNTS] Data Frame de contagens
@@ -148,47 +153,47 @@ used_stores <- c(
 ########
 
 
-if (nrow(PRICES) > 0) 
-    PRICES <- PRICES[
-        !(PRICES$Store %in% c(foreign_stores, used_stores)) &
-        !(PRICES$ProductName %in% superseded_chips), ]
-
-
-######## Manipulation functions ########
-indexr_data <- function(price_table=PRICES, group_for_week=FALSE) {
+######## Geradores de conjuntos de dados ########
+indexr_data <- function(price_table=PRICES, group_by_week=FALSE) {
+    #' @title Generate datasets of best prices by date
+    #' @description If multiple products are available in `price_table`, 
+    #' will create a "Price Index" data, or a simple "best prices by date"
+    #' dataset otherwise.
+    #' @param price_table Data Frame, either full `PRICES` or a subset of it
+    #' over `PRICES$NameId` or `PRICES$ProductName`.
+    #' @param group_by_week Boolean, `False` if should return all available dates
     ### create index data
     date <- price_table$Date
     price <- price_table$Price
     chip <- price_table$ProductName
-    
+
     # Add week data
     week <- as.POSIXct(date, tz=Sys.timezone()) |> 
         cut.POSIXt(breaks="week", labels=FALSE)
     #week <- strftime(date, format="%V", tz=Sys.timezone()) |> as.numeric()
-    
+
     # Best price for every GPU per week
-    index_table <- aggregate(
-        price, list(week, chip), FUN=min) |>
+    index_table <- aggregate(price, list(week, chip), FUN=min) |>
         setNames(c("Semana", "Chip", "Melhor preço"))
-    
+
     # Adding week last dates
     dates_table <- aggregate(date, list(week), FUN=max) |>
         setNames(c("Semana", "Dia"))
     index_table <- merge(index_table, dates_table, by="Semana")
-    
-    if (group_for_week) {
+
+    if (group_by_week) {
         # Mean of best prices for each week
         price <- index_table$`Melhor preço`
         week <- index_table$Semana
         date <- index_table$Dia
-        
+
         index_table_wide <- dcast(
             index_table, 
             Semana + Dia ~ Chip, 
             value.var="Melhor preço"
         )
         #rownames(index_table_wide)
-        
+
         base_week <- index_table_wide$Semana |> min()
         base_value <- index_table[index_table$Semana == base_week, ] |>
             _[["Melhor preço"]] %>% mean()
@@ -307,7 +312,10 @@ prodcut_price_history <- function(product_name) {
 }
 
 ######## Secondary datasets ########
-index_data <- indexr_data(group_for_week=TRUE)
+PRICES <- PRICES[
+    !(PRICES$Store %in% c(foreign_stores, used_stores)) &
+    !(PRICES$ProductName %in% superseded_chips), ]
+index_data <- indexr_data(group_by_week=TRUE)
 weekly_best_prices <- indexr_data()
 price_raster_perf <- perf_data()
 price_rt_perf <- perf_data(RAYTRC)
