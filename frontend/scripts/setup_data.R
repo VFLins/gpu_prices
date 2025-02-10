@@ -29,6 +29,10 @@ multi_grep <- function(
     }
     output
 }
+
+group_by_week_ <- function(dataset, date_col, factor_col) {
+    #'
+}
 ########
 
 
@@ -94,9 +98,18 @@ BLENDR <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="blender")
 VIDEOS <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="videos")
 
 #' [GENRAI] Dados de desempenho com IA generativa
+#' 
+#' Colunas:
+#' model[character]: Nome do produto, equivalente aos valores únicos de `PRICES$ProductName`
+#' stable_diffusion_512p_img_per_sec[double]: Quantidade de imagens em resolução 512x512 geradas por minuto com Stable Diffusion v1-5
+#' stable_diffusion_768p_img_per_sec[double]: Quantidade de imagens em resolução 768x768 geradas por minuto com Stable Diffusion v1-5
 GENRAI <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="gen_ai")
 
 #' [RAY5VD] Pontuação de Benchmark no Ray-5
+#' 
+#' Colunas:
+#' model[character]: Nome do produto, equivalente aos valores únicos de `PRICES$ProductName`
+#' score[double]: Pontuação no benchmark de renderização próprio do software
 RAY5VD <- read.csv(VRAY5_BENCH_PATH)[, c("model", "score")]
 ########
 
@@ -154,6 +167,38 @@ used_stores <- c(
 
 
 ######## Geradores de conjuntos de dados ########
+price_by_date <- function(product_names=c(), group_by_week=FALSE) {
+    #' @title Generate a Data Frame of best prices by date
+    #' @description Table in long format with the best prices for every
+    #' "ProductName" selected by date
+    #' @param product_names Character vector, should contain a list of the
+    #' product names desired, if is an empty vector, will use all products available
+    #' @param group_by_week Boolean, `False` if should return all available dates
+    
+    cols <- c("Date", "Price", "ProductBrand", "ProductName", "ProductModel", "Store")
+    if (length(product_names) == 0) {
+        df <- PRICES[, cols]
+    } else {
+        df <- PRICES[(PRICES$ProductName %in% product_names), cols]
+    }
+        
+    df <- aggregate(
+        x=df[, c("Price", "ProductBrand", "ProductName", "ProductModel", "Store")],
+        by=list(df$Date, df$ProductName),
+        FUN=min
+    )
+    names(df) <- c("Dia", "Chip", "Preço", "Brand", "Name", "Model", "Loja")
+    df$Nome <- paste(df$Brand, df$Name, df$Model)
+    df <- df[, c("Dia", "Chip", "Preço", "Nome", "Loja")]
+
+    if !group_by_week {
+        return(df)
+    } else {
+        stop("Not implemented: group_by_week=`TRUE`")
+        #return(group_by_week_(df, "Dia", "Chip"))
+    }
+}
+
 indexr_data <- function(price_table=PRICES, group_by_week=FALSE) {
     #' @title Generate datasets of best prices by date
     #' @description If multiple products are available in `price_table`, 
