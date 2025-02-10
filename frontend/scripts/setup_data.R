@@ -175,11 +175,7 @@ price_by_date <- function(product_names=c(), group_by_week=FALSE) {
     #' product names desired, if is an empty vector, will use all products available
     #' @param group_by_week Boolean, `False` if should return all available dates
     
-    cols <- c(
-        "Date", "Price",
-        "ProductBrand","ProductName", "ProductModel",
-        "Store", "Url"
-    )
+    cols <- c("Date", "Price", "ProductBrand", "ProductName", "ProductModel", "Store")
     if (length(product_names) == 0) {
         df <- PRICES[, cols]
     } else {
@@ -189,11 +185,8 @@ price_by_date <- function(product_names=c(), group_by_week=FALSE) {
     df$Date <- as.Date(format(df$Date, format="%Y-%m-%d"))
 
     # best price by combination of Date and ProductName
-    best_prices <- aggregate(
-        x=df$Price,
-        by=list(df$Date, df$ProductName),
-        FUN=min
-    ) |> setNames(c("Date", "ProductName", "Value"))
+    best_prices <- aggregate(x=df$Price, by=list(df$Date, df$ProductName), FUN=min) |>
+        setNames(c("Date", "ProductName", "Value"))
 
     # get first row index where the best price is found
     # for each combination of Date and ProductName
@@ -207,11 +200,12 @@ price_by_date <- function(product_names=c(), group_by_week=FALSE) {
         sel_rows <- append(sel_rows, rows[1])
     }
 
-    names(df) <- c("Dia", "Preço", "Brand", "Chip", "Model", "Loja", "Url")
+    # reset row and column names
+    colnames(df) <- c("Dia", "Preço", "Brand", "Chip", "Model", "Loja")
     rownames(df) <- NULL
-    
+    # select rows and columns
     df["Nome"] <- paste(df$Brand, df$Chip, df$Model)
-    df <- df[sel_rows, c("Dia", "Chip", "Preço", "Nome", "Loja", "Url")]
+    df <- df[sel_rows, c("Dia", "Chip", "Preço", "Nome", "Loja")]
 
     if (!group_by_week) {
         return(df)
