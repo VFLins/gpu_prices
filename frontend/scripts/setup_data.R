@@ -16,7 +16,7 @@ multi_grep <- function(
         useBytes = FALSE, invert = FALSE) {
     #' @title Apply multiple patterns with `grep`
     #' @description Search for multiples patterns along a given character vector x.
-    #' @param patterns character vector containing regular expressions to be matched
+    #' @param patterns Character vector containing regular expressions to be matched
     #' @note Every other parameter should be interpreted exactly the same as in [grep](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/grep) function.
     output <- c()
     for (term in patterns) {
@@ -175,23 +175,45 @@ price_by_date <- function(product_names=c(), group_by_week=FALSE) {
     #' product names desired, if is an empty vector, will use all products available
     #' @param group_by_week Boolean, `False` if should return all available dates
     
-    cols <- c("Date", "Price", "ProductBrand", "ProductName", "ProductModel", "Store")
+    cols <- c(
+        "Date", "Price",
+        "ProductBrand","ProductName", "ProductModel",
+        "Store", "Url"
+    )
     if (length(product_names) == 0) {
         df <- PRICES[, cols]
     } else {
         df <- PRICES[(PRICES$ProductName %in% product_names), cols]
     }
-        
-    df <- aggregate(
-        x=df[, c("Price", "ProductBrand", "ProductName", "ProductModel", "Store")],
+    # datetime do date
+    df$Date <- as.Date(format(df$Date, format="%Y-%m-%d"))
+
+    # best price by combination of Date and ProductName
+    best_prices <- aggregate(
+        x=df$Price,
         by=list(df$Date, df$ProductName),
         FUN=min
-    )
-    names(df) <- c("Dia", "Chip", "Preço", "Brand", "Name", "Model", "Loja")
-    df$Nome <- paste(df$Brand, df$Name, df$Model)
-    df <- df[, c("Dia", "Chip", "Preço", "Nome", "Loja")]
+    ) |> setNames(c("Date", "ProductName", "Value"))
 
-    if !group_by_week {
+    # get first row index where the best price is found
+    # for each combination of Date and ProductName
+    sel_rows <- c()
+    for (idx in 1:nrow(best_prices)) {
+        date_mask <-           df$Date == best_prices[idx, "Date"]
+        product_mask <- df$ProductName == best_prices[idx, "ProductName"]
+        price_mask <-         df$Price == best_prices[idx, "Value"]
+
+        rows <- df[date_mask & product_mask & price_mask, ] |> rownames()
+        sel_rows <- append(sel_rows, rows[1])
+    }
+
+    names(df) <- c("Dia", "Preço", "Brand", "Chip", "Model", "Loja", "Url")
+    rownames(df) <- NULL
+    
+    df["Nome"] <- paste(df$Brand, df$Chip, df$Model)
+    df <- df[sel_rows, c("Dia", "Chip", "Preço", "Nome", "Loja", "Url")]
+
+    if (!group_by_week) {
         return(df)
     } else {
         stop("Not implemented: group_by_week=`TRUE`")
