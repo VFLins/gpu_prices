@@ -197,7 +197,7 @@ price_by_date <- function(product_names=c(), group_by_week=FALSE) {
         price_mask <-         df$Price == best_prices[idx, "Value"]
 
         rows <- df[date_mask & product_mask & price_mask, ] |> rownames()
-        sel_rows <- append(sel_rows, rows[1])
+        sel_rows <- append(sel_rows, rows)
     }
 
     # reset row and column names
