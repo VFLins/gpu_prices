@@ -16,7 +16,7 @@ multi_grep <- function(
         useBytes = FALSE, invert = FALSE) {
     #' @title Apply multiple patterns with `grep`
     #' @description Search for multiples patterns along a given character vector x.
-    #' @param patterns Character vector containing regular expressions to be matched
+    #' @param patterns Character Vector containing regular expressions to be matched
     #' @note Every other parameter should be interpreted exactly the same as in [grep](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/grep) function.
     output <- c()
     for (term in patterns) {
@@ -30,10 +30,31 @@ multi_grep <- function(
     output
 }
 
-group_by_week_ <- function(dataset, date_col, factor_col) {
-    #'
+group_by_week_ <- function(
+        df,
+        date_colname="Dia",
+        factor_colname="Chip",
+        value_colname="Preço") {
+    #' @title Group daily or semi-daily data to weekly
+    #' @param df Data Frame containing the data to be grouped
+    #' @param date_colname Character, column name of the date values
+    #' @param factor_colname Character, column name of categorical data that
+    #' should be preserved in the resulting Data Frame
+    #' @param value_colname Character, column name with the values
+    date <- df[[date_colname]]
+    fact <- df[[factor_colname]]
+    val <- df[[value_colname]]
+    week_id <- as.POSIXct(date, tz=Sys.timezone()) |>
+        cut.POSIXt(breaks="week", labels=FALSE)
+    
+    value_table <- aggregate(val, list(week_id, fact), FUN=min) |>
+        setNames(c("IdSemana", factor_colname, "Preço"))
+    date_table <- aggregate(date, list(week_id, fact), FUN=max) |>
+        setNames(c("IdSemana", factor_colname, "Data"))
+    merged_tables <- merge(date_table, value_table, no.dups=TRUE)
+    return(merged_tables[order(merged_tables$IdSemana), ])
 }
-########
+
 
 
 ######## Conjuntos de dados principais ########
@@ -111,7 +132,6 @@ GENRAI <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="gen_ai")
 #' model[character]: Nome do produto, equivalente aos valores únicos de `PRICES$ProductName`
 #' score[double]: Pontuação no benchmark de renderização próprio do software
 RAY5VD <- read.csv(VRAY5_BENCH_PATH)[, c("model", "score")]
-########
 
 
 ######## Conjuntos de dados assistentes ########
@@ -163,7 +183,6 @@ used_stores <- c(
     "B&H Photo-Video-Audio", "Luck Oficial", "XonGeek", "Promotop",
     "Atacado Connect", "Fun4kids", "Luck Oficial", "Gi Ferretti Comercio"
 )
-########
 
 
 ######## Geradores de conjuntos de dados ########
@@ -195,17 +214,18 @@ price_by_date <- function(product_names=c(), group_by_week=FALSE) {
         date_mask <-           df$Date == best_prices[idx, "Date"]
         product_mask <- df$ProductName == best_prices[idx, "ProductName"]
         price_mask <-         df$Price == best_prices[idx, "Value"]
-
+    
         rows <- df[date_mask & product_mask & price_mask, ] |> rownames()
         sel_rows <- append(sel_rows, rows)
     }
 
-    # reset row and column names
+    # translate column names
     colnames(df) <- c("Dia", "Preço", "Brand", "Chip", "Model", "Loja")
-    rownames(df) <- NULL
     # select rows and columns
     df["Nome"] <- paste(df$Brand, df$Chip, df$Model)
     df <- df[sel_rows, c("Dia", "Chip", "Preço", "Nome", "Loja")]
+    # reset rownames at the end to avoid problems with `sel_rows`
+    rownames(df) <- NULL
 
     if (!group_by_week) {
         return(df)
