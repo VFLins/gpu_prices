@@ -48,9 +48,9 @@ group_by_week_ <- function(
         cut.POSIXt(breaks="week", labels=FALSE)
     
     value_table <- aggregate(val, list(week_id, fact), FUN=min) |>
-        setNames(c("IdSemana", factor_colname, "Preço"))
+        setNames(c("IdSemana", factor_colname, value_colname))
     date_table <- aggregate(date, list(week_id, fact), FUN=max) |>
-        setNames(c("IdSemana", factor_colname, "Data"))
+        setNames(c("IdSemana", factor_colname, date_colname))
     merged_tables <- merge(date_table, value_table, no.dups=TRUE)
     return(merged_tables[order(merged_tables$IdSemana), ])
 }
@@ -60,7 +60,7 @@ group_by_week_ <- function(
 ######## Conjuntos de dados principais ########
 #' [PRICES] Data Frame com os dados de preços
 #' 
-#' Colunas:
+#' @section Colunas: 
 #' ProductId[integer]: Número identificador de produto
 #' NameId[integer]: Número identificador de nome de produto
 #' ProductName[character]: Nome do produto indicado por `NameId` (Exemplo: Geforce RTX 4090)
@@ -81,7 +81,7 @@ if (nrow(PRICES) == 0) stop("No price data available, cannot proceed with data s
 
 #' [RASTER] Dados de desempenho em jogos rasterizados (FPS médio) em um conjunto de jogos rasterizados
 #'
-#' Colunas:
+#' @section Colunas:
 #' model[character]: Nome do produto, equivalente aos valores únicos de `PRICES$ProductName`
 #' fhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 1920x1080, com preset "Ultra"
 #' fhd_medium[double]: Medida de desempenho (FPS médio) em resolução 1920x1080, com preset "Médio"
@@ -92,7 +92,7 @@ RASTER <- read.csv(TH_RASTER_PERF_PATH)
 
 #' [RAYTRC] Dados de desempenho em jogos rasterizados com efeitos de Ray Tracing adicionados (FPS médio) em um conjunto de jogos
 #'
-#' Colunas:
+#' @section Colunas:
 #' model[character]: Nome do produto, equivalente aos valores únicos de `PRICES$ProductName`
 #' fhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 1920x1080, com preset "Ultra"
 #' fhd_medium[double]: Medida de desempenho (FPS médio) em resolução 1920x1080, com preset "Médio"
@@ -103,7 +103,7 @@ RAYTRC <- read.csv(TH_RT_PERF_PATH)
 
 #' [BELNDR] Dados de desempenho no benchmark do Blender
 #' 
-#' Colunas:
+#' @section Colunas:
 #' model[character]: Nome do produto, equivalente aos valores únicos de `PRICES$ProductName`
 #' CUDA[double]: Pontuação usando o método de computação CUDA
 #' HIP[double]: Pontuação usando o método de computação HIP
@@ -112,7 +112,7 @@ BLENDR <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="blender")
 
 #' [VIDEOS] Dados de desempenho em renderização de vídeo
 #' 
-#' Colunas:
+#' @section Colunas:
 #' model[character]: Nome do produto, equivalente aos valores únicos de `PRICES$ProductName`
 #' redshift_seconds[double]: Tempo de renderização do vídeo de referência em segundos
 #' redshift_score[double]: Pontuação de desempenho baseada no tempo de renderização, 100.000/`redshift_seconds`
@@ -120,7 +120,7 @@ VIDEOS <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="videos")
 
 #' [GENRAI] Dados de desempenho com IA generativa
 #' 
-#' Colunas:
+#' @section Colunas:
 #' model[character]: Nome do produto, equivalente aos valores únicos de `PRICES$ProductName`
 #' stable_diffusion_512p_img_per_sec[double]: Quantidade de imagens em resolução 512x512 geradas por minuto com Stable Diffusion v1-5
 #' stable_diffusion_768p_img_per_sec[double]: Quantidade de imagens em resolução 768x768 geradas por minuto com Stable Diffusion v1-5
@@ -128,7 +128,7 @@ GENRAI <- readxl::read_excel(PRODUCTS_SHEET_PATH, sheet="gen_ai")
 
 #' [RAY5VD] Pontuação de Benchmark no Ray-5
 #' 
-#' Colunas:
+#' @section Colunas:
 #' model[character]: Nome do produto, equivalente aos valores únicos de `PRICES$ProductName`
 #' score[double]: Pontuação no benchmark de renderização próprio do software
 RAY5VD <- read.csv(VRAY5_BENCH_PATH)[, c("model", "score")]
@@ -162,6 +162,18 @@ superseded_chips <- c(
     "Radeon Rx 6800 Xt", "Radeon Rx 6800"
 )
 
+#' [available_nvidia_chips] GPUs da Nvidia disponíveis no mercado
+available_nvidia_chips <- grep("Geforce", unique(PRICES$ProductName), value=TRUE) |>
+    setdiff(superseded_chips)
+
+#' [available_amd_chips] GPUs da AMD disponíveis no mercado
+available_amd_chips <- grep("Radeon", unique(PRICES$ProductName), value=TRUE) |>
+    setdiff(superseded_chips)
+
+#' [available_intel_chips] GPUs da Intel disponíveis no mercado
+available_intel_chips <- grep("Arc", unique(PRICES$ProductName), value=TRUE) |>
+    setdiff(superseded_chips)
+
 #' [foreign_stores] Nomes de lojas estrangeiras
 foreign_stores <- unique(multi_grep(
     c(
@@ -193,6 +205,8 @@ price_by_date <- function(product_names=c(), group_by_week=FALSE) {
     #' @param product_names Character vector, should contain a list of the
     #' product names desired, if is an empty vector, will use all products available
     #' @param group_by_week Boolean, `False` if should return all available dates
+    #' @section Dataset returned: 
+        #' 
     
     cols <- c("Date", "Price", "ProductBrand", "ProductName", "ProductModel", "Store")
     if (length(product_names) == 0) {
@@ -230,8 +244,12 @@ price_by_date <- function(product_names=c(), group_by_week=FALSE) {
     if (!group_by_week) {
         return(df)
     } else {
-        stop("Not implemented: group_by_week=`TRUE`")
-        #return(group_by_week_(df, "Dia", "Chip"))
+        return(group_by_week_(
+            df=df,
+            date_colname="Dia",
+            factor_colname="Chip",
+            value_colname="Preço"
+        ))
     }
 }
 
