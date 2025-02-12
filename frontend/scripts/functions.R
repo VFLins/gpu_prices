@@ -50,10 +50,11 @@ plot_theme <- function() {
 }
 
 #Plot multiple prices
-plot_multiple_prices <- function(product_names) {
+plot_multiple_prices <- function(product_names, palette_name="Greens") {
     df <- price_by_date(product_names=product_names, group_by_week=TRUE)
-    p <- ggplot(df, aes(x=Dia, y=Preço, group=Chip)) +
-        geom_line(color=cores["third"]) +
+    p <- ggplot(df, aes(x=Dia, y=Preço, color=Chip)) +
+        geom_line(linewidth=1.2) + geom_point(size=4) +
+        scale_color_brewer(palette=palette_name) +
         labs(x=NULL, y=NULL) +
         plot_theme()
     ggplotly(p) |>
