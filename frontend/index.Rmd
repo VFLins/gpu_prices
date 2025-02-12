@@ -12,7 +12,7 @@ output:
 ---
 
 ```{r setup, include=FALSE, message=FALSE}
-source(here::here("frontend", "scripts", "update_prices.R"))
+source(here::here("backend", "scripts", "update_prices.R"))
 source(here::here("frontend", "scripts", "setup_data.R"))
 source(here::here("frontend", "scripts", "functions.R"))
 ```

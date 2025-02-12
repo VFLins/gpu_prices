@@ -143,7 +143,7 @@ RAY5VD <- read.csv(VRAY5_BENCH_PATH)[, c("model", "score")]
 #' ProductsCount[int]: Quantidade de produtos cadastrados para este `Name`
 #' PricesPerProduct[double]: Razão entre PricesCount e ProductsCount
 COUNTS <- aggregate(
-    x=PRICES[, c("PriceId", "ProductId")],
+    x=PRICES[, c("Id", "ProductId")],
     by=list(PRICES$ProductName),
     FUN=function(x)length(unique(x))
 )
