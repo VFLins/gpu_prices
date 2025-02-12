@@ -49,6 +49,18 @@ plot_theme <- function() {
     )
 }
 
+#Plot multiple prices
+plot_multiple_prices <- function(product_names) {
+    df <- price_by_date(product_names=product_names, group_by_week=TRUE)
+    p <- ggplot(df, aes(x=Dia, y=Preço, group=Chip)) +
+        geom_line(color=cores["third"]) +
+        labs(x=NULL, y=NULL) +
+        plot_theme()
+    ggplotly(p) |>
+        config(displayModeBar=FALSE) |>
+        layout(margin=list(t=0, b=0, l=0, r=0))
+}
+
 # Plot indexer
 plot_indexr <- function() {
     index_table <- index_data[-nrow(index_data),]
