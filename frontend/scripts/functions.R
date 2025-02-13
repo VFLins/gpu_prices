@@ -49,6 +49,20 @@ plot_theme <- function() {
     )
 }
 
+#Create a table with latest best prices observed
+best_prices_table <- function(product_names) {
+    opts <- list(
+        lengthMenu=list(c(17, -1), c("17", "All")), 
+        pageLength=17, 
+        language=list(url="https://cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese.json")
+    )
+    df <- price_by_date(product_names)
+    last_obs_date <- aggregate(df$Dia, list(df$Chip), FUN=max) |>
+        setNames(c("Chip", "Dia"))
+    out <- merge(df, last_obs_date)
+    return(DT::datatable(out, , style="bootstrap4", options=opts))
+}
+
 #Plot multiple prices
 plot_multiple_prices <- function(product_names, palette_name="Greens") {
     df <- price_by_date(product_names=product_names, group_by_week=TRUE)

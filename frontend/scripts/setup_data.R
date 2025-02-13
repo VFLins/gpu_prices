@@ -162,18 +162,6 @@ superseded_chips <- c(
     "Radeon Rx 6800 Xt", "Radeon Rx 6800"
 )
 
-#' [available_nvidia_chips] GPUs da Nvidia disponíveis no mercado
-available_nvidia_chips <- grep("Geforce", unique(PRICES$ProductName), value=TRUE) |>
-    setdiff(superseded_chips)
-
-#' [available_amd_chips] GPUs da AMD disponíveis no mercado
-available_amd_chips <- grep("Radeon", unique(PRICES$ProductName), value=TRUE) |>
-    setdiff(superseded_chips)
-
-#' [available_intel_chips] GPUs da Intel disponíveis no mercado
-available_intel_chips <- grep("Arc", unique(PRICES$ProductName), value=TRUE) |>
-    setdiff(superseded_chips)
-
 #' [foreign_stores] Nomes de lojas estrangeiras
 foreign_stores <- unique(multi_grep(
     c(
@@ -195,6 +183,55 @@ used_stores <- c(
     "B&H Photo-Video-Audio", "Luck Oficial", "XonGeek", "Promotop",
     "Atacado Connect", "Fun4kids", "Luck Oficial", "Gi Ferretti Comercio"
 )
+
+PRICES <- PRICES[
+    !(PRICES$Store %in% c(foreign_stores, used_stores)) &
+        !(PRICES$ProductName %in% superseded_chips), ]
+
+#' [available_nvidia_chips] GPUs da Nvidia disponíveis no mercado
+available_nvidia_chips <- grep("Geforce", unique(PRICES$ProductName), value=TRUE) |>
+    setdiff(superseded_chips)
+
+#' [available_amd_chips] GPUs da AMD disponíveis no mercado
+available_amd_chips <- grep("Radeon", unique(PRICES$ProductName), value=TRUE) |>
+    setdiff(superseded_chips)
+
+#' [available_intel_chips] GPUs da Intel disponíveis no mercado
+available_intel_chips <- grep("Arc", unique(PRICES$ProductName), value=TRUE) |>
+    setdiff(superseded_chips)
+
+#' [entry_available_nvidia_chips] GPUs de entrada da Nvidia disponíveis no mercado
+entry_available_nvidia_chips <- PRICES[
+    (PRICES$ProductName %in% available_nvidia_chips) &
+    (PRICES$Price <= quantile(PRICES$Price, .3)),
+    "ProductName"
+] |> unique()
+
+#' [entry_available_amd_chips] GPUs de entrada da Nvidia disponíveis no mercado
+entry_available_amd_chips <- PRICES[
+    (PRICES$ProductName %in% available_amd_chips) &
+    (PRICES$Price <= quantile(PRICES$Price, .3)),
+    c("ProductName")
+] |> unique()
+
+#' [entry_available_intel_chips] GPUs de entrada da Nvidia disponíveis no mercado
+entry_available_intel_chips <- PRICES[
+    (PRICES$ProductName %in% available_intel_chips) &
+    (PRICES$Price <= quantile(PRICES$Price, .3)),
+    "ProductName"
+] |> unique()
+
+#' [highend_available_nvidia_chips] GPUs high-end da Nvidia disponíveis no mercado
+highend_available_nvidia_chips <- available_nvidia_chips |>
+    setdiff(entry_available_nvidia_chips)
+
+#' [highend_available_amd_chips] GPUs high-end da Nvidia disponíveis no mercado
+highend_available_amd_chips <- available_amd_chips |>
+    setdiff(entry_available_amd_chips)
+
+#' [highend_available_intel_chips] GPUs high-end da Nvidia disponíveis no mercado
+highend_available_intel_chips <- available_intel_chips |>
+    setdiff(entry_available_intel_chips)
 
 
 ######## Geradores de conjuntos de dados ########
@@ -411,9 +448,6 @@ prodcut_price_history <- function(product_name) {
 }
 
 ######## Secondary datasets ########
-PRICES <- PRICES[
-    !(PRICES$Store %in% c(foreign_stores, used_stores)) &
-    !(PRICES$ProductName %in% superseded_chips), ]
 index_data <- indexr_data(group_by_week=TRUE)
 weekly_best_prices <- indexr_data()
 price_raster_perf <- perf_data()
