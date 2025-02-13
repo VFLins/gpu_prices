@@ -12,7 +12,7 @@ output:
 ---
 
 ```{r setup, include=FALSE, message=FALSE}
-source(here::here("backend", "scripts", "update_prices.R"))
+#source(here::here("backend", "scripts", "update_prices.R"))
 source(here::here("frontend", "scripts", "setup_data.R"))
 source(here::here("frontend", "scripts", "functions.R"))
 ```
@@ -105,7 +105,7 @@ valueBox(update_date, icon="ion-android-calendar", color=cores["fg"])
 JOGOS {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
-<br><br>
+<br>
 
 Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
@@ -208,7 +208,7 @@ perf_fullpage(
 JOGOS COM RAY TRACING {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
-<br><br>
+<br>
 
 Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
@@ -269,7 +269,7 @@ perf_fullpage(
 RENDERIZAÇÃO 3D {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
-<br><br>
+<br>
 
 Row  {.tabset .tabset-pills}
 -----------------------------------------------------------------------
@@ -301,7 +301,7 @@ perf_fullpage(
 RENDERIZAÇÃO VIDEO {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
-<br><br>
+<br>
 
 Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
@@ -321,7 +321,7 @@ perf_fullpage(
 IA GENERATIVA {data-navmenu="PREÇO E PERFORMANCE"}
 =======================================================================
 
-<br><br>
+<br>
 
 Row {.tabset .tabset-pills}
 -----------------------------------------------------------------------
@@ -350,10 +350,10 @@ perf_fullpage(
 )
 ```
 
-VARIAÇÕES DE PREÇO
+TABELAS DE VARIAÇÃO {data-navmenu="VARIAÇÕES DE PREÇO"}
 ======================================================================
 
-<br><br>
+<br>
 
 Columns 
 -----------------------------------------------------------------------
@@ -371,7 +371,7 @@ table_left <- DT::datatable(
     style="bootstrap4", options=opts
 )
 table_right <- DT::datatable(
-    price_drops(5, TRUE), # change back to 5 later
+    price_drops(5, TRUE),
     style="bootstrap4", options=opts
 )
 
@@ -384,6 +384,111 @@ card_right <- card(
     table_right,
 )
 
+layout_column_wrap(width=1/2, height="100%", card_left, card_right)
+```
+
+PLACAS DE ENTRADA {data-navmenu="VARIAÇÕES DE PREÇO"}
+======================================================================
+
+Row {.tabset .tabset-pills}
+-----------------------------------------------------------------------
+
+### Nvidia
+
+```{r entry-chips-nvidia}
+max_price <- quantile(PRICES$Price, .35)
+product_names <- PRICES[
+    (PRICES$ProductName %in% available_nvidia_chips) &
+    (PRICES$Price <= max_price),
+    "ProductName"
+] |> unique()
+plot <- plot_multiple_prices(product_names, "Greens")
+
+best_prices <- price_by_date(product_names)
+best_prices <- best_prices[
+    best_prices$Dia == max(best_prices$Dia),
+    c("Dia", "Nome", "Loja", "Preço")
+]
+    
+table_right <- DT::datatable(
+    best_prices,
+    style="bootstrap4", options=opts
+)
+
+card_left <- card(
+    card_header(card_title(h1("Histórico de preços"))),
+    plot,
+)
+card_right <- card(
+    card_header(card_title(h1("Melhores preços atuais"))),
+    table_right,
+)
+layout_column_wrap(width=1/2, height="100%", card_left, card_right)
+```
+
+### AMD
+
+```{r entry-chips-amd}
+max_price <- quantile(PRICES$Price, .35)
+product_names <- PRICES[
+    (PRICES$ProductName %in% available_amd_chips) &
+    (PRICES$Price <= max_price),
+    "ProductName"
+] |> unique()
+plot <- plot_multiple_prices(product_names, "Reds")
+
+best_prices <- price_by_date(product_names)
+best_prices <- best_prices[
+    best_prices$Dia == max(best_prices$Dia),
+    c("Dia", "Nome", "Loja", "Preço")
+]
+    
+table_right <- DT::datatable(
+    best_prices,
+    style="bootstrap4", options=opts
+)
+
+card_left <- card(
+    card_header(card_title(h1("Histórico de preços"))),
+    plot,
+)
+card_right <- card(
+    card_header(card_title(h1("Melhores preços atuais"))),
+    table_right,
+)
+layout_column_wrap(width=1/2, height="100%", card_left, card_right)
+```
+
+### Intel
+
+```{r entry-chips-intel}
+max_price <- quantile(PRICES$Price, .35)
+product_names <- PRICES[
+    (PRICES$ProductName %in% available_intel_chips) &
+    (PRICES$Price <= max_price),
+    "ProductName"
+] |> unique()
+plot <- plot_multiple_prices(product_names, "Blues")
+
+best_prices <- price_by_date(product_names)
+best_prices <- best_prices[
+    best_prices$Dia == max(best_prices$Dia),
+    c("Dia", "Nome", "Loja", "Preço")
+]
+    
+table_right <- DT::datatable(
+    best_prices,
+    style="bootstrap4", options=opts
+)
+
+card_left <- card(
+    card_header(card_title(h1("Histórico de preços"))),
+    plot,
+)
+card_right <- card(
+    card_header(card_title(h1("Melhores preços atuais"))),
+    table_right,
+)
 layout_column_wrap(width=1/2, height="100%", card_left, card_right)
 ```
 
