@@ -182,12 +182,13 @@ used_stores <- c(
     "Login Informática", "Gi Eletronica", "Bontempo", "Ka Eletronicos",
     "B&H Photo-Video-Audio", "Luck Oficial", "XonGeek", "Promotop",
     "Atacado Connect", "Fun4kids", "Luck Oficial", "Gi Ferretti Comercio",
-    "phatron.com.brs"
+    "phatron.com.br"
 )
 
 PRICES <- PRICES[
     !(PRICES$Store %in% c(foreign_stores, used_stores)) &
-        !(PRICES$ProductName %in% superseded_chips), ]
+    !(PRICES$ProductName %in% superseded_chips), 
+]
 
 #' [available_nvidia_chips] GPUs da Nvidia disponíveis no mercado
 available_nvidia_chips <- grep("Geforce", unique(PRICES$ProductName), value=TRUE) |>

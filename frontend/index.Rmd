@@ -12,7 +12,7 @@ output:
 ---
 
 ```{r setup, include=FALSE, message=FALSE}
-#source(here::here("backend", "scripts", "update_prices.R"))
+source(here::here("backend", "scripts", "update_prices.R"))
 source(here::here("frontend", "scripts", "setup_data.R"))
 source(here::here("frontend", "scripts", "functions.R"))
 ```
@@ -399,7 +399,7 @@ Row {.tabset .tabset-pills}
 ```{r entry-chips-nvidia}
 card_left <- card(
     card_header(card_title(h1("Histórico de preços"))),
-    plot_multiple_prices(entry_available_nvidia_chips, "Greens"),
+    plot_multiple_prices(entry_available_nvidia_chips, "YlGn"),
 )
 card_right <- card(
     card_header(card_title(h1("Melhores preços atuais"))),
@@ -413,7 +413,7 @@ layout_column_wrap(width=1/2, height="100%", card_left, card_right)
 ```{r entry-chips-amd}
 card_left <- card(
     card_header(card_title(h1("Histórico de preços"))),
-    plot_multiple_prices(entry_available_amd_chips, "Reds"),
+    plot_multiple_prices(entry_available_amd_chips, "YlOrRd"),
 )
 card_right <- card(
     card_header(card_title(h1("Melhores preços atuais"))),
@@ -427,7 +427,7 @@ layout_column_wrap(width=1/2, height="100%", card_left, card_right)
 ```{r entry-chips-intel}
 card_left <- card(
     card_header(card_title(h1("Histórico de preços"))),
-    plot_multiple_prices(entry_available_intel_chips, "Blues"),
+    plot_multiple_prices(entry_available_intel_chips, "PuBuGn"),
 )
 card_right <- card(
     card_header(card_title(h1("Melhores preços atuais"))),
@@ -449,7 +449,7 @@ Row {.tabset .tabset-pills}
 ```{r highend-chips-nvidia}
 card_left <- card(
     card_header(card_title(h1("Histórico de preços"))),
-    plot_multiple_prices(highend_available_nvidia_chips, "Greens"),
+    plot_multiple_prices(highend_available_nvidia_chips, "YlGn"),
 )
 card_right <- card(
     card_header(card_title(h1("Melhores preços atuais"))),
@@ -463,7 +463,7 @@ layout_column_wrap(width=1/2, height="100%", card_left, card_right)
 ```{r highend-chips-amd}
 card_left <- card(
     card_header(card_title(h1("Histórico de preços"))),
-    plot_multiple_prices(highend_available_amd_chips, "Reds"),
+    plot_multiple_prices(highend_available_amd_chips, "YlOrRd"),
 )
 card_right <- card(
     card_header(card_title(h1("Melhores preços atuais"))),
