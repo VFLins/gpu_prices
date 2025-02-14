@@ -361,7 +361,10 @@ Columns
 ###
 
 ```{r price-drops}
-
+opts <- list(
+    lengthMenu=list(c(17, -1), c("17", "All")), 
+    pageLength=17, language=list(url=url)
+)
 table_left <- DT::datatable(
     price_drops(2), 
     style="bootstrap4", options=opts

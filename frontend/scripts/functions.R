@@ -9,6 +9,18 @@ library(flexdashboard)
 cores <- c(
     bg = "#222222", fg = "#E0E0E0", 
     main = "#69B57E", second = "#FD5D63", third = "#63A2BB")
+palette_greens <- c(
+    "#70AFA5", "#B7E0D5", "#9DD3B0", "#80C68C",
+    "#ABE598", "#92B67F", "#A4C79C", "#C4EFBB"
+)
+palette_blues <- c(
+    "#548FC9", "#6FACBF", "#75C7D0", "#53BAB3",
+    "#A3CCE0", "#7F90C8", "#ACA3CC", "#948ECD"
+)
+palette_reds <- c(
+    "#C85A49", "#CF766D", "#E37748", "#CD6132",
+    "#D69B5C", "#F4C398", "#CCA688", "#DFB77A"
+)
 
 # Dinamically generate headers for tabsets
 catHeader <- function(text = "", level = 3) {
@@ -51,24 +63,38 @@ plot_theme <- function() {
 
 #Create a table with latest best prices observed
 best_prices_table <- function(product_names) {
+    #' @title Create a recent best prices table
+    #' @description Generate a `DT::datatable()` with the recent best prices for
+    #' the selected products
+    #' @param product_names Character Vector containing the product names to
+    #' be used
+    url <- "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese.json"
     opts <- list(
         lengthMenu=list(c(17, -1), c("17", "All")), 
-        pageLength=17, 
-        language=list(url="https://cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese.json")
+        pageLength=17, language=list(url=url)
     )
     df <- price_by_date(product_names)
     last_obs_date <- aggregate(df$Dia, list(df$Chip), FUN=max) |>
         setNames(c("Chip", "Dia"))
-    out <- merge(df, last_obs_date)
+    out <- merge(df, last_obs_date)[, c("Dia", "Nome", "Preço", "Loja")]
     return(DT::datatable(out, , style="bootstrap4", options=opts))
 }
 
-#Plot multiple prices
-plot_multiple_prices <- function(product_names, palette_name="Greens") {
+
+plot_multiple_prices <- function(product_names, palette="Greens") {
+    #' @title Plot the price history of multiple products in a single canvas
+    #' @description Generate a plotly plot with project's default theme and
+    #' a predefined color palette.
+    #' @param product_names Character Vector containing the product names to
+    #' be used
+    #' @param palette Character with the palette name
+    #' @note Values of `product_names` must be present in 
+    #' `PRICES$ProductName |> unique()`.
+    #' Value of `palette` must be one of RColorBrewer's palettes
     df <- price_by_date(product_names=product_names, group_by_week=TRUE)
     p <- ggplot(df, aes(x=Dia, y=Preço, color=Chip)) +
         geom_line(linewidth=1.2) + geom_point(size=4) +
-        scale_color_brewer(palette=palette_name) +
+        scale_color_brewer(palette=palette) +
         labs(x=NULL, y=NULL) +
         plot_theme()
     ggplotly(p) |>

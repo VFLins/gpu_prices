@@ -181,7 +181,8 @@ used_stores <- c(
     "Portal Celular", "Nat Vita Suplementos", "ProGaming Computer",
     "Login Informática", "Gi Eletronica", "Bontempo", "Ka Eletronicos",
     "B&H Photo-Video-Audio", "Luck Oficial", "XonGeek", "Promotop",
-    "Atacado Connect", "Fun4kids", "Luck Oficial", "Gi Ferretti Comercio"
+    "Atacado Connect", "Fun4kids", "Luck Oficial", "Gi Ferretti Comercio",
+    "phatron.com.brs"
 )
 
 PRICES <- PRICES[
