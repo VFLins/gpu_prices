@@ -182,7 +182,7 @@ used_stores <- c(
     "Login Informática", "Gi Eletronica", "Bontempo", "Ka Eletronicos",
     "B&H Photo-Video-Audio", "Luck Oficial", "XonGeek", "Promotop",
     "Atacado Connect", "Fun4kids", "Luck Oficial", "Gi Ferretti Comercio",
-    "phatron.com.br"
+    "phatron.com.br", "NMS Comércio"
 )
 
 PRICES <- PRICES[
