@@ -382,8 +382,12 @@ perf_data <- function(perf_table=RASTER) {
     out <- merge(perf_table[, perf_cols], prices_table[, prices_cols])
     out["chip_family"] <- sapply(
         out$model, 
-        function(x )strsplit(x, " ")[[1]][1])
-    
+        function(x) tools::toTitleCase(strsplit(x, " ")[[1]][1])
+    )
+
+    # Return model names to title case
+    out$model <- tools::toTitleCase(out$model)
+
     return(out)
 }
 
