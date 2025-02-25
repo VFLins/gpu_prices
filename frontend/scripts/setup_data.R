@@ -167,7 +167,7 @@ foreign_stores <- unique(multi_grep(
     c(
         "AliExpress", "Amazon.com.br - Seller", "Amazon.com.br - Retail",
         "B&H Photo-Video-Audio", "eBay", "Shopee", "Smart Info Store",
-        "swsimports", "Tiendamia", "Techinn", "Nissei", "Ubuy"
+        "swsimports", "Tiendamia", "Techinn", "Nissei", "Ubuy", "Realschematic"
     ),
     PRICES$Store,
     ignore.case=TRUE,
