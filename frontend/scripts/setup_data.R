@@ -4,6 +4,7 @@ library(reshape2)
 
 PRICES_RDS_PATH     <- here::here("backend", "data", "prices.Rds")
 VRAY5_BENCH_PATH    <- here::here("backend", "data", "vray5_benchmarks.csv")
+TECHPOWERUP_PERF    <- here::here("backend", "data", "techpowerup_avg_fps.xlsx")
 TH_RASTER_PERF_PATH <- here::here("backend", "data", "tomshardware_raster_avg_fps.csv")
 TH_RT_PERF_PATH     <- here::here("backend", "data", "tomshardware_rt_avg_fps.csv")
 PRODUCTS_SHEET_PATH <- here::here("backend", "data", "prods.xlsx")
@@ -88,7 +89,11 @@ if (nrow(PRICES) == 0) stop("No price data available, cannot proceed with data s
 #' qhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 2560x1440, com preset "Ultra"
 #' uhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 3840x2160, com preset "Ultra"
 #' specs[character]: Informações das especificações da placa de vídeo
-RASTER <- read.csv(TH_RASTER_PERF_PATH)
+RASTER <- read.csv(TH_RASTER_PERF_PATH) |>
+    merge(x=_, y=readxl::read_excel(TECHPOWERUP_PERF, sheet="raster"), all=TRUE)
+#temp <- readxl::read_excel(TECHPOWERUP_PERF, sheet="raster")
+#mask <- !(tolower(temp$model) %in% tolower(RASTER$model))
+#RASTER <- rbind(RASTER, temp[mask, ])
 
 #' [RAYTRC] Dados de desempenho em jogos rasterizados com efeitos de Ray Tracing adicionados (FPS médio) em um conjunto de jogos
 #'
@@ -182,7 +187,7 @@ used_stores <- c(
     "Login Informática", "Gi Eletronica", "Bontempo", "Ka Eletronicos",
     "B&H Photo-Video-Audio", "Luck Oficial", "XonGeek", "Promotop",
     "Atacado Connect", "Fun4kids", "Luck Oficial", "Gi Ferretti Comercio",
-    "phatron.com.br", "NMS Comércio"
+    "phatron.com.br", "NMS Comércio", "Zumaia Acessórios"
 )
 
 PRICES <- PRICES[
