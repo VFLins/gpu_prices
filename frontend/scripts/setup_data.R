@@ -161,6 +161,7 @@ superseded_chips <- c(
     "Geforce Rtx 3080 Ti", "Geforce Rtx 3080",
     "Geforce Rtx 3070 Ti", "Geforce Rtx 3070",
     "Geforce Rtx 3060 Ti Gddr6X", "Geforce Rtx 3060 Ti",
+    "Geforce Rtx 3060 8Gb",
     "Geforce Rtx 4080",
     "Geforce Rtx 4070", "Geforce Rtx 4070 Ti",
     "Radeon Rx 6900 Xt",
@@ -172,7 +173,8 @@ foreign_stores <- unique(multi_grep(
     c(
         "AliExpress", "Amazon.com.br - Seller", "Amazon.com.br - Retail",
         "B&H Photo-Video-Audio", "eBay", "Shopee", "Smart Info Store",
-        "swsimports", "Tiendamia", "Techinn", "Nissei", "Ubuy", "Realschematic"
+        "swsimports", "Tiendamia", "Techinn", "Nissei", "Ubuy", "Realschematic",
+        "Chic Cart"
     ),
     PRICES$Store,
     ignore.case=TRUE,
