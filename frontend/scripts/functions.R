@@ -103,7 +103,10 @@ plot_multiple_prices <- function(product_names, palette="Greens") {
         plot_theme()
     ggplotly(p) |>
         config(displayModeBar=FALSE) |>
-        layout(margin=list(t=0, b=0, l=0, r=0))
+        layout(
+            margin=list(t=0, b=0, l=0, r=0),
+            legend = list(orientation = 'h')
+        )
 }
 
 # Plot indexer
