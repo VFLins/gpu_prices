@@ -58,7 +58,7 @@ plot_theme <- function() {
         panel.grid.minor = element_line(color=cores["bg"]),
         panel.grid.major = element_line(color=cores["bg"]),
         axis.ticks=element_line(color=cores["bg"]),
-        legend.position="bottom",
+        legend.position="top",
         legend.title = element_blank(),
         legend.background=element_rect(fill=cores["bg"], size=0.5, linetype="solid", colour ="darkgray"),
         legend.text=element_text(colour=cores["fg"])

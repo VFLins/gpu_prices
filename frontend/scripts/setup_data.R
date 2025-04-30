@@ -192,6 +192,12 @@ used_stores <- c(
     "phatron.com.br", "NMS Comércio", "Zumaia Acessórios", "Glacon Informática"
 )
 
+#' [trusted_stores] Nomes de lojas nacionais que historicamente mostram bons preços de produtos novos
+trusted_stores = c(
+    "Pichau", "Terabyteshop", "KaBuM!",
+    "OctoShop BR", "Patoloco.com.br", "Gigantec"
+)
+
 PRICES <- PRICES[
     !(PRICES$Store %in% c(foreign_stores, used_stores)) &
     !(PRICES$ProductName %in% superseded_chips), 
@@ -297,6 +303,26 @@ price_by_date <- function(product_names=c(), group_by_week=FALSE) {
             value_colname="Preço"
         ))
     }
+}
+
+best_price_by_week <- function(chip_name=NULL, only_trusted=FALSE) {
+    #' @title Cria uma série temporal com os melhores preços de cada semana
+    #' @param chip_name (`character`) nome único presente em PRICES$ProductName, ou `NULL`
+    #' para usar todos os produtos
+    #' @param only_trusted (`bool`)
+    subset <- PRICES[(PRICES$ProductName == chip_name), ]
+    if (only_trusted)
+        subset <- subset[(PRICES$Store %in% trusted_stores), ]
+
+    chip <- rep(chip_name, nrow(subset))
+    week <- as.POSIXct(subset$Date, tz=Sys.timezone()) |> 
+        cut.POSIXt(breaks="week", labels=FALSE)
+
+    best_prices <- aggregate(subset$Price, list(week, chip), FUN=min) |>
+        setNames(c("Semana", "Chip", "Melhor preço"))
+    dates_table <- aggregate(subset$Date, list(week), FUN=max) |>
+        setNames(c("Semana", "Dia"))
+    return(merge(dates_table, best_prices, by="Semana"))
 }
 
 indexr_data <- function(price_table=PRICES, group_by_week=FALSE) {

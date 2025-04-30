@@ -3,6 +3,7 @@ PROJECT_ROOT = here::here()
 
 #PRICES0 <- readRDS(here::here("backend", "data", "prices.Rds"))
 source(here::here("frontend", "scripts", "setup_data.R"))
+source(here::here("frontend", "scripts", "functions.R"))
 
 general_counts <- function() {
     #' `data.frame` de contagens de Produtos
