@@ -105,7 +105,7 @@ plot_multiple_prices <- function(product_names, palette="Greens") {
         config(displayModeBar=FALSE) |>
         layout(
             margin=list(t=0, b=0, l=0, r=0),
-            legend = list(orientation = 'h')
+            legend = list(y=1.1, orientation="h")
         )
 }
 
