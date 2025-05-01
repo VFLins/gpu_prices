@@ -250,13 +250,14 @@ highend_available_intel_chips <- available_intel_chips |>
 
 
 ######## Geradores de conjuntos de dados ########
-price_by_date <- function(product_names=c(), group_by_week=FALSE) {
+price_by_date <- function(product_names=c(), group_by_week=FALSE, hyperlinks=FALSE) {
     #' @title Generate a Data Frame of best prices by date
     #' @description Table in long format with the best prices for every
     #' "ProductName" selected by date
     #' @param product_names Character vector, should contain a list of the
     #' product names desired, if is an empty vector, will use all products available
     #' @param group_by_week Boolean, `False` if should return all available dates
+    #' @param hyperlinks Boolean, `False` if shuld the store name column have html hyperlink
     #' @section Dataset returned: 
         #' 
     
@@ -289,7 +290,9 @@ price_by_date <- function(product_names=c(), group_by_week=FALSE) {
     colnames(df) <- c("Dia", "Preço", "Brand", "Chip", "Model", "Loja", "Url")
     # select rows and columns
     df["Nome"] <- paste(df$Brand, df$Chip, df$Model)
-    df["Loja"] <- paste0("<a href='", df$Url, "'>", df$Loja, "</a>")
+    if (hyperlinks) {
+        df["Loja"] <- paste0("<a href='", df$Url, "'>", df$Loja, "</a>")
+    }
     df <- df[sel_rows, c("Dia", "Chip", "Preço", "Nome", "Loja")]
     # reset rownames at the end to avoid problems with `sel_rows`
     rownames(df) <- NULL

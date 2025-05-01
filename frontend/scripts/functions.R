@@ -77,7 +77,7 @@ best_prices_table <- function(product_names) {
         lengthMenu=list(c(17, -1), c("17", "All")), 
         pageLength=17, language=list(url=url)
     )
-    df <- price_by_date(product_names)
+    df <- price_by_date(product_names, hyperlinks=TRUE)
     last_obs_date <- aggregate(df$Dia, list(df$Chip), FUN=max) |>
         setNames(c("Chip", "Dia"))
     out <- merge(df, last_obs_date)[, c("Dia", "Nome", "Preço", "Loja")]
@@ -95,7 +95,7 @@ plot_multiple_prices <- function(product_names, palette="Greens") {
     #' @note Values of `product_names` must be present in 
     #' `PRICES$ProductName |> unique()`.
     #' Value of `palette` must be one of RColorBrewer's palettes
-    df <- price_by_date(product_names=product_names, group_by_week=TRUE)
+    df <- price_by_date(product_names=product_names, group_by_week=TRUE, hyperlinks=FALSE)
     p <- ggplot(df, aes(x=Dia, y=Preço, color=Chip)) +
         geom_line(linewidth=1.2) + geom_point(size=4) +
         scale_color_brewer(palette=palette) +
