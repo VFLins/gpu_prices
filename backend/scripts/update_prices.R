@@ -24,8 +24,23 @@ duplicate_mask <- duplicated(data[c('Name', 'Date', 'Price', 'Store')])
 data <- data[!duplicate_mask,]
 
 # keep only last 3 months
-floor_date <- as.POSIXct((Sys.Date() - 184))
+floor_date <- as.POSIXct((Sys.Date() - 190))
 data <- data[data$Date >= floor_date, ]
+
+# remove extremely discrepant prices
+discrepant_prices_mask <- function(dataset) {
+    chip_names <- unique(dataset$ProductName)
+    discrepant_price_ids <- c()
+    for (chip_name in chip_names){
+        slice <- dataset[(dataset$ProductName == chip_name), ]
+        min <- median(slice$Price) - (sd(slice$Price) * 1.645)
+        max <- median(slice$Price) + (sd(slice$Price) * 1.645)
+        ids <- slice[(slice$Price > max) | (slice$Price < min), "Id"]
+        discrepant_price_ids <- c(discrepant_price_ids, ids)
+    }
+    return(dataset$Id %in% discrepant_price_ids)
+}
+data <- data[!discrepant_prices_mask(data), ]
 
 # save file
 saveRDS(data, file = here::here("backend", "data", "prices.rds"))
