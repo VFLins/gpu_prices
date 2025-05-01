@@ -305,22 +305,27 @@ price_by_date <- function(product_names=c(), group_by_week=FALSE) {
     }
 }
 
-best_price_by_week <- function(chip_name=NULL, only_trusted=FALSE) {
+best_price_by_week <- function(chip_names=NULL, only_trusted=FALSE) {
     #' @title Cria uma série temporal com os melhores preços de cada semana
-    #' @param chip_name (`character`) nome único presente em PRICES$ProductName, ou `NULL`
-    #' para usar todos os produtos
-    #' @param only_trusted (`bool`)
-    subset <- PRICES[(PRICES$ProductName == chip_name), ]
-    if (only_trusted)
-        subset <- subset[(PRICES$Store %in% trusted_stores), ]
+    #' @param chip_name vetor `character` com nomes presentes em PRICES$ProductName, ou
+    #' `NULL` para usar todos os produtos
+    #' @param only_trusted `bool` indicando se deve usar apenas preços das `trusted_stores`
+    if (is.null(chip_names)) {
+        slice <- PRICES
+    } else {
+        slice <- PRICES[(PRICES$ProductName %in% chip_names), ]
+    }
+    if (only_trusted) {
+        slice <- slice[(slice$Store %in% trusted_stores), ]
+    }
 
-    chip <- rep(chip_name, nrow(subset))
-    week <- as.POSIXct(subset$Date, tz=Sys.timezone()) |> 
+    chip <- slice$ProductName
+    week <- as.POSIXct(slice$Date, tz=Sys.timezone()) |> 
         cut.POSIXt(breaks="week", labels=FALSE)
 
-    best_prices <- aggregate(subset$Price, list(week, chip), FUN=min) |>
+    best_prices <- aggregate(slice$Price, list(week, chip), FUN=min) |>
         setNames(c("Semana", "Chip", "Melhor preço"))
-    dates_table <- aggregate(subset$Date, list(week), FUN=max) |>
+    dates_table <- aggregate(slice$Date, list(week), FUN=max) |>
         setNames(c("Semana", "Dia"))
     return(merge(dates_table, best_prices, by="Semana"))
 }
