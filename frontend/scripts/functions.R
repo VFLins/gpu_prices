@@ -81,7 +81,7 @@ best_prices_table <- function(product_names) {
     last_obs_date <- aggregate(df$Dia, list(df$Chip), FUN=max) |>
         setNames(c("Chip", "Dia"))
     out <- merge(df, last_obs_date)[, c("Dia", "Nome", "Preço", "Loja")]
-    return(DT::datatable(out, , style="bootstrap4", options=opts))
+    return(DT::datatable(out, style="bootstrap4", options=opts, escape=FALSE))
 }
 
 

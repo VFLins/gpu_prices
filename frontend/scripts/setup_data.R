@@ -260,7 +260,7 @@ price_by_date <- function(product_names=c(), group_by_week=FALSE) {
     #' @section Dataset returned: 
         #' 
     
-    cols <- c("Date", "Price", "ProductBrand", "ProductName", "ProductModel", "Store")
+    cols <- c("Date", "Price", "ProductBrand", "ProductName", "ProductModel", "Store", "Url")
     if (length(product_names) == 0) {
         df <- PRICES[, cols]
     } else {
@@ -286,9 +286,10 @@ price_by_date <- function(product_names=c(), group_by_week=FALSE) {
     }
 
     # translate column names
-    colnames(df) <- c("Dia", "Preço", "Brand", "Chip", "Model", "Loja")
+    colnames(df) <- c("Dia", "Preço", "Brand", "Chip", "Model", "Loja", "Url")
     # select rows and columns
     df["Nome"] <- paste(df$Brand, df$Chip, df$Model)
+    df["Loja"] <- paste0("<a href='", df$Url, "'>", df$Loja, "</a>")
     df <- df[sel_rows, c("Dia", "Chip", "Preço", "Nome", "Loja")]
     # reset rownames at the end to avoid problems with `sel_rows`
     rownames(df) <- NULL
