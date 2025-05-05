@@ -39,6 +39,7 @@ vignettes/*.pdf
 .Renviron
 
 # Python env
+*.pyc
 /.pyenv
 /pyenv
 /.venv
