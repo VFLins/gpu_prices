@@ -1,14 +1,20 @@
 from bs4 import BeautifulSoup
 from pyreadr import read_r
+from pathlib import Path
+import pandas as pd
+import requests
+import re
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
-from os import getcwd, path
-import pandas as pd
-import requests
-import re
+
+
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+DATA_DIR = SCRIPT_DIR.parent.joinpath("data")
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2088.57"
 
@@ -19,13 +25,12 @@ def get_th_avg_fps() :
         "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html",
         headers={"User-Agent" : UA})
         
-    webpage = BeautifulSoup(DRIVER.page_source, "lxml")
+    webpage = BeautifulSoup(response.text, "lxml")
     webpage_tables = webpage.find_all("table")
     
     def build_table(body_obj):
         row_objs = body_obj.find_all("tr")
         rows = list()
-        
         for obj in row_objs:
             rowitem_objs = obj.find_all("td")
             row_data = [i.get_text() for i in rowitem_objs]
@@ -33,30 +38,33 @@ def get_th_avg_fps() :
         return rows
     
     def get_fps_val(string):
-        re_match = re.search(r"\d+\.\d(?=[fps])", string)
-        return float(re_match.group(0)) if re_match else None
+        re_match = re.search(r"\(([\d.]+)\)", string)
+        return float(re_match.group(1)) if re_match else None
     
     tbl_titles = ["raster", "rt"]
     tbl_header = [
-        "model", "fhd_ultra", "fhd_medium", "qhd_ultra", "uhd_ultra", "specs"]
+        "model", "price_low", "price_msrp",
+        "fhd_medium", "fhd_ultra", "qhd_ultra",
+        "uhd_ultra", "specs"
+    ]
         
     for table, title in zip(webpage_tables, tbl_titles):
         tbl_body = table.find("tbody")
         body = build_table(tbl_body)
         
         df = pd.DataFrame(body, columns=tbl_header)
-        for colname in tbl_header[1:5]:
+        for colname in tbl_header[3:7]:
             df[colname] = df[colname].apply(get_fps_val)
         
-        df.to_csv(f"data/tomshardware_{title}_avg_fps.csv", index=False)
+        df.to_csv(DATA_DIR.joinpath(f"tomshardware_{title}_avg_fps.csv"), index=False)
 
-
+"""
 #### Update V-Ray 5 render benchmark data from official page ####
 #################################################################
 
 URL = "https://benchmark.chaos.com/v5/vray-gpu-cuda"
 
-df = read_r(getcwd() + "\\data\\prices.rds")[None]
+df = read_r(DATA_DIR.joinpath("prices.rds"))[None]
 
 unique_combinations = df.groupby(['ProductName','ProductFilters'])\
     .size().reset_index()
@@ -219,7 +227,7 @@ def get_vray5_render_pts():
     df = pd.DataFrame({"model" : results.keys(), "score":results.values()})
     df.to_csv("data/vray5_benchmarks.csv")
     DRIVER.quit()
-    
+"""
 # run from command line: python3 ./routine/update_benchmarks.py
 if __name__ == "__main__":
     try: 
