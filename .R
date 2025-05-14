@@ -54,7 +54,7 @@ low_availability_chip_names <- function() {
     names(availability_index[availability_index < 0])
 }
 
-low_availability_chip_names()
+#low_availability_chip_names()
 # chip_names <- sort(unique(PRICES[, 3]))
 # display_data <- c()
 # for (name in chip_names) {

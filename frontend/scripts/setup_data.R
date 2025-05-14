@@ -47,7 +47,7 @@ group_by_week_ <- function(
     val <- df[[value_colname]]
     week_id <- as.POSIXct(date, tz=Sys.timezone()) |>
         cut.POSIXt(breaks="week", labels=FALSE)
-    
+
     value_table <- aggregate(val, list(week_id, fact), FUN=min) |>
         setNames(c("IdSemana", factor_colname, value_colname))
     date_table <- aggregate(date, list(week_id, fact), FUN=max) |>
@@ -57,6 +57,26 @@ group_by_week_ <- function(
 }
 
 
+cleanse_performance_data <- function(df) {
+    #' @title Keep only the highest performance score when there are multiple available
+    #' @description Expects a "model" column, where it will detect the duplicated data from
+    #' @param df Data Frame containing the data to be cleansed
+    duplicated_model_names <- df[duplicated(df$model), "model"]
+    if (length(duplicated_model_names) == 0)
+        return(df)
+    for (model_name in duplicated_model_names) {
+        tmp <- df[df$model==model_name, ]
+        new_row_id <- length(df) + 1
+        for (col in colnames(tmp)) {
+            df[new_row_id, col] <- max(tmp[[col]], na.rm=TRUE)
+        }
+        df <- df[!(rownames(df) %in% rownames(tmp)), ]
+    }
+    return(df)
+}
+
+#perf_cols <- c("model", "fhd_medium", "fhd_ultra", "qhd_ultra", "uhd_ultra")
+#price_raster_perf[, perf_cols] <- cleanse_performance_data(price_raster_perf[, perf_cols])
 
 ######## Conjuntos de dados principais ########
 #' [PRICES] Data Frame com os dados de preços
@@ -90,10 +110,11 @@ if (nrow(PRICES) == 0) stop("No price data available, cannot proceed with data s
 #' uhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 3840x2160, com preset "Ultra"
 #' specs[character]: Informações das especificações da placa de vídeo
 RASTER <- read.csv(TH_RASTER_PERF_PATH) |>
-    merge(x=_, y=readxl::read_excel(TECHPOWERUP_PERF, sheet="raster"), all=TRUE)
+    merge(x=_, y=readxl::read_excel(TECHPOWERUP_PERF, sheet="raster"), all=TRUE) |>
+    cleanse_performance_data()
 #temp <- readxl::read_excel(TECHPOWERUP_PERF, sheet="raster")
 #mask <- !(tolower(temp$model) %in% tolower(RASTER$model))
-#RASTER <- rbind(RASTER, temp[mask, ])
+#RASTER <- rbind(RASTER[, colnames(temp)], temp[mask, ])
 
 #' [RAYTRC] Dados de desempenho em jogos rasterizados com efeitos de Ray Tracing adicionados (FPS médio) em um conjunto de jogos
 #'
@@ -403,7 +424,7 @@ indexr_data <- function(price_table=PRICES, group_by_week=FALSE) {
 perf_data <- function(perf_table=RASTER) {
     perf_cols <- names(perf_table)
     prices_cols <- c("model", "Melhor preço", "Dia", "Semana")
-    
+
     # Select last best prices
     prices_table <- indexr_data()
     prices_table <- subset(
@@ -412,13 +433,12 @@ perf_data <- function(perf_table=RASTER) {
 
     redundant_mask <- !(prices_table$Chip |> duplicated(fromLast=TRUE))
     prices_table <- prices_table[redundant_mask, ]
-    
-    
+
     # Padronize model names
     prices_table["model"] <- tolower(prices_table$Chip)
     perf_table["model"] <- tolower(perf_table$model)
     perf_table["model"] <- gsub("intel ", "", perf_table$model)
-    
+
     # Merge performance and prices by model names
     out <- merge(perf_table[, perf_cols], prices_table[, prices_cols])
     out["chip_family"] <- sapply(
@@ -428,7 +448,6 @@ perf_data <- function(perf_table=RASTER) {
 
     # Return model names to title case
     out$model <- tools::toTitleCase(out$model)
-
     return(out)
 }
 
