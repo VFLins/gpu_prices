@@ -1,4 +1,4 @@
-# run like: rscript render.R
+# cd into this script directory and run like: rscript render.R
 # to set a new prices db path: rscript render.R \path\to\database.db
 ## Check packages and install missing ones
 packages <- c(
