@@ -66,6 +66,7 @@ cleanse_performance_data <- function(df) {
         return(df)
     for (model_name in duplicated_model_names) {
         tmp <- df[df$model==model_name, ]
+        rownames(df) <- 1:length(df)
         new_row_id <- length(df) + 1
         for (col in colnames(tmp)) {
             df[new_row_id, col] <- max(tmp[[col]], na.rm=TRUE)
@@ -516,7 +517,7 @@ prodcut_price_history <- function(product_name) {
 ######## Secondary datasets ########
 index_data <- indexr_data(group_by_week=TRUE)
 weekly_best_prices <- indexr_data()
-price_raster_perf <- perf_data()
+price_raster_perf <- perf_data() |> cleanse_performance_data()
 price_rt_perf <- perf_data(RAYTRC)
 price_blender_perf <- perf_data(BLENDR)
 price_videos_perf <- perf_data(VIDEOS)
