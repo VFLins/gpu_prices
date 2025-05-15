@@ -66,14 +66,31 @@ cleanse_performance_data <- function(df) {
         return(df)
     for (model_name in duplicated_model_names) {
         tmp <- df[df$model==model_name, ]
-        rownames(df) <- 1:length(df)
-        new_row_id <- length(df) + 1
+        new_row_id <- df |> rownames() |> mylast() |> as.numeric() |> (_ + 1) |> as.character()
         for (col in colnames(tmp)) {
             df[new_row_id, col] <- max(tmp[[col]], na.rm=TRUE)
         }
         df <- df[!(rownames(df) %in% rownames(tmp)), ]
     }
     return(df)
+}
+
+
+append_data_source <- function(orig, new, match_colname="model") {
+    #' @title Adiciona dados de `new` que estão ausentes em `orig`
+    #' @param orig data.frame com os dados que serão preservados
+    #' @param new data.frame com possíveis novos dados
+    #' @param match_colname character indicando o nome de uma coluna que ambos os
+    #'   data frames possuem em comum, deve possuir valores únicos que identificam
+    #'   uma unidade de informação
+    new_data_mask <- !(tolower(new[[match_colname]]) %in% tolower(orig[[match_colname]]))
+    if (sum(new_data_mask) == 0)
+        return(orig)
+    new <- new[new_data_mask, ]
+
+    for (new_data in new[[match_colname]]) {
+        new_index <- as.character(rownames(orig))
+    }
 }
 
 #perf_cols <- c("model", "fhd_medium", "fhd_ultra", "qhd_ultra", "uhd_ultra")
