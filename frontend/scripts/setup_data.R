@@ -57,6 +57,18 @@ group_by_week_ <- function(
 }
 
 
+last_index <- function(df, as_numeric=TRUE) {
+    idx_vector <- rownames(df)
+    if (is.null(idx_vector))
+        return(NA)
+    last_item <- idx_vector[length(idx_vector)]
+    if (as_numeric)
+        return(as.numeric(last_item))
+    else
+        return(last_item)
+}
+
+
 cleanse_performance_data <- function(df) {
     #' @title Keep only the highest performance score when there are multiple available
     #' @description Expects a "model" column, where it will detect the duplicated data from
@@ -66,7 +78,7 @@ cleanse_performance_data <- function(df) {
         return(df)
     for (model_name in duplicated_model_names) {
         tmp <- df[df$model==model_name, ]
-        new_row_id <- df |> rownames() |> mylast() |> as.numeric() |> (_ + 1) |> as.character()
+        new_row_id <- as.character(last_index(df) + 1)
         for (col in colnames(tmp)) {
             df[new_row_id, col] <- max(tmp[[col]], na.rm=TRUE)
         }
@@ -88,9 +100,16 @@ append_data_source <- function(orig, new, match_colname="model") {
         return(orig)
     new <- new[new_data_mask, ]
 
+    common_columns_mask <- (colnames(orig) %in% colnames(new))
+    cols <- colnames(orig)[common_columns_mask]
+
     for (new_data in new[[match_colname]]) {
-        new_index <- as.character(rownames(orig))
+        new_index <- as.character(last_index(orig) + 1)
+        for (column in cols) {
+            orig[new_index, column] <- new[new[[match_colname]]==new_data, column]
+        }
     }
+    return(orig)
 }
 
 #perf_cols <- c("model", "fhd_medium", "fhd_ultra", "qhd_ultra", "uhd_ultra")
@@ -127,9 +146,12 @@ if (nrow(PRICES) == 0) stop("No price data available, cannot proceed with data s
 #' qhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 2560x1440, com preset "Ultra"
 #' uhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 3840x2160, com preset "Ultra"
 #' specs[character]: Informações das especificações da placa de vídeo
-RASTER <- read.csv(TH_RASTER_PERF_PATH) |>
-    merge(x=_, y=readxl::read_excel(TECHPOWERUP_PERF, sheet="raster"), all=TRUE) |>
-    cleanse_performance_data()
+RASTER <- read.csv(TH_RASTER_PERF_PATH)
+RASTER$model <- gsub("Intel ", "", RASTER$model) |>
+    append_data_source(readxl::read_excel(TECHPOWERUP_PERF, sheet="raster"))
+
+#    merge(x=_, y=readxl::read_excel(TECHPOWERUP_PERF, sheet="raster"), all=TRUE) |>
+#    cleanse_performance_data()
 #temp <- readxl::read_excel(TECHPOWERUP_PERF, sheet="raster")
 #mask <- !(tolower(temp$model) %in% tolower(RASTER$model))
 #RASTER <- rbind(RASTER[, colnames(temp)], temp[mask, ])
