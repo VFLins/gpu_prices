@@ -95,6 +95,8 @@ append_data_source <- function(orig, new, match_colname="model") {
     #' @param match_colname character indicando o nome de uma coluna que ambos os
     #'   data frames possuem em comum, deve possuir valores únicos que identificam
     #'   uma unidade de informação
+    #' @note Precisa que exista uma coluna com nome indicado em `match_colname`
+    #'   em ambos os conjuntos de dados `orig` e `new`, não fará nada se não econtrar
     new_data_mask <- !(tolower(new[[match_colname]]) %in% tolower(orig[[match_colname]]))
     if (sum(new_data_mask) == 0)
         return(orig)
@@ -147,7 +149,8 @@ if (nrow(PRICES) == 0) stop("No price data available, cannot proceed with data s
 #' uhd_ultra[double]: Medida de desempenho (FPS médio) em resolução 3840x2160, com preset "Ultra"
 #' specs[character]: Informações das especificações da placa de vídeo
 RASTER <- read.csv(TH_RASTER_PERF_PATH)
-RASTER$model <- gsub("Intel ", "", RASTER$model) |>
+RASTER$model <- gsub("Intel ", "", RASTER$model)
+RASTER <- RASTER |>
     append_data_source(readxl::read_excel(TECHPOWERUP_PERF, sheet="raster"))
 
 #    merge(x=_, y=readxl::read_excel(TECHPOWERUP_PERF, sheet="raster"), all=TRUE) |>

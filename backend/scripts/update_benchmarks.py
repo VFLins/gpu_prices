@@ -27,7 +27,7 @@ def get_th_avg_fps() :
         
     webpage = BeautifulSoup(response.text, "lxml")
     webpage_tables = webpage.find_all("table")
-    
+
     def build_table(body_obj):
         row_objs = body_obj.find_all("tr")
         rows = list()
@@ -36,22 +36,22 @@ def get_th_avg_fps() :
             row_data = [i.get_text() for i in rowitem_objs]
             rows.append(row_data)
         return rows
-    
+
     def get_fps_val(string):
         re_match = re.search(r"\(([\d.]+)\)", string)
         return float(re_match.group(1)) if re_match else None
-    
+
     tbl_titles = ["raster", "rt"]
     tbl_header = [
         "model", "price_low", "price_msrp",
         "fhd_medium", "fhd_ultra", "qhd_ultra",
         "uhd_ultra", "specs"
     ]
-        
+
     for table, title in zip(webpage_tables, tbl_titles):
         tbl_body = table.find("tbody")
         body = build_table(tbl_body)
-        
+
         df = pd.DataFrame(body, columns=tbl_header)
         for colname in tbl_header[3:7]:
             df[colname] = df[colname].apply(get_fps_val)
