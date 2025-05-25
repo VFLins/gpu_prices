@@ -230,7 +230,7 @@ superseded_chips <- c(
     "Geforce Rtx 4070", "Geforce Rtx 4070 Ti",
     "Radeon Rx 6900 Xt",
     "Radeon Rx 6800 Xt", "Radeon Rx 6800",
-    "Radeon Rx 6650 Xt"
+    "Radeon Rx 6600 Xt", "Radeon Rx 6650 Xt"
 )
 
 #' [foreign_stores] Nomes de lojas estrangeiras
