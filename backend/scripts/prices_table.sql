@@ -8,6 +8,7 @@ SELECT
     c.ProductFilters,
     c.Created,
     c.LastUpdate,
+    c.SupersededBy,
     d.Date,
     d.Price,
     d.Name,
@@ -22,7 +23,8 @@ FROM (
         b.ProductModel,
         b.ProductFilters,
         b.Created,
-        b.LastUpdate
+        b.LastUpdate,
+        a.SupersededBy
     FROM product_names a
     JOIN products b ON a.Id = b.NameId
 ) c

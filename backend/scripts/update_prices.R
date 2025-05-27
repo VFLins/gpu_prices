@@ -46,5 +46,4 @@ data <- data[!discrepant_prices_mask(data), ]
 saveRDS(data, file = here::here("backend", "data", "prices.rds"))
 
 # cleanup
-rm(duplicate_mask, db_path, floor_date, 
-   products, prices, data, con)
+rm(duplicate_mask, db_path, floor_date, data, con)
