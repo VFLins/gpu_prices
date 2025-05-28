@@ -219,19 +219,8 @@ COUNTS <- aggregate(
 names(COUNTS) <- c("Name", "PricesCount", "ProductsCount")
 COUNTS$PricesPerProduct <- COUNTS$PricesCount / COUNTS$ProductsCount
 
-#' [superseded_chips] Nome dos produtos substituiídos por outro modelo
-superseded_chips <- c(
-    "Geforce Rtx 3090 Ti", "Geforce Rtx 3090",
-    "Geforce Rtx 3080 Ti", "Geforce Rtx 3080",
-    "Geforce Rtx 3070 Ti", "Geforce Rtx 3070",
-    "Geforce Rtx 3060 Ti Gddr6X", "Geforce Rtx 3060 Ti",
-    "Geforce Rtx 3060 8Gb",
-    "Geforce Rtx 4080",
-    "Geforce Rtx 4070", "Geforce Rtx 4070 Ti",
-    "Radeon Rx 6900 Xt",
-    "Radeon Rx 6800 Xt", "Radeon Rx 6800",
-    "Radeon Rx 6600 Xt", "Radeon Rx 6650 Xt"
-)
+#' [superseded_chips] Nome dos produtos substituiídos por outro modelo mais recente
+superseded_chips <- PRICES[!is.na(PRICES$SupersededBy), "ProductName"] |> unique()
 
 #' [foreign_stores] Nomes de lojas estrangeiras
 foreign_stores <- unique(multi_grep(
