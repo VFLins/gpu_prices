@@ -228,7 +228,8 @@ foreign_stores <- unique(multi_grep(
         "AliExpress", "Amazon.com.br - Seller", "Amazon.com.br - Retail",
         "B&H Photo-Video-Audio", "eBay", "Shopee", "Smart Info Store",
         "swsimports", "Tiendamia", "Techinn", "Nissei", "Ubuy", "Realschematic",
-        "Chic Cart", "Microless.com", "Bitworks"
+        "Chic Cart", "Microless.com", "Bitworks", "7.", "5.",
+        "Shop de cooler & Informática em Geral"
     ),
     PRICES$Store,
     ignore.case=TRUE,
