@@ -229,7 +229,7 @@ foreign_stores <- unique(multi_grep(
         "B&H Photo-Video-Audio", "eBay", "Shopee", "Smart Info Store",
         "swsimports", "Tiendamia", "Techinn", "Nissei", "Ubuy", "Realschematic",
         "Chic Cart", "Microless.com", "Bitworks", "7.", "5.",
-        "Shop de cooler & Informática em Geral"
+        "Shop de cooler & Informática em Geral", "mercadolivre.com.br"
     ),
     PRICES$Store,
     ignore.case=TRUE,
@@ -281,7 +281,7 @@ entry_available_nvidia_chips <- PRICES[
 entry_available_amd_chips <- PRICES[
     (PRICES$ProductName %in% available_amd_chips) &
     (PRICES$Price <= quantile(PRICES$Price, .3)),
-    c("ProductName")
+    "ProductName"
 ] |> unique()
 
 #' [entry_available_intel_chips] GPUs de entrada da Nvidia disponíveis no mercado
@@ -291,18 +291,39 @@ entry_available_intel_chips <- PRICES[
     "ProductName"
 ] |> unique()
 
+#' [midend_available_nvidia_chips] GPUs intermediárias da Nvidia disponíveis no mercado
+midend_available_nvidia_chips <- PRICES[
+    (PRICES$ProductName %in% available_nvidia_chips) &
+    (PRICES$Price > quantile(PRICES$Price, .3)) &
+    (PRICES$Price <= quantile(PRICES$Price, .6)),
+    "ProductName"
+]
+
+#' [midend_available_amd_chips] GPUs intermediárias da AMD disponíveis no mercado
+midend_available_amd_chips <- PRICES[
+    (PRICES$ProductName %in% available_amd_chips) &
+    (PRICES$Price > quantile(PRICES$Price, .3)) &
+    (PRICES$Price <= quantile(PRICES$Price, .6)),
+    "ProductName"
+]
+
+#' [midend_available_intel_chips] GPUs intermediárias da Intel disponíveis no mercado
+midend_available_intel_chips <- PRICES[
+    (PRICES$ProductName %in% available_intel_chips) &
+    (PRICES$Price > quantile(PRICES$Price, .3)),
+    "ProductName"
+] |> unique()
+
+
 #' [highend_available_nvidia_chips] GPUs high-end da Nvidia disponíveis no mercado
 highend_available_nvidia_chips <- available_nvidia_chips |>
-    setdiff(entry_available_nvidia_chips)
+    setdiff(entry_available_nvidia_chips) |>
+    setdiff(midend_available_nvidia_chips)
 
 #' [highend_available_amd_chips] GPUs high-end da Nvidia disponíveis no mercado
 highend_available_amd_chips <- available_amd_chips |>
-    setdiff(entry_available_amd_chips)
-
-#' [highend_available_intel_chips] GPUs high-end da Nvidia disponíveis no mercado
-highend_available_intel_chips <- available_intel_chips |>
-    setdiff(entry_available_intel_chips)
-
+    setdiff(entry_available_amd_chips) |>
+    setdiff(midend_available_amd_chips)
 
 ######## Geradores de conjuntos de dados ########
 price_by_date <- function(product_names=c(), group_by_week=FALSE, hyperlinks=FALSE) {

@@ -436,6 +436,56 @@ card_right <- card(
 layout_column_wrap(width=1/2, height="100%", card_left, card_right)
 ```
 
+PLACAS INTERMEDIÁRIAS {data-navmenu="VARIAÇÕES DE PREÇO"}
+======================================================================
+
+<br><br>
+
+Row {.tabset .tabset-pills}
+-----------------------------------------------------------------------
+
+### Nvidia
+
+```{r midend-chips-nvidia}
+card_left <- card(
+    card_header(card_title(h1("Histórico de preços"))),
+    plot_multiple_prices(midend_available_nvidia_chips, "YlGn"),
+)
+card_right <- card(
+    card_header(card_title(h1("Melhores preços atuais"))),
+    best_prices_table(midend_available_nvidia_chips),
+)
+layout_column_wrap(width=1/2, height="100%", card_left, card_right)
+```
+
+### AMD
+
+```{r midend-chips-amd}
+card_left <- card(
+    card_header(card_title(h1("Histórico de preços"))),
+    plot_multiple_prices(midend_available_amd_chips, "YlOrRd"),
+)
+card_right <- card(
+    card_header(card_title(h1("Melhores preços atuais"))),
+    best_prices_table(midend_available_amd_chips),
+)
+layout_column_wrap(width=1/2, height="100%", card_left, card_right)
+```
+
+### Intel
+
+```{r midend-chips-intel}
+card_left <- card(
+    card_header(card_title(h1("Histórico de preços"))),
+    plot_multiple_prices(midend_available_intel_chips, "PuBuGn"),
+)
+card_right <- card(
+    card_header(card_title(h1("Melhores preços atuais"))),
+    best_prices_table(midend_available_intel_chips),
+)
+layout_column_wrap(width=1/2, height="100%", card_left, card_right)
+```
+
 PLACAS DE ALTO DESEMPENHO {data-navmenu="VARIAÇÕES DE PREÇO"}
 ======================================================================
 
