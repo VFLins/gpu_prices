@@ -12,7 +12,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 
 
-
 SCRIPT_DIR = Path(__file__).resolve().parent
 DATA_DIR = SCRIPT_DIR.parent.joinpath("data")
 
@@ -20,11 +19,13 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like 
 
 #### Update avg fps data from Tom's Hardware ####
 #################################################
-def get_th_avg_fps() :
+
+
+def get_th_avg_fps():
     response = requests.get(
         "https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html",
-        headers={"User-Agent" : UA})
-        
+        headers={"User-Agent": UA})
+
     webpage = BeautifulSoup(response.text, "lxml")
     webpage_tables = webpage.find_all("table")
 
@@ -55,8 +56,10 @@ def get_th_avg_fps() :
         df = pd.DataFrame(body, columns=tbl_header)
         for colname in tbl_header[3:7]:
             df[colname] = df[colname].apply(get_fps_val)
-        
-        df.to_csv(DATA_DIR.joinpath(f"tomshardware_{title}_avg_fps.csv"), index=False)
+
+        df.to_csv(DATA_DIR.joinpath(f"tomshardware_{
+                  title}_avg_fps.csv"), index=False)
+
 
 """
 #### Update V-Ray 5 render benchmark data from official page ####
@@ -230,15 +233,13 @@ def get_vray5_render_pts():
 """
 # run from command line: python3 ./routine/update_benchmarks.py
 if __name__ == "__main__":
-    try: 
+    try:
         get_th_avg_fps()
-    except Exception as expt: 
+    except Exception as expt:
         print("Error trying to collect Avg. FPS from Tom's Hardware")
         print(expt)
-    
-    #if path.isfile(getcwd() + r"\\data\\prices.rds"):
+
+    # if path.isfile(getcwd() + r"\\data\\prices.rds"):
     #    get_vray5_render_pts()
-    #else: 
+    # else:
     #    print(r"Not able to collect Vray-5 benchmarks, '\\data\\prices.rds' not found in this folder")
-    
-    
